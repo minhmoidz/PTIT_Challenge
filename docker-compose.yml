@@ -1,0 +1,30 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    networks:
+      - picc-network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      CORS_ORIGIN: http://localhost:80
+      PICC_REGISTRATION_OPEN_AT: ""
+      PICC_REGISTRATION_CLOSE_AT: ""
+      PICC_REGISTRATION_ENABLED: "false"
+    networks:
+      - picc-network
+
+networks:
+  picc-network:
+    driver: bridge

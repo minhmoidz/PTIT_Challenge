@@ -1,0 +1,12 @@
+node_modules
+dist
+.git
+*.log
+.env
+.env.local
+.env.production
+.DS_Store
+coverage
+test-results
+playwright-report
+PICC_2026_FINAL_AGENT_PACK
