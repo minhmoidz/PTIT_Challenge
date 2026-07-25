@@ -1,6 +1,9 @@
-import { Box, Typography, Grid, Checkbox, FormControlLabel, FormGroup, Button, Divider } from '@mui/material';
+import { Box, Typography, Grid, Checkbox, FormControlLabel, FormGroup, Button, Divider, Alert } from '@mui/material';
+import LockRoundedIcon from '@mui/icons-material/LockRounded';
+import PublicRoundedIcon from '@mui/icons-material/PublicRounded';
 import { useFormContext } from 'react-hook-form';
 import type { RegistrationFormValues } from '@/types/registration';
+import { competitionData } from '@/data/competition';
 
 interface Props {
   onEdit: (step: number) => void;
@@ -17,11 +20,11 @@ const SectionReview = ({
 }) => (
   <Box sx={{ mb: 3 }}>
     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
-      <Typography variant="body1" sx={{ fontWeight: 700 }}>
+      <Typography variant="body1" sx={{ fontWeight: 700, color: '#163A67' }}>
         {title}
       </Typography>
       {onEdit && (
-        <Button size="small" onClick={onEdit} variant="text">
+        <Button size="small" onClick={onEdit} variant="text" sx={{ fontWeight: 700 }}>
           Chỉnh sửa
         </Button>
       )}
@@ -32,11 +35,11 @@ const SectionReview = ({
 );
 
 const FieldReview = ({ label, value }: { label: string; value?: string | number | boolean }) => (
-  <Grid item xs={12} sm={6}>
+  <Grid size={{ xs: 12, sm: 6 }}>
     <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
       {label}
     </Typography>
-    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+    <Typography variant="body2" sx={{ fontWeight: 600, color: '#1E293B' }}>
       {value ?? '—'}
     </Typography>
   </Grid>
@@ -48,51 +51,60 @@ export const FormStep3 = ({ onEdit }: Props) => {
 
   return (
     <Box>
-      <SectionReview title="Thông tin đội" onEdit={() => onEdit(0)}>
-        <Grid container spacing={1}>
-          <FieldReview label="Tên đội" value={values.teamName} />
-          <FieldReview label="Số thành viên" value={values.teamSize} />
+      <Typography variant="h3" component="h3" sx={{ fontSize: '1.15rem', fontWeight: 800, color: '#163A67', mb: 3 }}>
+        Phần III — Xác nhận &amp; Cam kết
+      </Typography>
+
+      <SectionReview title="Thông tin đội thi" onEdit={() => onEdit(0)}>
+        <Grid container spacing={1.5}>
+          <FieldReview label="Tên đội thi" value={values.teamName} />
+          <FieldReview label="Số thành viên" value={`${values.teamSize} người`} />
           <FieldReview label="Nhóm bài toán" value={values.challengeCategories?.join(', ')} />
           {values.otherChallengeCategory && (
-            <FieldReview label="Nhóm khác" value={values.otherChallengeCategory} />
+            <FieldReview label="Nhóm bài toán khác" value={values.otherChallengeCategory} />
           )}
-          <FieldReview label="Kinh nghiệm" value={
-            values.companyExperience === 'none'
-              ? 'Chưa từng tham gia'
-              : values.companyExperience === 'previous'
-                ? 'Đã tham gia cuộc thi tương tự'
-                : 'Đang tham gia dự án/dự thi khác'
-          } />
+          <FieldReview
+            label="Kinh nghiệm cuộc thi"
+            value={
+              values.companyExperience === 'none'
+                ? 'Chưa từng tham gia'
+                : values.companyExperience === 'previous'
+                  ? 'Đã tham gia cuộc thi tương tự'
+                  : 'Đang tham gia dự án/dự thi khác'
+            }
+          />
         </Grid>
       </SectionReview>
 
-      <SectionReview title="Đội trưởng" onEdit={() => onEdit(0)}>
-        <Grid container spacing={1}>
+      <SectionReview title="Thông tin Đội trưởng" onEdit={() => onEdit(0)}>
+        <Grid container spacing={1.5}>
           <FieldReview label="Họ tên" value={values.members?.[0]?.fullName} />
-          <FieldReview label="Mã SV" value={values.members?.[0]?.studentId} />
-          <FieldReview label="Ngành" value={values.members?.[0]?.major} />
+          <FieldReview label="Mã sinh viên" value={values.members?.[0]?.studentId} />
+          <FieldReview label="Ngành học" value={values.members?.[0]?.major} />
           <FieldReview label="Email" value={values.members?.[0]?.email} />
-          <FieldReview label="SĐT" value={values.members?.[0]?.phone} />
+          <FieldReview label="Số điện thoại" value={values.members?.[0]?.phone} />
         </Grid>
       </SectionReview>
 
-      {values.members?.slice(1).map((member, i) => (
+      {values.members?.slice(1, values.teamSize).map((member, i) => (
         <SectionReview key={i} title={`Thành viên ${i + 2}`} onEdit={() => onEdit(1)}>
-          <Grid container spacing={1}>
+          <Grid container spacing={1.5}>
             <FieldReview label="Họ tên" value={member.fullName} />
-            <FieldReview label="Mã SV" value={member.studentId} />
-            <FieldReview label="Ngành" value={member.major} />
+            <FieldReview label="Mã sinh viên" value={member.studentId} />
+            <FieldReview label="Ngành học" value={member.major} />
             <FieldReview label="Email" value={member.email} />
-            <FieldReview label="SĐT" value={member.phone} />
+            <FieldReview label="Số điện thoại" value={member.phone} />
           </Grid>
         </SectionReview>
       ))}
 
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="body1" sx={{ fontWeight: 700, mb: 2 }}>
-          Cam kết
+      {/* ── Mandatory Commitments ── */}
+      <Box sx={{ mt: 3.5, p: 2.5, borderRadius: 3, bgcolor: '#F8FAFC', border: '1px solid #E2E8F0' }}>
+        <Typography variant="body1" sx={{ fontWeight: 800, color: '#163A67', mb: 2 }}>
+          Biểu Mẫu Cam Kết Đội Thi *
         </Typography>
-        <FormGroup>
+
+        <FormGroup sx={{ gap: 1.5 }}>
           <FormControlLabel
             control={
               <Checkbox
@@ -100,8 +112,13 @@ export const FormStep3 = ({ onEdit }: Props) => {
                 color="primary"
               />
             }
-            label="Tôi cam kết thông tin đăng ký là chính xác và trung thực."
+            label={
+              <Typography sx={{ fontSize: '0.85rem', fontWeight: 600, color: '#334155' }}>
+                {competitionData.form.commitment.checkboxes[0]}
+              </Typography>
+            }
           />
+
           <FormControlLabel
             control={
               <Checkbox
@@ -109,8 +126,13 @@ export const FormStep3 = ({ onEdit }: Props) => {
                 color="primary"
               />
             }
-            label="Tôi đồng ý cho phép BTC sử dụng hình ảnh và thông tin đội thi cho mục đích truyền thông."
+            label={
+              <Typography sx={{ fontSize: '0.85rem', fontWeight: 600, color: '#334155' }}>
+                {competitionData.form.commitment.checkboxes[1]}
+              </Typography>
+            }
           />
+
           <FormControlLabel
             control={
               <Checkbox
@@ -118,28 +140,80 @@ export const FormStep3 = ({ onEdit }: Props) => {
                 color="primary"
               />
             }
-            label="Đội thi đã đọc và chấp nhận thể lệ cuộc thi."
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                {...register('commitments.privacyAcknowledged')}
-                color="primary"
-              />
+            label={
+              <Typography sx={{ fontSize: '0.85rem', fontWeight: 600, color: '#334155' }}>
+                {competitionData.form.commitment.checkboxes[2]}
+              </Typography>
             }
-            label="Tôi đã đọc và đồng ý với chính sách bảo mật thông tin."
           />
         </FormGroup>
+
         {errors.commitments && (
-          <Typography variant="caption" color="error" sx={{ mt: 1, display: 'block' }}>
-            Vui lòng hoàn thành tất cả cam kết để gửi đăng ký.
+          <Typography variant="caption" color="error" sx={{ mt: 1.5, display: 'block', fontWeight: 700 }}>
+            ⚠️ Vui lòng đánh dấu hoàn thành cả 03 cam kết bắt buộc để gửi biểu mẫu đăng ký.
           </Typography>
         )}
       </Box>
 
-      <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 3 }}>
-        Bằng cách gửi đăng ký, bạn xác nhận đội thi đồng ý với tất cả điều khoản và điều kiện của cuộc thi.
-        Thông tin cá nhân sẽ được bảo mật theo chính sách của BTC.
+      {/* ── Granular Public Consent Section (Optional choices for public profile) ── */}
+      <Box sx={{ mt: 3, p: 2.5, borderRadius: 3, bgcolor: 'rgba(234, 242, 255, 0.7)', border: '1px solid rgba(57, 124, 232, 0.25)' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+          <PublicRoundedIcon sx={{ color: '#397CE8', fontSize: 20 }} />
+          <Typography variant="body1" sx={{ fontWeight: 800, color: '#163A67' }}>
+            Quyền Hiển Thị Công Khai Hồ Sơ Đội Thi
+          </Typography>
+        </Box>
+
+        <Typography sx={{ fontSize: '0.8rem', color: '#475569', mb: 2, lineHeight: 1.5 }}>
+          Lựa chọn thông tin đội đồng ý xuất bản trên trang danh sách công khai <strong>/doi-thi</strong>. Ban Tổ chức sẽ xác minh và phê duyệt trước khi công bố.
+        </Typography>
+
+        <FormGroup sx={{ gap: 1.25 }}>
+          <FormControlLabel
+            control={<Checkbox {...register('publicConsent.shareTeamProfile')} color="primary" defaultChecked={false} />}
+            label={
+              <Typography sx={{ fontSize: '0.825rem', fontWeight: 600, color: '#334155' }}>
+                Chúng tôi đồng ý công khai tên đội, nhóm bài toán, quy mô đội và trạng thái cuộc thi trên website PICC 2026.
+              </Typography>
+            }
+          />
+
+          <FormControlLabel
+            control={<Checkbox {...register('publicConsent.shareMemberNames')} color="primary" defaultChecked={false} />}
+            label={
+              <Typography sx={{ fontSize: '0.825rem', fontWeight: 600, color: '#334155' }}>
+                Chúng tôi đồng ý công khai tên các thành viên trong hồ sơ đội thi.
+              </Typography>
+            }
+          />
+
+          <FormControlLabel
+            control={<Checkbox {...register('publicConsent.shareLogoOrPhotos')} color="primary" defaultChecked={false} />}
+            label={
+              <Typography sx={{ fontSize: '0.825rem', fontWeight: 600, color: '#334155' }}>
+                Chúng tôi đồng ý công khai ảnh hoặc logo đội do đội cung cấp.
+              </Typography>
+            }
+          />
+
+          <FormControlLabel
+            control={<Checkbox {...register('publicConsent.shareProjectSummary')} color="primary" defaultChecked={false} />}
+            label={
+              <Typography sx={{ fontSize: '0.825rem', fontWeight: 600, color: '#334155' }}>
+                Chúng tôi đồng ý công khai phần giới thiệu ngắn và mô tả dự án sau khi được Ban Tổ chức phê duyệt.
+              </Typography>
+            }
+          />
+        </FormGroup>
+
+        <Alert severity="info" icon={<LockRoundedIcon sx={{ fontSize: 18 }} />} sx={{ mt: 2, bgcolor: '#FFFFFF', fontSize: '0.775rem' }}>
+          🔒 <strong>Bảo mật thông tin:</strong> Mã sinh viên, email cá nhân và số điện thoại hoàn toàn KHÔNG bao giờ được công khai trên website.
+        </Alert>
+      </Box>
+
+      <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 3, textAlign: 'center' }}>
+        Thông tin đăng ký sẽ được gửi trực tiếp tới Hệ thống Ban Tổ chức PICC 2026.
+        Mọi thông tin cá nhân được bảo mật theo chính sách quyền riêng tư.
       </Typography>
     </Box>
   );

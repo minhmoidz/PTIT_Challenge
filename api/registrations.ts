@@ -87,8 +87,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       featuredProject: data.featuredProject,
       expectations: data.expectations,
       companyExperience: data.companyExperience,
-      leaderEmail: data.members[0].email,
-      leaderPhone: data.members[0].phone,
+      leaderEmail: data.members[0]!.email,
+      leaderPhone: data.members[0]!.phone,
     });
 
     for (const member of data.members) {

@@ -1,0 +1,477 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserRoleCode {
+  SUPER_ADMIN
+  ORGANIZER
+  REVIEWER
+  CONTENT_EDITOR
+  VIEWER
+}
+
+enum UserStatus {
+  ACTIVE
+  DISABLED
+  LOCKED
+}
+
+enum CompetitionStatusOverride {
+  UPCOMING
+  OPEN
+  PAUSED
+  CLOSED
+  LIVE
+  COMPLETED
+}
+
+enum RegistrationStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  NEEDS_REVISION
+  VERIFIED
+  REJECTED
+  WITHDRAWN
+}
+
+enum EnterpriseExperience {
+  NONE
+  PREVIOUS
+  ONGOING
+}
+
+enum ConsentType {
+  INFORMATION_ACCURACY
+  MEDIA_USE
+  RULES_ACCEPTANCE
+  PUBLIC_TEAM_PROFILE
+  PUBLIC_MEMBER_NAMES
+  PUBLIC_MEMBER_PHOTOS
+  PUBLIC_PROJECT_SUMMARY
+}
+
+enum PublicationStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  PUBLISHED
+  HIDDEN
+  REJECTED
+}
+
+enum TeamCompetitionStatus {
+  VERIFIED
+  ROUND_ONE
+  SEMIFINALIST
+  PILOT
+  FINALIST
+  WINNER
+  COMPLETED
+}
+
+enum ChallengeCategory {
+  BUSINESS
+  TECHNOLOGY
+  MARKETING
+  COMMUNICATIONS
+  OTHER
+}
+
+enum AssetStatus {
+  PENDING
+  READY
+  QUARANTINED
+  DELETED
+}
+
+model User {
+  id           String     @id @default(uuid())
+  email        String     @unique
+  passwordHash String
+  displayName  String
+  status       UserStatus @default(ACTIVE)
+  lastLoginAt  DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  userRoles UserRole[]
+
+  @@map("users")
+}
+
+model Role {
+  id          String       @id @default(uuid())
+  code        UserRoleCode @unique
+  name        String
+  description String?
+
+  userRoles UserRole[]
+
+  @@map("roles")
+}
+
+model UserRole {
+  userId String
+  roleId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model Competition {
+  id                   String                     @id @default(uuid())
+  slug                 String                     @unique
+  name                 String
+  shortName            String
+  theme                String
+  description          String
+  shortDescription     String
+  timezone             String                     @default("Asia/Ho_Chi_Minh")
+  registrationOpenAt   DateTime?
+  registrationCloseAt  DateTime?
+  statusOverride       CompetitionStatusOverride?
+  isPublished          Boolean                    @default(true)
+  createdAt            DateTime                   @default(now())
+  updatedAt            DateTime                   @updatedAt
+
+  milestones    Milestone[]
+  registrations Registration[]
+  announcements Announcement[]
+  faqs          FAQ[]
+  prizes        Prize[]
+  benefits      Benefit[]
+  partners      Partner[]
+  council       CouncilMember[]
+  mentors       Mentor[]
+
+  @@map("competitions")
+}
+
+model Milestone {
+  id                   String      @id @default(uuid())
+  competitionId        String
+  code                 String
+  stageNumber          Int
+  title                String
+  shortTitle           String
+  description          String
+  startAt              DateTime
+  endAt                DateTime?
+  dateLabel            String?
+  stageType            String
+  output               String?
+  sortOrder            Int         @default(0)
+  isPublished          Boolean     @default(true)
+  needsDateConfirmation Boolean    @default(false)
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+
+  @@map("milestones")
+}
+
+model Registration {
+  id                     String               @id @default(uuid())
+  competitionId          String
+  registrationCode       String               @unique
+  teamName               String
+  teamSize               Int
+  captainEmail           String
+  captainPhone           String
+  challengeCategory      ChallengeCategory
+  challengeCategoryOther String?
+  previousCompetitions   String?
+  notableProject         String
+  expectations           String
+  companyExperience      EnterpriseExperience @default(NONE)
+  status                 RegistrationStatus   @default(SUBMITTED)
+  submittedAt            DateTime             @default(now())
+  reviewedAt             DateTime?
+  reviewedBy             String?
+  rejectionReason        String?
+  internalNotes          String?
+  requiresMajorRuleReview Boolean             @default(false)
+  version                Int                  @default(1)
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
+
+  competition Competition           @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  members     TeamMember[]
+  consents    RegistrationConsent[]
+  publicProfile PublicTeamProfile?
+
+  @@map("registrations")
+}
+
+model TeamMember {
+  id             String   @id @default(uuid())
+  registrationId String
+  memberIndex    Int
+  isCaptain      Boolean  @default(false)
+  fullName       String
+  studentId      String
+  major          String
+  email          String
+  phone          String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  registration Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+
+  @@unique([registrationId, memberIndex])
+  @@map("team_members")
+}
+
+model RegistrationConsent {
+  id               String      @id @default(uuid())
+  registrationId   String
+  consentType      ConsentType
+  accepted         Boolean     @default(false)
+  acceptedAt       DateTime    @default(now())
+  policyVersion    String      @default("1.0")
+  ipHash           String?
+  userAgentSummary String?
+
+  registration Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+
+  @@map("registration_consents")
+}
+
+model PublicTeamProfile {
+  id                 String                @id @default(uuid())
+  registrationId     String                @unique
+  slug               String                @unique
+  teamName           String
+  teamSize           Int
+  challengeCategory  ChallengeCategory
+  slogan             String?
+  shortDescription   String?
+  logoAssetId        String?
+  coverAssetId       String?
+  competitionStatus  TeamCompetitionStatus @default(VERIFIED)
+  statusLabel        String?
+  publicationStatus  PublicationStatus     @default(DRAFT)
+  showTeamProfile    Boolean               @default(false)
+  showMemberNames    Boolean               @default(false)
+  showMemberPhotos   Boolean               @default(false)
+  showProjectSummary Boolean               @default(false)
+  approvedBy         String?
+  approvedAt         DateTime?
+  publishedBy        String?
+  publishedAt        DateTime?
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+
+  registration Registration       @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+  publicMembers PublicTeamMember[]
+  publicProject PublicProject?
+
+  @@map("public_team_profiles")
+}
+
+model PublicTeamMember {
+  id                  String   @id @default(uuid())
+  publicTeamProfileId String
+  displayName         String
+  role                String?
+  major               String?
+  avatarAssetId       String?
+  sortOrder           Int      @default(0)
+  isPublished         Boolean  @default(true)
+
+  publicProfile PublicTeamProfile @relation(fields: [publicTeamProfileId], references: [id], onDelete: Cascade)
+
+  @@map("public_team_members")
+}
+
+model PublicProject {
+  id                  String    @id @default(uuid())
+  publicTeamProfileId String    @unique
+  title               String?
+  summary             String?
+  problem             String?
+  solution            String?
+  tags                String[]  @default([])
+  isPublished         Boolean   @default(true)
+  approvedBy          String?
+  approvedAt          DateTime?
+
+  publicProfile PublicTeamProfile @relation(fields: [publicTeamProfileId], references: [id], onDelete: Cascade)
+
+  @@map("public_projects")
+}
+
+model Announcement {
+  id            String            @id @default(uuid())
+  competitionId String
+  title         String
+  slug          String            @unique
+  summary       String
+  content       String
+  status        PublicationStatus @default(DRAFT)
+  publishedAt   DateTime?
+  createdBy     String?
+  updatedBy     String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+
+  @@map("announcements")
+}
+
+model FAQ {
+  id            String   @id @default(uuid())
+  competitionId String
+  question      String
+  answer        String
+  category      String?
+  sortOrder     Int      @default(0)
+  isPublished   Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+
+  @@map("faqs")
+}
+
+model Prize {
+  id            String   @id @default(uuid())
+  competitionId String
+  rank          Int
+  title         String
+  quantity      Int
+  valueText     String
+  valueAmount   Float?
+  status        String   @default("confirmed")
+  sortOrder     Int      @default(0)
+  isPublished   Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+
+  @@map("prizes")
+}
+
+model Benefit {
+  id            String   @id @default(uuid())
+  competitionId String
+  code          String
+  title         String
+  description   String
+  iconKey       String
+  sortOrder     Int      @default(0)
+  isPublished   Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+
+  @@map("benefits")
+}
+
+model Partner {
+  id                String            @id @default(uuid())
+  competitionId    String
+  name              String
+  role              String?
+  logoAssetId       String?
+  website           String?
+  sortOrder         Int               @default(0)
+  publicationStatus PublicationStatus @default(DRAFT)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+
+  @@map("partners")
+}
+
+model CouncilMember {
+  id                String            @id @default(uuid())
+  competitionId    String
+  name              String
+  academicTitle     String?
+  professionalTitle String?
+  organization      String?
+  competitionRole   String?
+  expertise         String[]          @default([])
+  photoAssetId      String?
+  biography         String?
+  profileUrl        String?
+  sortOrder         Int               @default(0)
+  publicationStatus PublicationStatus @default(DRAFT)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+
+  @@map("council_members")
+}
+
+model Mentor {
+  id                String            @id @default(uuid())
+  competitionId    String
+  name              String
+  academicTitle     String?
+  professionalTitle String?
+  organization      String?
+  competitionRole   String?
+  expertise         String[]          @default([])
+  photoAssetId      String?
+  biography         String?
+  profileUrl        String?
+  sortOrder         Int               @default(0)
+  publicationStatus PublicationStatus @default(DRAFT)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  competition Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+
+  @@map("mentors")
+}
+
+model Asset {
+  id              String      @id @default(uuid())
+  storageProvider String      @default("local")
+  storageKey      String
+  originalName    String
+  mimeType        String
+  sizeBytes       Int
+  checksum        String?
+  width           Int?
+  height          Int?
+  uploadedBy      String?
+  status          AssetStatus @default(READY)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@map("assets")
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  actorUserId String?
+  action      String
+  entityType  String
+  entityId    String
+  beforeData  Json?
+  afterData   Json?
+  ipHash      String?
+  createdAt   DateTime @default(now())
+
+  @@map("audit_logs")
+}

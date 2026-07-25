@@ -3,10 +3,10 @@ import { assetManifest, getApprovedAsset } from '@/config/asset-manifest';
 
 describe('Asset Manifest', () => {
   it('contains heroDesktop and heroMobile assets', () => {
-    expect(assetManifest.heroDesktop).toBeDefined();
-    expect(assetManifest.heroMobile).toBeDefined();
-    expect(assetManifest.heroDesktop.usage).toBe('production-candidate');
-    expect(assetManifest.heroMobile.usage).toBe('production-candidate');
+    expect(assetManifest.heroDesktop!).toBeDefined();
+    expect(assetManifest.heroMobile!).toBeDefined();
+    expect(assetManifest.heroDesktop!.usage).toBe('production-candidate');
+    expect(assetManifest.heroMobile!.usage).toBe('production-candidate');
   });
 
   it('returns null for unknown asset', () => {

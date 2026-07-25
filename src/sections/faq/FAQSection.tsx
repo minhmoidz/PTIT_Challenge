@@ -1,10 +1,15 @@
-import { Container, Typography, Accordion, AccordionSummary, AccordionDetails, Box, Chip, Button } from '@mui/material';
-import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
+import { useState } from 'react';
+import { Container, Typography, Box, Chip, Button, Collapse } from '@mui/material';
+import { motion, useReducedMotion } from 'motion/react';
 import HelpOutlineRoundedIcon from '@mui/icons-material/HelpOutlineRounded';
-import ContactSupportRoundedIcon from '@mui/icons-material/ContactSupportRounded';
-import { motion } from 'motion/react';
-import { fadeInUp } from '@/motion/variants';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
+import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import HeadsetMicRoundedIcon from '@mui/icons-material/HeadsetMicRounded';
+import { fadeInUp, staggerContainer } from '@/motion/variants';
 import { piccColors } from '@/theme/palette';
+import { SkyBackground, getSkyBackground } from '@/components/ui/SkyBackground';
+import { competitionData } from '@/data/competition';
 
 interface FAQItem {
   question: string;
@@ -15,8 +20,14 @@ interface Props {
   items?: FAQItem[];
 }
 
-export const FAQSection = ({ items = [] }: Props) => {
-  if (!items || items.length === 0) return null;
+export const FAQSection = ({ items = competitionData.faq }: Props) => {
+  const faqItems = items;
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
+  const prefersReducedMotion = useReducedMotion();
+
+  const handleToggle = (index: number) => {
+    setExpandedIndex((prev) => (prev === index ? null : index));
+  };
 
   return (
     <Box
@@ -24,66 +35,344 @@ export const FAQSection = ({ items = [] }: Props) => {
       id="faq"
       sx={{
         py: { xs: 9, md: 14 },
-        bgcolor: piccColors.sky[50],
+        background: getSkyBackground('calm'),
         position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      <Container maxWidth="md">
-        <Box sx={{ textAlign: 'center', mb: { xs: 6, md: 8 } }}>
+      <SkyBackground variant="calm" />
+
+      <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
+        {/* Section Header */}
+        <Box sx={{ textAlign: 'center', mb: { xs: 5, md: 7 } }}>
           <Chip
-            icon={<HelpOutlineRoundedIcon sx={{ color: `${piccColors.blue[700]} !important` }} />}
-            label="Hỗ Trợ Thí Sinh"
+            icon={
+              <HelpOutlineRoundedIcon
+                sx={{ fontSize: 16, color: `${piccColors.blue[700]} !important` }}
+              />
+            }
+            label="Giải Đáp Thắc Mắc"
             sx={{
-              bgcolor: piccColors.sky[100],
+              bgcolor: 'rgba(234, 242, 255, 0.9)',
+              backdropFilter: 'blur(8px)',
               color: piccColors.blue[700],
-              fontWeight: 700,
-              mb: 2,
+              fontWeight: 800,
+              fontSize: '0.825rem',
+              mb: 2.25,
+              px: 1.5,
+              py: 0.5,
+              border: '1px solid rgba(57, 124, 232, 0.25)',
+              boxShadow: '0 4px 12px rgba(57, 124, 232, 0.08)',
             }}
           />
-          <Typography variant="h2" component="h2" sx={{ mb: 2, color: piccColors.ink, fontWeight: 800 }}>
-            Câu Hỏi Thường Gặp
-          </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary', maxWidth: 640, mx: 'auto' }}>
-            Giải đáp các thắc mắc phổ biến về cuộc thi, thể lệ đăng ký và quy trình nộp bài
-          </Typography>
-        </Box>
-
-        <Box component={motion.div} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
-          {items.map((item, index) => (
-            <motion.div key={index} variants={fadeInUp} transition={{ delay: index * 0.06 }}>
-              <Accordion defaultExpanded={index === 0}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreRoundedIcon sx={{ color: piccColors.blue[700] }} />}
-                  sx={{ py: 1 }}
-                >
-                  <Typography variant="body1" sx={{ fontWeight: 750, color: piccColors.ink, fontSize: '1.05rem' }}>
-                    {item.question}
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails sx={{ px: 3, pb: 3, pt: 1 }}>
-                  <Typography variant="body1" sx={{ color: 'text.secondary', lineHeight: 1.7 }}>
-                    {item.answer}
-                  </Typography>
-                </AccordionDetails>
-              </Accordion>
-            </motion.div>
-          ))}
-        </Box>
-
-        <Box sx={{ textAlign: 'center', mt: 6 }}>
-          <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
-            Bạn vẫn chưa tìm thấy câu trả lời?
-          </Typography>
-          <Button
-            variant="outlined"
-            size="medium"
-            href="#footer"
-            startIcon={<ContactSupportRoundedIcon />}
+          <Typography
+            variant="h2"
+            component="h2"
+            sx={{
+              mb: 1.75,
+              color: piccColors.ink,
+              fontWeight: 800,
+              fontSize: { xs: '2rem', sm: '2.5rem', md: '2.85rem' },
+              letterSpacing: '-0.025em',
+              lineHeight: 1.15,
+            }}
           >
-            Liên hệ Ban Tổ chức
-          </Button>
+            Câu Hỏi Thường Gặp (FAQ)
+          </Typography>
+          <Typography
+            sx={{
+              color: piccColors.slate[600],
+              maxWidth: 680,
+              mx: 'auto',
+              fontSize: { xs: '0.95rem', md: '1.05rem' },
+              lineHeight: 1.65,
+              fontWeight: 400,
+            }}
+          >
+            Tìm câu trả lời nhanh cho những thắc mắc phổ biến về điều kiện tham gia, quy trình thi và quyền lợi thí sinh tại PICC 2026.
+          </Typography>
+        </Box>
+
+        {/* Accordion List */}
+        <Box
+          component={motion.div}
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+          sx={{ maxWidth: 920, mx: 'auto' }}
+        >
+          {faqItems.map((item, index) => {
+            const isExpanded = expandedIndex === index;
+            const itemId = `faq-item-${index}`;
+            const headerId = `faq-header-${index}`;
+            const panelId = `faq-panel-${index}`;
+            const stepNumber = String(index + 1).padStart(2, '0');
+
+            return (
+              <motion.div key={itemId} variants={fadeInUp}>
+                <Box
+                  sx={{
+                    mb: 2,
+                    borderRadius: '18px',
+                    bgcolor: isExpanded ? '#FFFFFF' : 'rgba(255, 255, 255, 0.92)',
+                    backdropFilter: 'blur(16px)',
+                    border: isExpanded
+                      ? '1.5px solid rgba(57, 124, 232, 0.45)'
+                      : '1.5px solid rgba(226, 232, 240, 0.85)',
+                    boxShadow: isExpanded
+                      ? '0 10px 32px rgba(22, 58, 103, 0.07)'
+                      : '0 4px 18px rgba(22, 58, 103, 0.03)',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                    '&:hover': {
+                      borderColor: 'rgba(57, 124, 232, 0.4)',
+                      bgcolor: '#FFFFFF',
+                    },
+                  }}
+                >
+                  {isExpanded && (
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        width: 4,
+                        bgcolor: piccColors.blue[600],
+                      }}
+                    />
+                  )}
+
+                  <Box
+                    component="button"
+                    id={headerId}
+                    aria-expanded={isExpanded}
+                    aria-controls={panelId}
+                    onClick={() => handleToggle(index)}
+                    sx={{
+                      width: '100%',
+                      background: 'none',
+                      border: 'none',
+                      outline: 'none',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      px: { xs: 2.75, sm: 3.5 },
+                      py: { xs: 2.25, md: 2.5 },
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: 2,
+                      '&:focus-visible': {
+                        outline: `2px solid ${piccColors.blue[600]}`,
+                        outlineOffset: '-2px',
+                        borderRadius: '18px',
+                      },
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1.5, sm: 2 } }}>
+                      <Typography
+                        sx={{
+                          fontSize: '0.825rem',
+                          fontWeight: 800,
+                          color: isExpanded ? piccColors.blue[700] : piccColors.slate[400],
+                          bgcolor: isExpanded ? 'rgba(57, 124, 232, 0.1)' : 'rgba(226, 232, 240, 0.5)',
+                          px: 1.25,
+                          py: 0.35,
+                          borderRadius: '8px',
+                          fontVariantNumeric: 'tabular-nums',
+                          flexShrink: 0,
+                          transition: 'all 0.2s ease',
+                        }}
+                      >
+                        {stepNumber}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          fontSize: { xs: '1.025rem', md: '1.125rem' },
+                          fontWeight: isExpanded ? 800 : 700,
+                          color: piccColors.ink,
+                          lineHeight: 1.45,
+                        }}
+                      >
+                        {item.question}
+                      </Typography>
+                    </Box>
+
+                    <Box
+                      sx={{
+                        width: 34,
+                        height: 34,
+                        borderRadius: '50%',
+                        bgcolor: isExpanded ? piccColors.blue[600] : 'rgba(234, 242, 255, 0.8)',
+                        color: isExpanded ? '#FFFFFF' : piccColors.blue[700],
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        transition: 'all 0.25s ease',
+                        boxShadow: isExpanded ? '0 4px 12px rgba(57, 124, 232, 0.3)' : 'none',
+                      }}
+                    >
+                      {isExpanded ? (
+                        <RemoveRoundedIcon sx={{ fontSize: 20 }} />
+                      ) : (
+                        <AddRoundedIcon sx={{ fontSize: 20 }} />
+                      )}
+                    </Box>
+                  </Box>
+
+                  <Collapse
+                    in={isExpanded}
+                    timeout={prefersReducedMotion ? 0 : 300}
+                    unmountOnExit
+                  >
+                    <Box
+                      id={panelId}
+                      role="region"
+                      aria-labelledby={headerId}
+                      sx={{
+                        px: { xs: 2.75, sm: 3.5 },
+                        pb: { xs: 2.75, sm: 3 },
+                        pt: 0.5,
+                        pl: { xs: 2.75, sm: 7.25 },
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          pt: 1.5,
+                          borderTop: '1px dashed rgba(226, 232, 240, 0.8)',
+                        }}
+                      >
+                        <Typography
+                          sx={{
+                            color: piccColors.slate[600],
+                            lineHeight: 1.725,
+                            fontSize: { xs: '0.925rem', md: '0.975rem' },
+                            fontWeight: 450,
+                          }}
+                        >
+                          {item.answer}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Collapse>
+                </Box>
+              </motion.div>
+            );
+          })}
+        </Box>
+
+        {/* Support Callout Card */}
+        <Box
+          component={motion.div}
+          variants={fadeInUp}
+          sx={{
+            mt: { xs: 5, md: 6 },
+            maxWidth: 920,
+            mx: 'auto',
+          }}
+        >
+          <Box
+            sx={{
+              p: { xs: 3, sm: 3.5 },
+              borderRadius: '22px',
+              bgcolor: 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(20px)',
+              border: '1.5px solid rgba(57, 124, 232, 0.25)',
+              boxShadow: '0 8px 30px rgba(22, 58, 103, 0.05)',
+              display: 'flex',
+              flexDirection: { xs: 'column', sm: 'row' },
+              alignItems: { xs: 'flex-start', sm: 'center' },
+              justifyContent: 'space-between',
+              gap: 2.5,
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box
+                sx={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: '14px',
+                  bgcolor: 'rgba(57, 124, 232, 0.1)',
+                  color: piccColors.blue[700],
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  border: '1px solid rgba(57, 124, 232, 0.2)',
+                }}
+              >
+                <HeadsetMicRoundedIcon sx={{ fontSize: 24 }} />
+              </Box>
+
+              <Box>
+                <Typography
+                  sx={{
+                    fontWeight: 800,
+                    color: piccColors.ink,
+                    fontSize: { xs: '1rem', md: '1.075rem' },
+                    mb: 0.35,
+                  }}
+                >
+                  Bạn chưa tìm thấy câu trả lời?
+                </Typography>
+                <Typography
+                  sx={{
+                    color: piccColors.slate[500],
+                    fontSize: '0.875rem',
+                    lineHeight: 1.45,
+                  }}
+                >
+                  Đội ngũ tư vấn Ban Tổ chức luôn sẵn sàng giải đáp và hỗ trợ 24/7.
+                </Typography>
+              </Box>
+            </Box>
+
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.5,
+                width: { xs: '100%', sm: 'auto' },
+                flexShrink: 0,
+              }}
+            >
+              <Button
+                variant="contained"
+                size="large"
+                href={competitionData.contact.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                endIcon={<ArrowForwardRoundedIcon />}
+                sx={{
+                  borderRadius: '999px',
+                  px: 3.25,
+                  py: 1.15,
+                  fontWeight: 800,
+                  fontSize: '0.9rem',
+                  bgcolor: piccColors.blue[600],
+                  color: '#FFFFFF',
+                  boxShadow: '0 6px 20px rgba(57, 124, 232, 0.3)',
+                  whiteSpace: 'nowrap',
+                  width: { xs: '100%', sm: 'auto' },
+                  transition: 'all 0.25s ease',
+                  '&:hover': {
+                    bgcolor: piccColors.blue[800],
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 10px 28px rgba(23, 59, 102, 0.35)',
+                  },
+                }}
+              >
+                Fanpage Ban Tổ chức
+              </Button>
+            </Box>
+          </Box>
         </Box>
       </Container>
     </Box>
   );
 };
+
+export default FAQSection;

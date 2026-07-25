@@ -4,19 +4,20 @@ const fallbackConfig: PublicPiccConfig = {
   serverTime: new Date().toISOString(),
   environment: 'preview',
   registration: {
-    openAt: null,
-    closeAt: null,
-    allowSubmissions: false,
-    explicitlyDisabled: true,
-    statusMessage: 'Thông tin đăng ký sẽ được cập nhật.',
+    openAt: '2026-08-01T00:00:00+07:00',
+    closeAt: '2026-08-15T23:59:59+07:00',
+    allowSubmissions: true,
+    explicitlyDisabled: false,
+    statusMessage: 'Cổng đăng ký mở từ 01/08/2026 đến 15/08/2026.',
   },
   teamSize: {
     min: 3,
     max: 5,
-    approvalStatus: 'unresolved',
+    approvalStatus: 'confirmed',
   },
   challengeSelection: {
-    mode: 'single',
+    mode: 'multiple',
+    maxSelections: 5,
   },
   timeline: [],
 };
@@ -57,6 +58,6 @@ export const computeClockOffset = (serverTime: string): number => {
   return server - client;
 };
 
-export const getEffectiveServerTime = (baseServerTime: string, clockOffsetMs: number): Date => {
+export const getEffectiveServerTime = (_baseServerTime: string, clockOffsetMs: number): Date => {
   return new Date(Date.now() + clockOffsetMs);
 };

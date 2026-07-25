@@ -3,6 +3,7 @@ import { Box } from '@mui/material';
 import { SkipLink } from '@/components/ui/SkipLink';
 import { SiteHeader } from '@/features/navigation/SiteHeader';
 import { FooterSection } from '@/sections/footer/FooterSection';
+import { MobileStickyCta } from '@/components/ui/MobileStickyCta';
 
 export const LandingLayout = () => (
   <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -11,6 +12,10 @@ export const LandingLayout = () => (
     <Box component="main" id="main-content" sx={{ flex: 1 }}>
       <Outlet />
     </Box>
+
+    {/* Sticky Mobile Registration CTA Bar */}
+    <MobileStickyCta />
+
     <FooterSection />
   </Box>
 );

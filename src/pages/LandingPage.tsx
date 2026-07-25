@@ -1,6 +1,5 @@
 import { HeroSection } from '@/sections/hero/HeroSection';
 import { IntroductionSection } from '@/sections/introduction/IntroductionSection';
-import { QuickFactsSection } from '@/sections/quick-facts/QuickFactsSection';
 import { TimelineSection } from '@/sections/timeline/TimelineSection';
 import { RulesSection } from '@/sections/rules/RulesSection';
 import { AwardsSection } from '@/sections/awards/AwardsSection';
@@ -14,7 +13,6 @@ export const LandingPage = () => (
   <>
     <HeroSection />
     <IntroductionSection />
-    <QuickFactsSection />
     <TimelineSection />
     <RulesSection />
     <AwardsSection />

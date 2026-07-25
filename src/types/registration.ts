@@ -24,6 +24,13 @@ export interface TeamMember {
   phone: string;
 }
 
+export interface PublicConsentValues {
+  shareTeamProfile: boolean;
+  shareMemberNames: boolean;
+  shareLogoOrPhotos: boolean;
+  shareProjectSummary: boolean;
+}
+
 export interface RegistrationFormValues {
   teamName: string;
   teamSize: number;
@@ -40,6 +47,7 @@ export interface RegistrationFormValues {
     rulesAccepted: boolean;
     privacyAcknowledged: boolean;
   };
+  publicConsent?: PublicConsentValues;
   honeypot: string;
   formStartedAt: string;
 }
