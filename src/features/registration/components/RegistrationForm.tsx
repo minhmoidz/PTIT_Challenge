@@ -53,6 +53,38 @@ const clearDraft = () => {
   sessionStorage.removeItem(STORAGE_KEY);
 };
 
+const createMember = (role: 'leader' | 'member') => ({
+  role,
+  fullName: '',
+  studentId: '',
+  major: '',
+  email: '',
+  phone: '',
+});
+
+const createMembers = (teamSize: number) => Array.from(
+  { length: teamSize },
+  (_, index) => createMember(index === 0 ? 'leader' : 'member'),
+);
+
+const normalizeDraft = (
+  draft: Partial<RegistrationFormValues> | null,
+  teamMin: number,
+  teamMax: number,
+): Partial<RegistrationFormValues> | null => {
+  if (!draft) return null;
+
+  const requestedSize = typeof draft.teamSize === 'number' ? draft.teamSize : teamMax;
+  const teamSize = Math.min(Math.max(requestedSize, teamMin), teamMax);
+  const draftMembers = Array.isArray(draft.members) ? draft.members.slice(0, teamSize) : [];
+  const members = Array.from({ length: teamSize }, (_, index) => ({
+    ...(draftMembers[index] ?? createMember(index === 0 ? 'leader' : 'member')),
+    role: index === 0 ? 'leader' as const : 'member' as const,
+  }));
+
+  return { ...draft, teamSize, members };
+};
+
 export const RegistrationForm = () => {
   const { status, config } = useRegistrationStatus();
   const navigate = useNavigate();
@@ -61,21 +93,19 @@ export const RegistrationForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [idempotencyKey] = useState(() => crypto.randomUUID());
 
-  const draft = loadDraft();
+  const teamMin = config.teamSize.min;
+  const teamMax = config.teamSize.max ?? 4;
+  const draft = normalizeDraft(loadDraft(), teamMin, teamMax);
 
   const defaultValues: RegistrationFormValues = {
     teamName: '',
-    teamSize: config.teamSize.max ?? 5,
+    teamSize: teamMax,
     challengeCategories: [],
     previousCompetitions: '',
     featuredProject: '',
     expectations: '',
     companyExperience: 'none',
-    members: [
-      { role: 'leader', fullName: '', studentId: '', major: '', email: '', phone: '' },
-      { role: 'member', fullName: '', studentId: '', major: '', email: '', phone: '' },
-      { role: 'member', fullName: '', studentId: '', major: '', email: '', phone: '' },
-    ],
+    members: createMembers(teamMax),
     commitments: {
       truthfulInformation: false,
       mediaConsent: false,
@@ -87,8 +117,8 @@ export const RegistrationForm = () => {
   };
 
   const schema = createRegistrationSchema({
-    teamMin: config.teamSize.min,
-    teamMax: config.teamSize.max ?? 5,
+    teamMin,
+    teamMax,
     challengeMode: config.challengeSelection.mode,
     maxSelections: config.challengeSelection.maxSelections,
   });
@@ -103,10 +133,30 @@ export const RegistrationForm = () => {
     resolver: zodResolver(schema),
   });
 
-  const { handleSubmit, trigger, getValues, reset } = methods;
+  const { handleSubmit, trigger, getValues, reset, setValue } = methods;
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/incompatible-library
+    const subscription = methods.watch((values, { name }) => {
+      if (name !== 'teamSize') return;
+
+      const selectedSize = typeof values.teamSize === 'number' ? values.teamSize : teamMin;
+      const normalizedSize = Math.min(Math.max(selectedSize, teamMin), teamMax);
+      const currentMembers = Array.isArray(values.members) ? values.members : [];
+      const members = Array.from({ length: normalizedSize }, (_, index) => ({
+        ...(currentMembers[index] ?? createMember(index === 0 ? 'leader' : 'member')),
+        role: index === 0 ? 'leader' as const : 'member' as const,
+      }));
+
+      if (selectedSize !== normalizedSize) {
+        setValue('teamSize', normalizedSize, { shouldValidate: true });
+      }
+      setValue('members', members, { shouldValidate: true });
+    });
+    return () => subscription.unsubscribe();
+  }, [methods, setValue, teamMin, teamMax]);
+
+  useEffect(() => {
     const subscription = methods.watch((values) => {
       saveDraft(values as RegistrationFormValues);
     });
@@ -203,8 +253,8 @@ export const RegistrationForm = () => {
 
   const renderStepContent = () => {
     switch (activeStep) {
-      case 0: return <FormStep1 />;
-      case 1: return <FormStep2 />;
+      case 0: return <FormStep1 teamMin={teamMin} teamMax={teamMax} />;
+      case 1: return <FormStep2 teamMin={teamMin} teamMax={teamMax} />;
       case 2: return <FormStep3 onEdit={(step) => setActiveStep(step)} />;
       default: return null;
     }
@@ -216,7 +266,7 @@ export const RegistrationForm = () => {
     <Paper
       elevation={0}
       sx={{
-        p: { xs: 3, sm: 6 },
+        p: { xs: 2.25, sm: 4, md: 6 },
         borderRadius: 6,
         border: '1px solid rgba(226, 232, 240, 0.9)',
         boxShadow: '0 20px 60px rgba(23, 59, 102, 0.12)',
@@ -224,19 +274,33 @@ export const RegistrationForm = () => {
         backdropFilter: 'blur(20px)',
       }}
     >
-      <Stepper activeStep={activeStep} sx={{ mb: 6 }}>
+      <Box sx={{ display: { xs: 'block', sm: 'none' }, mb: 4 }}>
+        <Typography sx={{ color: piccColors.ptitRed, fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+          Bước {activeStep + 1}/3
+        </Typography>
+        <Typography sx={{ color: piccColors.ptitNavy, fontSize: '1.05rem', fontWeight: 800, mt: 0.25 }}>
+          {STEPS[activeStep]}
+        </Typography>
+        <Box sx={{ display: 'flex', gap: 0.75, mt: 1.5 }}>
+          {STEPS.map((label, index) => (
+            <Box key={label} sx={{ height: 5, flex: 1, borderRadius: 999, bgcolor: index <= activeStep ? piccColors.ptitRed : piccColors.neutral[200] }} />
+          ))}
+        </Box>
+      </Box>
+
+      <Stepper activeStep={activeStep} sx={{ display: { xs: 'none', sm: 'flex' }, mb: 6 }}>
         {STEPS.map((label) => (
           <Step key={label}>
             <StepLabel
               StepIconProps={{
                 sx: {
                   fontSize: 28,
-                  '&.Mui-active': { color: piccColors.blue[600] },
+                  '&.Mui-active': { color: piccColors.ptitRed },
                   '&.Mui-completed': { color: piccColors.emerald[600] },
                 },
               }}
             >
-              <Typography sx={{ fontWeight: 700, fontSize: { xs: '0.8rem', sm: '0.95rem' } }}>
+              <Typography sx={{ fontWeight: 700, fontSize: '0.95rem' }}>
                 {label}
               </Typography>
             </StepLabel>
@@ -257,7 +321,7 @@ export const RegistrationForm = () => {
           <Box
             sx={{
               display: 'flex',
-              flexDirection: { xs: 'column-reverse', sm: 'row' },
+              flexDirection: { xs: 'column', sm: 'row' },
               justifyContent: 'space-between',
               alignItems: { xs: 'stretch', sm: 'center' },
               gap: 2,
@@ -266,7 +330,7 @@ export const RegistrationForm = () => {
               borderTop: '1px solid rgba(226,232,240,0.8)',
             }}
           >
-            <Box sx={{ display: 'flex', gap: 1 }}>
+            <Box sx={{ display: 'flex', gap: 1, order: { xs: 2, sm: 1 } }}>
               {activeStep > 0 && (
                 <Button
                   onClick={handleBack}
@@ -284,7 +348,7 @@ export const RegistrationForm = () => {
               )}
             </Box>
 
-            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', justifyContent: 'flex-end' }}>
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column-reverse', sm: 'row' }, gap: 1.5, alignItems: { xs: 'stretch', sm: 'center' }, justifyContent: 'flex-end', order: { xs: 1, sm: 2 } }}>
               <Button
                 onClick={handleClearDraft}
                 variant="text"
@@ -300,6 +364,7 @@ export const RegistrationForm = () => {
                   variant="contained"
                   sx={{
                     borderRadius: 999,
+                    width: { xs: '100%', sm: 'auto' },
                     px: 4,
                     py: 1.2,
                     fontWeight: 700,
@@ -320,6 +385,7 @@ export const RegistrationForm = () => {
                   disabled={isSubmitting}
                   sx={{
                     borderRadius: 999,
+                    width: { xs: '100%', sm: 'auto' },
                     px: 4.5,
                     py: 1.3,
                     fontWeight: 800,

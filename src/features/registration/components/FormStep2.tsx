@@ -4,7 +4,12 @@ import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import { useFormContext, useWatch } from 'react-hook-form';
 import type { RegistrationFormValues } from '@/types/registration';
 
-export const FormStep2 = () => {
+interface FormStep2Props {
+  teamMin: number;
+  teamMax: number;
+}
+
+export const FormStep2 = ({ teamMin, teamMax }: FormStep2Props) => {
   const {
     register,
     formState: { errors },
@@ -12,12 +17,9 @@ export const FormStep2 = () => {
   } = useFormContext<RegistrationFormValues>();
 
   const watchTeamSize = useWatch({ control, name: 'teamSize' });
-  const teamSize = typeof watchTeamSize === 'number' && watchTeamSize >= 3 ? watchTeamSize : 3;
-  const memberCount = Math.min(teamSize, 5);
-
-  const leaderName = useWatch({ control, name: 'members.0.fullName' });
-  const leaderEmail = useWatch({ control, name: 'members.0.email' });
-  const leaderPhone = useWatch({ control, name: 'members.0.phone' });
+  const requestedTeamSize = typeof watchTeamSize === 'number' ? watchTeamSize : teamMin;
+  const teamSize = Math.min(Math.max(requestedTeamSize, teamMin), teamMax);
+  const memberCount = teamSize;
 
   return (
     <Box>

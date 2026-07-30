@@ -203,8 +203,8 @@ export const HeroVisual = () => {
         }}
         sx={{
           position: 'relative',
-          width: { xs: 290, sm: 340, md: 380 },
-          height: { xs: 270, sm: 310, md: 340 },
+          width: { xs: 'min(78vw, 270px)', sm: 320, md: 360 },
+          height: { xs: 250, sm: 295, md: 320 },
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -238,27 +238,14 @@ export const HeroVisual = () => {
           prefersReducedMotion={prefersReducedMotion}
         />
 
-        {/* Middle Orbit Ring 2 (Pink/Purple Counter-rotate) */}
+        {/* Secondary campaign orbit */}
         <OrbitalRing
-          size={320}
-          color="rgba(232, 91, 159, 0.32)"
+          size={300}
+          color="rgba(99, 102, 241, 0.22)"
           tiltX={52}
           tiltY={-20}
           duration={34}
           reverse
-          nodeColor="#E85B9F"
-          nodeTop={false}
-          zIndex={1}
-          prefersReducedMotion={prefersReducedMotion}
-        />
-
-        {/* Inner Orbit Ring 3 (Cyan/Emerald accent) */}
-        <OrbitalRing
-          size={290}
-          color="rgba(16, 185, 129, 0.25)"
-          tiltX={70}
-          tiltY={5}
-          duration={44}
           zIndex={1}
           prefersReducedMotion={prefersReducedMotion}
         />
@@ -293,7 +280,7 @@ export const HeroVisual = () => {
           sx={{
             position: 'relative',
             zIndex: 4,
-            width: { xs: 165, sm: 195, md: 220 },
+            width: { xs: 150, sm: 180, md: 200 },
             filter: 'drop-shadow(0 16px 36px rgba(22,58,103,0.24))',
           }}
         >
@@ -309,10 +296,7 @@ export const HeroVisual = () => {
           )}
         </Box>
 
-        {/* Floating Accent Gems */}
-        <FloatingGem size={16} top="12%" right="10%" color1="#F5A623" color2="#E85B9F" duration={4.2} delay={0} shape="square" prefersReducedMotion={prefersReducedMotion} />
-        <FloatingGem size={14} bottom="20%" left="8%" color1="#397CE8" color2="#6366F1" duration={5.5} delay={1} shape="circle" prefersReducedMotion={prefersReducedMotion} />
-        <FloatingGem size={12} top="52%" right="6%" color1="#10B981" color2="#4F8FEA" duration={6.2} delay={0.6} shape="circle" prefersReducedMotion={prefersReducedMotion} />
+        <FloatingGem size={12} top="15%" right="12%" color1="#F5A623" color2="#E85B9F" duration={5} delay={0} shape="circle" prefersReducedMotion={prefersReducedMotion} />
       </Box>
 
       {/* ══ 2. STACKED COUNTDOWN CARD (Overlapping Unified Composition) ══ */}
@@ -517,7 +501,7 @@ const CountdownCard = ({
         left: 0,
         right: 0,
         height: 4,
-        background: 'linear-gradient(90deg, #397CE8 0%, #6366F1 50%, #E85B9F 100%)',
+        background: 'linear-gradient(90deg, #245FA8 0%, #4F8FEA 100%)',
       }}
     />
 

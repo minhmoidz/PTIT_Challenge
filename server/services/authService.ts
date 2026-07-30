@@ -9,8 +9,11 @@ export interface AdminUser {
   permissions: string[];
 }
 
+const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
+
 export class AuthService {
   private static adminUsers: Map<string, { user: AdminUser; passwordHash: string }> = new Map();
+  private static sessions: Map<string, { user: AdminUser; expiresAt: number }> = new Map();
 
   static {
     const superAdminUser: AdminUser = {
@@ -83,10 +86,26 @@ export class AuthService {
 
     if (!isPasswordValid) return null;
 
-    const token = crypto.randomBytes(32).toString('hex');
     dbStore.addAuditLog('ADMIN_LOGIN', 'User', record.user.id);
 
-    return { token, user: record.user };
+    return { token: AuthService.createSession(record.user), user: record.user };
+  }
+
+  public static createSession(user: AdminUser): string {
+    const token = crypto.randomBytes(32).toString('hex');
+    AuthService.sessions.set(token, { user, expiresAt: Date.now() + SESSION_TTL_MS });
+    return token;
+  }
+
+  public static verifyToken(token: string | undefined | null): AdminUser | null {
+    if (!token) return null;
+    const session = AuthService.sessions.get(token);
+    if (!session) return null;
+    if (Date.now() > session.expiresAt) {
+      AuthService.sessions.delete(token);
+      return null;
+    }
+    return session.user;
   }
 
   public static async createAdminUser(

@@ -1,62 +1,20 @@
-import { Box, Typography, Chip } from '@mui/material';
-import WorkspacePremiumRoundedIcon from '@mui/icons-material/WorkspacePremiumRounded';
+import { Box, Typography } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { piccColors } from '@/theme/palette';
 
 export const AwardHeader = () => {
   return (
-    <Box sx={{ textAlign: 'center', mb: { xs: 6, md: 8 }, position: 'relative' }}>
-      {/* Background Holographic Light Ring & Abstract Line Art */}
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -60%)',
-          width: { xs: 280, md: 520 },
-          height: { xs: 280, md: 520 },
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(54, 123, 234, 0.08) 0%, rgba(245, 166, 35, 0.05) 45%, transparent 70%)',
-          pointerEvents: 'none',
-          zIndex: 0,
-        }}
-      />
-
-      {/* Abstract Tech Arc Line SVG */}
-      <Box
-        component="svg"
-        viewBox="0 0 400 120"
-        sx={{
-          position: 'absolute',
-          top: -20,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: { xs: 300, md: 600 },
-          height: 120,
-          opacity: 0.15,
-          pointerEvents: 'none',
-          zIndex: 0,
-        }}
-      >
-        <circle cx="200" cy="-80" r="180" stroke="#15375F" strokeWidth="1.5" strokeDasharray="4 4" fill="none" />
-        <circle cx="200" cy="-80" r="160" stroke="#367BEA" strokeWidth="1" fill="none" />
-      </Box>
-
+    <Box sx={{ textAlign: 'center', mb: { xs: 5, md: 7 }, position: 'relative', fontFamily: '"Manrope", sans-serif' }}>
       <Box sx={{ position: 'relative', zIndex: 1 }}>
-        {/* Eyebrow Badge */}
-        <Chip
-          icon={<WorkspacePremiumRoundedIcon sx={{ fontSize: '16px !important', color: `${piccColors.amber[700]} !important` }} />}
-          label="Vinh danh & Quyền lợi"
+        {/* Red Accent Line — IEC PTIT Style */}
+        <Box
           sx={{
-            bgcolor: '#FFF8EC',
-            color: piccColors.amber[800],
-            fontWeight: 700,
-            fontSize: '0.85rem',
+            width: 44,
+            height: 4,
+            bgcolor: piccColors.ptitRed,
+            borderRadius: 2,
+            mx: 'auto',
             mb: 2,
-            px: 1.5,
-            py: 0.5,
-            border: '1px solid rgba(245, 166, 35, 0.3)',
-            boxShadow: '0 4px 12px rgba(245, 166, 35, 0.12)',
           }}
         />
 
@@ -65,29 +23,31 @@ export const AwardHeader = () => {
           variant="h2"
           component="h2"
           sx={{
-            mb: 1.75,
-            color: '#15375F',
+            mb: 1.5,
+            color: piccColors.ptitNavy,
             fontWeight: 800,
-            fontSize: { xs: '2rem', sm: '2.75rem', md: '3.25rem' },
+            fontSize: { xs: '2rem', sm: '2.5rem', md: '2.8rem' },
             letterSpacing: '-0.02em',
-            lineHeight: 1.15,
+            lineHeight: 1.2,
+            fontFamily: '"Manrope", sans-serif',
           }}
         >
-          Bảo Tàng Giải Thưởng PICC 2026
+          Cơ Cấu Giải Thưởng <Box component="span" sx={{ color: piccColors.ptitRed }}>PICC 2026</Box>
         </Typography>
 
         {/* Subtitle */}
         <Typography
           sx={{
-            color: '#65758B',
+            color: '#4e4f53',
             maxWidth: 640,
             mx: 'auto',
             fontSize: { xs: '0.95rem', md: '1.05rem' },
             lineHeight: 1.6,
             mb: 3.5,
+            fontFamily: '"Manrope", sans-serif',
           }}
         >
-          Vinh danh những ý tưởng xuất sắc và mở ra cơ hội phát triển cùng doanh nghiệp.
+          Vinh danh những ý tưởng sáng tạo xuất sắc và mở ra cơ hội ươm tạo, phát triển giải pháp cùng doanh nghiệp đồng hành.
         </Typography>
 
         {/* Prominent Highlight Stat Card for Total Cash Prize Placeholder */}

@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Typography, Avatar, Tooltip, Button, Menu, MenuItem, Divider, IconButton } from '@mui/material';
 import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
 import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
@@ -13,6 +13,7 @@ import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneR
 import ShieldRoundedIcon from '@mui/icons-material/ShieldRounded';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { adminColors, adminRadius, adminShadow } from '@/theme/adminTokens';
+import { AdminContext } from './AdminContext';
 
 interface AdminUser {
   id: string;
@@ -20,10 +21,6 @@ interface AdminUser {
   displayName: string;
   role: string;
 }
-
-// Context to expose admin user globally
-export const AdminContext = createContext<{ user: AdminUser | null }>({ user: null });
-export const useAdminUser = () => useContext(AdminContext);
 
 const NAV_GROUPS = [
   {
@@ -58,19 +55,24 @@ export const AdminLayout = () => {
   const location = useLocation();
   const [user, setUser] = useState<AdminUser | null>(null);
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const menuOpen = Boolean(anchorEl);
 
   useEffect(() => {
     const userStr = localStorage.getItem('picc_admin_user');
     const token = localStorage.getItem('picc_admin_token');
-    if (!userStr || !token) {
+    if (!userStr || !token || token.length < 16) {
       navigate('/admin', { replace: true });
       return;
     }
     try {
-      setUser(JSON.parse(userStr));
+      const parsed = JSON.parse(userStr);
+      if (!parsed?.id || !parsed?.email) throw new Error('Invalid user data');
+      queueMicrotask(() => setUser(parsed));
     } catch {
+      localStorage.removeItem('picc_admin_user');
+      localStorage.removeItem('picc_admin_token');
       navigate('/admin', { replace: true });
     }
   }, [navigate]);
@@ -104,21 +106,33 @@ export const AdminLayout = () => {
   return (
     <AdminContext.Provider value={{ user }}>
       <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: adminColors.bg }}>
+        {mobileOpen && (
+          <Box
+            onClick={() => setMobileOpen(false)}
+            sx={{
+              display: { xs: 'block', md: 'none' },
+              position: 'fixed',
+              inset: 0,
+              zIndex: 1199,
+              bgcolor: 'rgba(15, 30, 60, 0.42)',
+            }}
+          />
+        )}
         {/* ═══ SIDEBAR ═══ */}
         <Box
           component="nav"
           aria-label="Điều hướng quản trị"
           sx={{
-            width: sidebarW,
+            width: { xs: SIDEBAR_WIDTH, md: sidebarW },
             minHeight: '100vh',
             bgcolor: adminColors.sidebar,
             display: 'flex',
             flexDirection: 'column',
             position: 'fixed',
             top: 0,
-            left: 0,
+            left: { xs: mobileOpen ? 0 : `-${SIDEBAR_WIDTH}px`, md: 0 },
             zIndex: 1200,
-            transition: 'width 0.22s cubic-bezier(0.4, 0, 0.2, 1)',
+            transition: 'width 0.22s cubic-bezier(0.4, 0, 0.2, 1), left 0.22s cubic-bezier(0.4, 0, 0.2, 1)',
             overflow: 'hidden',
             boxShadow: '2px 0 12px rgba(15, 30, 60, 0.2)',
           }}
@@ -191,6 +205,7 @@ export const AdminLayout = () => {
                       onClick={(e) => {
                         e.preventDefault();
                         navigate(item.href);
+                        setMobileOpen(false);
                       }}
                       sx={{
                         display: 'flex',
@@ -256,7 +271,7 @@ export const AdminLayout = () => {
         </Box>
 
         {/* ═══ MAIN CONTENT AREA ═══ */}
-        <Box sx={{ flex: 1, ml: `${sidebarW}px`, transition: 'margin-left 0.22s cubic-bezier(0.4, 0, 0.2, 1)', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <Box sx={{ flex: 1, ml: { xs: 0, md: `${sidebarW}px` }, transition: 'margin-left 0.22s cubic-bezier(0.4, 0, 0.2, 1)', display: 'flex', flexDirection: 'column', minHeight: '100vh', minWidth: 0 }}>
           {/* ── TOPBAR ── */}
           <Box
             component="header"
@@ -266,7 +281,7 @@ export const AdminLayout = () => {
               borderBottom: `1px solid ${adminColors.topbarBorder}`,
               display: 'flex',
               alignItems: 'center',
-              px: 3,
+              px: { xs: 2, md: 3 },
               gap: 2,
               position: 'sticky',
               top: 0,
@@ -274,6 +289,18 @@ export const AdminLayout = () => {
               boxShadow: adminShadow.topbar,
             }}
           >
+            <IconButton
+              onClick={() => setMobileOpen(true)}
+              aria-label="Mở điều hướng quản trị"
+              sx={{
+                display: { xs: 'inline-flex', md: 'none' },
+                color: adminColors.text,
+                borderRadius: adminRadius.button,
+                '&:hover': { bgcolor: adminColors.surfaceHover },
+              }}
+            >
+              <MenuRoundedIcon />
+            </IconButton>
             <Box sx={{ flex: 1 }} />
 
             {/* Notification icon */}

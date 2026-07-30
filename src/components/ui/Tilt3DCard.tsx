@@ -1,6 +1,6 @@
 import { useRef, type ReactNode } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
-import { Box } from '@mui/material';
+import { Box, useMediaQuery } from '@mui/material';
 import type { BoxProps } from '@mui/material';
 
 interface Tilt3DCardProps extends BoxProps {
@@ -19,6 +19,8 @@ interface Tilt3DCardProps extends BoxProps {
   borderGlow?: boolean;
   /** Glow border color (default: primary blue) */
   borderGlowColor?: string;
+  /** Enable the expensive pointer-following treatment on intentional focal cards only. */
+  interactive?: boolean;
 }
 
 export const Tilt3DCard = ({
@@ -30,10 +32,14 @@ export const Tilt3DCard = ({
   depthShadow = true,
   borderGlow = true,
   borderGlowColor = 'rgba(79, 143, 234, 0.3)',
+  interactive = false,
   sx,
   ...rest
 }: Tilt3DCardProps) => {
   const ref = useRef<HTMLDivElement>(null);
+  const canHover = useMediaQuery('(hover: hover) and (pointer: fine)');
+  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const enableTilt = interactive && canHover && !prefersReducedMotion;
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const mouseX = useMotionValue(0);
@@ -102,27 +108,29 @@ export const Tilt3DCard = ({
   return (
     <Box
       ref={ref}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseMove={enableTilt ? handleMouseMove : undefined}
+      onMouseEnter={enableTilt ? handleMouseEnter : undefined}
+      onMouseLeave={enableTilt ? handleMouseLeave : undefined}
       sx={{
         perspective: '1200px',
         transformStyle: 'preserve-3d',
         position: 'relative',
         overflow: 'visible',
-        cursor: 'pointer',
+        cursor: enableTilt ? 'pointer' : 'inherit',
         borderRadius: 3,
-        '&:hover': {
-          '& .tilt-content': {
-            transform: `scale(${scale})`,
+        ...(enableTilt && {
+          '&:hover': {
+            '& .tilt-content': {
+              transform: `scale(${scale})`,
+            },
           },
-        },
+        }),
         ...(sx as Record<string, unknown>),
       }}
       {...rest}
     >
       {/* Depth shadow (behind card) */}
-      {depthShadow && (
+      {enableTilt && depthShadow && (
         <motion.div
           style={{
             position: 'absolute',
@@ -145,8 +153,8 @@ export const Tilt3DCard = ({
           width: '100%',
           height: '100%',
           transformStyle: 'preserve-3d',
-          rotateX,
-          rotateY,
+          rotateX: enableTilt ? rotateX : 0,
+          rotateY: enableTilt ? rotateY : 0,
           transition: 'transform 0.15s ease',
           position: 'relative',
           zIndex: 1,
@@ -156,7 +164,7 @@ export const Tilt3DCard = ({
       </motion.div>
 
       {/* Border glow highlight */}
-      {borderGlow && (
+      {enableTilt && borderGlow && (
         <motion.div
           style={{
             position: 'absolute',
@@ -175,20 +183,22 @@ export const Tilt3DCard = ({
       )}
 
       {/* Radial glare (follows mouse) */}
-      <motion.div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          borderRadius: 'inherit',
-          background: `radial-gradient(circle at ${glarePosX}% ${glarePosY}%, ${glareColor}, transparent 70%)`,
-          opacity: glareOpacity,
-          pointerEvents: 'none',
-          zIndex: 12,
-        }}
-      />
+      {enableTilt && (
+        <motion.div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            borderRadius: 'inherit',
+            background: `radial-gradient(circle at ${glarePosX}% ${glarePosY}%, ${glareColor}, transparent 70%)`,
+            opacity: glareOpacity,
+            pointerEvents: 'none',
+            zIndex: 12,
+          }}
+        />
+      )}
 
       {/* Shimmer sweep effect */}
-      {shimmer && (
+      {enableTilt && shimmer && (
         <motion.div
           style={{
             position: 'absolute',

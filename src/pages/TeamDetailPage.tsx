@@ -8,13 +8,14 @@ import ShareRoundedIcon from '@mui/icons-material/ShareRounded';
 import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
 import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import RocketLaunchRoundedIcon from '@mui/icons-material/RocketLaunchRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import { fetchPublicTeamBySlug } from '@/services/teams/publicTeamsApi';
 import type { PublicTeamProfile } from '@/types/publicTeam';
 import { TEAM_STATUS_MAP } from '@/types/publicTeam';
 import { piccColors } from '@/theme/palette';
-import { SkyBackground, getSkyBackground } from '@/components/ui/SkyBackground';
+import { SkyBackground } from '@/components/ui/SkyBackground';
+import { getSkyBackground } from '@/components/ui/skyBackgroundConfig';
+import { appHash } from '@/config/paths';
 
 export const TeamDetailPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -23,19 +24,21 @@ export const TeamDetailPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [copied, setCopied] = useState<boolean>(false);
 
-  useEffect(() => {
+useEffect(() => {
     if (!slug) {
-      setLoading(false);
+      Promise.resolve().then(() => { setLoading(false); });
       return;
     }
-    setLoading(true);
+    let cancelled = false;
+    Promise.resolve().then(() => { if (!cancelled) setLoading(true); });
     fetchPublicTeamBySlug(slug)
       .then((res) => {
-        setTeam(res);
+        if (!cancelled) setTeam(res);
       })
       .finally(() => {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       });
+    return () => { cancelled = true; };
   }, [slug]);
 
   const handleShare = () => {
@@ -115,7 +118,7 @@ export const TeamDetailPage = () => {
         {/* Breadcrumb Navigation */}
         <Box sx={{ mb: 3 }}>
           <Breadcrumbs separator="›" aria-label="breadcrumb" sx={{ fontSize: '0.875rem', fontWeight: 600 }}>
-            <MuiLink underline="hover" color="inherit" href="/#hero">
+            <MuiLink underline="hover" color="inherit" href={appHash('hero')}>
               Trang chủ
             </MuiLink>
             <MuiLink underline="hover" color="inherit" href="/doi-thi">

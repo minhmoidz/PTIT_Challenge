@@ -82,7 +82,7 @@ export const ParticipantCard = () => {
                   letterSpacing: '-0.03em',
                 }}
               >
-                03–05
+                {competitionData.teamRules.size.replace(' thành viên', '')}
               </Typography>
               <Typography sx={{ fontSize: '0.775rem', fontWeight: 700, color: '#163A67', mt: 0.4 }}>
                 Thành viên / đội

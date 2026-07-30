@@ -1,39 +1,25 @@
-import { useRef } from 'react';
 import { Box, Container, Grid } from '@mui/material';
-import { motion, useScroll, useTransform } from 'motion/react';
-import { SkyBackground, getSkyBackground } from '@/components/ui/SkyBackground';
+import { SkyBackground } from '@/components/ui/SkyBackground';
+import { getSkyBackground } from '@/components/ui/skyBackgroundConfig';
 import { useRegistrationStatus } from '@/features/registration/hooks';
 import { HeroContent } from './HeroContent';
 import { HeroVisual } from './HeroVisual';
 
-const MotionContainer = motion.create(Container);
-
 export const HeroSection = () => {
   const { status, config } = useRegistrationStatus();
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start start', 'end start'],
-  });
-
-  const contentY = useTransform(scrollYProgress, [0, 1], ['0%', '8%']);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0.1]);
 
   return (
     <Box
       id="hero"
-      ref={sectionRef}
       component="section"
       sx={{
         position: 'relative',
-        minHeight: { xs: 'auto', md: 'clamp(820px, 88vh, 980px)' },
         background: getSkyBackground('hero'),
         overflow: 'hidden',
         display: 'flex',
         alignItems: 'center',
-        pt: { xs: 11, md: 14 },
-        pb: { xs: 8, md: 9 },
+        pt: { xs: 12, sm: 14, md: 16 },
+        pb: { xs: 6, sm: 7, md: 8 },
       }}
     >
       {/* ── Sky World Background ── */}
@@ -54,14 +40,13 @@ export const HeroSection = () => {
         }}
       />
 
-      <MotionContainer
-        style={{ y: contentY, opacity: contentOpacity, position: 'relative', zIndex: 3 }}
-        maxWidth="xl"
-        sx={{ px: { xs: 3, sm: 4, lg: 6 } }}
+      <Container
+        maxWidth="lg"
+        sx={{ position: 'relative', zIndex: 3, px: { xs: 3, sm: 4 } }}
       >
         <Grid
           container
-          spacing={{ xs: 6, md: 3 }}
+          spacing={{ xs: 5, sm: 6, md: 4 }}
           alignItems="center"
           justifyContent="space-between"
         >
@@ -84,7 +69,7 @@ export const HeroSection = () => {
             </Box>
           </Grid>
         </Grid>
-      </MotionContainer>
+      </Container>
     </Box>
   );
 };

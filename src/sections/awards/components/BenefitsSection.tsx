@@ -4,7 +4,6 @@ import RocketLaunchRoundedIcon from '@mui/icons-material/RocketLaunchRounded';
 import WorkHistoryRoundedIcon from '@mui/icons-material/WorkHistoryRounded';
 import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
 import RecordVoiceOverRoundedIcon from '@mui/icons-material/RecordVoiceOverRounded';
-import ScienceRoundedIcon from '@mui/science'; // or ScienceRounded from MUI
 import ScienceIcon from '@mui/icons-material/ScienceRounded';
 import PsychologyRoundedIcon from '@mui/icons-material/PsychologyRounded';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
@@ -25,7 +24,7 @@ export const BenefitsSection = () => {
   return (
     <Box
       sx={{
-        mt: { xs: 10, md: 14 },
+        mt: { xs: 7, sm: 8, md: 9, lg: 10 },
         position: 'relative',
         zIndex: 1,
       }}
@@ -95,7 +94,7 @@ export const BenefitsSection = () => {
 
             return (
               <Grid
-                size={{ xs: 12, sm: 6, md: 4 }}
+                size={{ xs: 12, sm: 6, lg: 4 }}
                 key={benefit.id}
                 sx={{ display: 'flex' }}
               >

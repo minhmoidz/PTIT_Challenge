@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles';
-import { piccColors } from './palette';
+import { gradientMesh, piccColors } from './palette';
 
 declare module '@mui/material/styles' {
   interface Theme {
@@ -14,46 +14,51 @@ const typography = {
   fontFamily: '"Inter", system-ui, -apple-system, sans-serif',
   h1: {
     fontFamily: '"Plus Jakarta Sans", "Inter", system-ui, sans-serif',
-    fontSize: '2.5rem',
+    fontSize: '2.25rem',
     lineHeight: 1.08,
     fontWeight: 800,
     letterSpacing: '-0.03em',
     '@media (min-width: 900px)': {
-      fontSize: '4rem',
+      fontSize: '3.5rem',
       lineHeight: 1.05,
     },
   },
   h2: {
     fontFamily: '"Plus Jakarta Sans", "Inter", system-ui, sans-serif',
-    fontSize: '2rem',
+    fontSize: '1.75rem',
     lineHeight: 1.15,
-    fontWeight: 750,
+    fontWeight: 700,
     letterSpacing: '-0.02em',
     '@media (min-width: 900px)': {
-      fontSize: '3rem',
+      fontSize: '2.5rem',
       lineHeight: 1.1,
     },
   },
   h3: {
     fontFamily: '"Plus Jakarta Sans", "Inter", system-ui, sans-serif',
-    fontSize: '1.35rem',
+    fontSize: '1.25rem',
     lineHeight: 1.25,
     fontWeight: 700,
     letterSpacing: '-0.01em',
     '@media (min-width: 900px)': {
-      fontSize: '1.6rem',
+      fontSize: '1.45rem',
     },
   },
   body1: {
-    fontSize: '1rem',
+    fontSize: '0.975rem',
     lineHeight: 1.65,
     fontWeight: 400,
     '@media (min-width: 900px)': {
+      fontSize: '1rem',
       lineHeight: 1.7,
     },
   },
+  body2: {
+    fontSize: '0.875rem',
+    lineHeight: 1.55,
+  },
   button: {
-    fontSize: '0.95rem',
+    fontSize: '0.925rem',
     fontWeight: 700,
     lineHeight: 1,
     textTransform: 'none' as const,
@@ -64,10 +69,10 @@ export const createPiccTheme = () =>
   createTheme({
     piccColors,
     palette: {
-      primary: { main: piccColors.blue[700], light: piccColors.blue[500], dark: piccColors.blue[900] },
-      secondary: { main: piccColors.pink[500], light: piccColors.pink[300], dark: piccColors.pink[700] },
-      background: { default: piccColors.sky[50], paper: piccColors.surface },
-      text: { primary: piccColors.ink, secondary: '#46637E' },
+      primary: { main: piccColors.ptitRed, light: '#D34A4A', dark: piccColors.ptitDarkRed },
+      secondary: { main: piccColors.blue[700], light: piccColors.blue[500], dark: piccColors.blue[900] },
+      background: { default: piccColors.semantic.page, paper: piccColors.surface },
+      text: { primary: piccColors.semantic.text, secondary: piccColors.semantic.textMuted },
       success: { main: piccColors.success },
       error: { main: piccColors.danger },
       warning: { main: piccColors.warning },
@@ -112,10 +117,27 @@ export const createPiccTheme = () =>
         styleOverrides: {
           html: {
             scrollBehavior: 'smooth',
-            scrollPaddingTop: '84px',
+            '--site-header-height': '64px',
+            '--mobile-sticky-cta-clearance': '88px',
+            scrollPaddingTop: 'calc(var(--site-header-height) + 12px)',
+            '@media (min-width: 900px)': {
+              '--site-header-height': '98px',
+            },
+          },
+          body: {
+            fontSynthesis: 'none',
           },
           'section[id], div[id]': {
-            scrollMarginTop: '84px',
+            scrollMarginTop: 'calc(var(--site-header-height) + 12px)',
+          },
+          '@media (prefers-reduced-motion: reduce)': {
+            html: { scrollBehavior: 'auto' },
+            '*, *::before, *::after': {
+              animationDuration: '0.01ms !important',
+              animationIterationCount: '1 !important',
+              scrollBehavior: 'auto !important',
+              transitionDuration: '0.01ms !important',
+            },
           },
         },
       },
@@ -125,18 +147,18 @@ export const createPiccTheme = () =>
             borderRadius: 999,
             padding: '10px 24px',
             boxShadow: 'none',
-            transition: 'all 0.2s ease',
-            '&:hover': {
-              transform: 'translateY(-2px)',
-              boxShadow: '0 4px 12px rgba(23,59,102,0.15)',
+            transition: 'background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease',
+            '&.Mui-focusVisible': {
+              outline: `3px solid ${piccColors.ptitRed}`,
+              outlineOffset: 2,
             },
           },
           containedPrimary: {
-            background: `linear-gradient(135deg, ${piccColors.blue[700]}, ${piccColors.blue[500]})`,
-            boxShadow: '0 4px 14px rgba(36,95,168,0.3)',
+            background: gradientMesh.ptitCta,
+            boxShadow: '0 4px 14px rgba(188,38,38,0.3)',
             '&:hover': {
-              background: `linear-gradient(135deg, ${piccColors.blue[800]}, ${piccColors.blue[600]})`,
-              boxShadow: '0 6px 20px rgba(36,95,168,0.4)',
+              background: `linear-gradient(135deg, ${piccColors.ptitDarkRed}, #821414)`,
+              boxShadow: '0 6px 20px rgba(188,38,38,0.4)',
             },
           },
           containedSecondary: {
@@ -165,12 +187,8 @@ export const createPiccTheme = () =>
             borderRadius: 24,
             boxShadow: '0 1px 3px rgba(23,59,102,0.06), 0 1px 2px rgba(23,59,102,0.04)',
             border: `1px solid ${piccColors.neutral[200]}`,
-            background: '#FFFFFF',
-            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-            '&:hover': {
-              transform: 'translateY(-3px)',
-              boxShadow: '0 20px 48px rgba(23,59,102,0.12)',
-            },
+            background: piccColors.surface,
+            transition: 'box-shadow 0.2s ease, border-color 0.2s ease',
           },
         },
       },

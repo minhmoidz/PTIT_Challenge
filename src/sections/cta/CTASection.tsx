@@ -1,15 +1,17 @@
 import { Container, Typography, Button, Box, Chip } from '@mui/material';
 import { motion } from 'motion/react';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import MenuBookRoundedIcon from '@mui/icons-material/MenuBookRounded';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import ArrowOutwardRoundedIcon from '@mui/icons-material/ArrowOutwardRounded';
 import { useRegistrationStatus } from '@/features/registration/hooks';
-import { piccColors } from '@/theme/palette';
+import { piccColors, gradientMesh } from '@/theme/palette';
 import { fadeInUp, staggerContainer } from '@/motion/variants';
-import { SkyBackground, getSkyBackground } from '@/components/ui/SkyBackground';
+import { SkyBackground } from '@/components/ui/SkyBackground';
+import { getSkyBackground } from '@/components/ui/skyBackgroundConfig';
 import { getCtaConfig } from '@/config/registrationCtaConfig';
+import { competitionData } from '@/data/competition';
+import { appHash, appPath } from '@/config/paths';
 
 export const CTASection = () => {
   const { status } = useRegistrationStatus();
@@ -35,7 +37,7 @@ export const CTASection = () => {
       case 'open':
         return 'Đưa ý tưởng của bạn vào hành trình kiến tạo những giải pháp có giá trị thực tế cùng PICC 2026.';
       case 'not_open':
-        return 'Khám phá biểu mẫu đăng ký và chuẩn bị thông tin cho mốc mở cổng chính thức từ 01/08/2026.';
+        return `Khám phá biểu mẫu đăng ký và chuẩn bị thông tin cho mốc mở cổng chính thức từ ${competitionData.meta.registrationOpenDate}.`;
       case 'manually_disabled':
         return 'Theo dõi thông báo mới nhất từ Ban Tổ chức và chuẩn bị cho các mốc sự kiện tiếp theo.';
       case 'closed':
@@ -50,7 +52,7 @@ export const CTASection = () => {
       component="section"
       id="final-cta"
       sx={{
-        py: { xs: 9, md: 13 },
+        py: { xs: 6, sm: 7, md: 8, lg: 10 },
         background: getSkyBackground('clear'),
         position: 'relative',
         overflow: 'hidden',
@@ -179,27 +181,30 @@ export const CTASection = () => {
                 {/* Primary Action */}
                 <Button
                   component="a"
-                  href={ctaConfig.href}
+                  href={ctaConfig.href.startsWith('/#') ? appHash(ctaConfig.href.slice(2)) : appPath(ctaConfig.href)}
                   variant="contained"
                   size="large"
                   endIcon={
                     ctaConfig.href.startsWith('/dang-ky') ? <ArrowForwardRoundedIcon /> : <ArrowOutwardRoundedIcon />
                   }
                   sx={{
-                    borderRadius: '14px',
-                    px: 3.75,
-                    py: 1.35,
+                    borderRadius: '50px',
+                    px: 4,
+                    py: 1.4,
                     fontWeight: 800,
-                    fontSize: '0.975rem',
-                    background: 'linear-gradient(135deg, #173B66 0%, #245FA8 55%, #3B82F6 100%)',
+                    fontSize: '0.95rem',
+                    letterSpacing: '0.02em',
+                    fontFamily: '"Manrope", sans-serif',
+                    background: gradientMesh.ptitCta,
                     color: '#FFFFFF',
-                    boxShadow: '0 8px 24px rgba(57, 124, 232, 0.35)',
+                    boxShadow: '0 8px 24px rgba(188, 38, 38, 0.35)',
+                    textTransform: 'uppercase',
                     width: { xs: '100%', sm: 'auto' },
                     transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                     '&:hover': {
-                      background: 'linear-gradient(135deg, #0F2847 0%, #173B66 55%, #245FA8 100%)',
+                      background: 'linear-gradient(135deg, #a31c1c 0%, #821414 100%)',
                       transform: 'translateY(-2px)',
-                      boxShadow: '0 12px 32px rgba(23, 59, 102, 0.4)',
+                      boxShadow: '0 12px 32px rgba(188, 38, 38, 0.45)',
                     },
                   }}
                 >
@@ -209,7 +214,7 @@ export const CTASection = () => {
                 {/* Secondary Action */}
                 <Button
                   component="a"
-                  href="/#the-le"
+                  href={appHash('the-le')}
                   variant="outlined"
                   size="large"
                   startIcon={<MenuBookRoundedIcon />}

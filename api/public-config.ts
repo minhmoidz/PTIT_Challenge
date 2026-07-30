@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import type { PublicPiccConfig } from '../src/types/registration';
+import { competitionData } from '../src/data/competition';
 
 const config: PublicPiccConfig = {
   serverTime: new Date().toISOString(),
@@ -12,9 +13,9 @@ const config: PublicPiccConfig = {
     statusMessage: process.env.PICC_REGISTRATION_STATUS_MESSAGE,
   },
   teamSize: {
-    min: 3,
-    max: 5,
-    approvalStatus: 'unresolved',
+    min: competitionData.teamRules.min,
+    max: competitionData.teamRules.max,
+    approvalStatus: 'approved',
   },
   challengeSelection: {
     mode: 'single',

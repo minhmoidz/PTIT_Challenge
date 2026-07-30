@@ -17,12 +17,12 @@ Có thể triển khai ngay:
 - Phong cách: Candy Pastel, Clean, Friendly, Youthful.
 - Hình ảnh: bầu trời, mây, bảng chỉ dẫn, tinh thần đi lên/vượt giới hạn.
 - Đơn vị tổ chức thể hiện trong asset: PTIT và PTIT IEC; vẫn cần BTC xác nhận file logo/quyền dùng production.
+- Quy mô đội cho đăng ký mới: 03–04 thành viên (D-001 đã APPROVED). Hồ sơ lịch sử 05 thành viên vẫn được giữ để hiển thị và xuất dữ liệu.
 
 ## 3. Nội dung chưa được phép tự khóa
 
 - Ngày giờ mở/đóng đăng ký.
 - Timeline chính thức.
-- Team size 3–4 hay 3–5.
 - Eligibility và điều kiện ngành.
 - Cách nộp hồ sơ vòng đầu.
 - Chọn một hay nhiều nhóm bài toán.

@@ -7,6 +7,7 @@ import { piccColors } from '@/theme/palette';
 interface Props {
   targetDate: Date | null;
   status: RegistrationStatus;
+  clockOffsetMs?: number;
 }
 
 const CountdownCell = ({ value, label }: { value: number; label: string }) => (
@@ -58,8 +59,8 @@ const CountdownCell = ({ value, label }: { value: number; label: string }) => (
   </Box>
 );
 
-export const RegistrationCountdown = ({ targetDate, status }: Props) => {
-  const countdown = useCountdown(targetDate);
+export const RegistrationCountdown = ({ targetDate, status, clockOffsetMs = 0 }: Props) => {
+  const countdown = useCountdown(targetDate, clockOffsetMs);
 
   if (status === 'closed' || status === 'manually_disabled') {
     const msg = status === 'closed' ? 'Đăng ký đã kết thúc' : 'Đăng ký tạm dừng';

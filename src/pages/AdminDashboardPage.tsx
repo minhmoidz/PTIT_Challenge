@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
-  Box, Typography, Grid, Button, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Chip, IconButton, Tooltip, TextField, FormControl,
+  Box, Typography, Grid, Button, Table, TableBody, TableCell,
+  TableHead, TableRow, IconButton, Tooltip, TextField, FormControl,
   FormLabel, RadioGroup, FormControlLabel, Radio, Alert, Divider, Skeleton,
 } from '@mui/material';
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
@@ -18,6 +19,7 @@ import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { adminColors, adminRadius, adminShadow } from '@/theme/adminTokens';
 import { RegistrationDetailModal } from '@/components/admin/RegistrationDetailModal';
+import { env } from '@/config/env';
 
 /* ── Types ── */
 interface TeamMember {
@@ -137,8 +139,14 @@ const PageHeader = ({
   </Box>
 );
 
+const getAuthHeaders = (): Record<string, string> => {
+  const token = localStorage.getItem('picc_admin_token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
 /* ════════════════════════════════════════════════════════════ */
 export const AdminDashboardPage = () => {
+  const navigate = useNavigate();
   const [stats, setStats] = useState({ totalRegistrations: 0, submittedCount: 0, verifiedCount: 0, publicProfilesCount: 0, publishedTeamsCount: 0 });
   const [registrations, setRegistrations] = useState<RegistrationItem[]>([]);
   const [loadingRegs, setLoadingRegs] = useState(false);
@@ -147,7 +155,17 @@ export const AdminDashboardPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [openAt, setOpenAt] = useState('2026-08-01T00:00');
   const [closeAt, setCloseAt] = useState('2026-08-15T23:59');
-  const [statusOverride, setStatusOverride] = useState<'auto' | 'open' | 'paused' | 'closed'>('auto');
+
+  const formatToLocalDatetime = (iso: string): string => {
+    try {
+      const d = new Date(iso);
+      const pad = (n: number) => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    } catch {
+      return iso.slice(0, 16);
+    }
+  };
+  const [statusOverride, setStatusOverride] = useState<'auto' | 'open' | 'paused' | 'closed' | 'live' | 'completed'>('auto');
   const [configSaving, setConfigSaving] = useState(false);
   const [configSuccess, setConfigSuccess] = useState(false);
   const [configError, setConfigError] = useState('');
@@ -157,11 +175,19 @@ export const AdminDashboardPage = () => {
     setLoadingStats(true);
     setLoadingRegs(true);
     try {
+      const authHeaders = getAuthHeaders();
       const [sumRes, regRes, cfgRes] = await Promise.all([
-        fetch('/api/v1/admin/dashboard/summary'),
-        fetch('/api/v1/admin/registrations'),
-        fetch('/api/v1/admin/competition/config'),
+        fetch(`${env.apiBaseUrl}/v1/admin/dashboard/summary`, { headers: authHeaders }),
+        fetch(`${env.apiBaseUrl}/v1/admin/registrations`, { headers: authHeaders }),
+        fetch(`${env.apiBaseUrl}/v1/admin/competition/config`, { headers: authHeaders }),
       ]);
+
+      if (sumRes.status === 401 || regRes.status === 401 || cfgRes.status === 401) {
+        localStorage.removeItem('picc_admin_token');
+        localStorage.removeItem('picc_admin_user');
+        navigate('/admin', { replace: true });
+        return;
+      }
 
       const sumData = await sumRes.json();
       if (sumData.success) setStats(sumData.data);
@@ -171,8 +197,8 @@ export const AdminDashboardPage = () => {
 
       const cfgData = await cfgRes.json();
       if (cfgData.success && cfgData.data) {
-        if (cfgData.data.openAt) setOpenAt(cfgData.data.openAt.slice(0, 16));
-        if (cfgData.data.closeAt) setCloseAt(cfgData.data.closeAt.slice(0, 16));
+        if (cfgData.data.openAt) setOpenAt(formatToLocalDatetime(cfgData.data.openAt));
+        if (cfgData.data.closeAt) setCloseAt(formatToLocalDatetime(cfgData.data.closeAt));
         setStatusOverride(cfgData.data.statusOverride || 'auto');
       }
     } catch (err) {
@@ -181,13 +207,29 @@ export const AdminDashboardPage = () => {
       setLoadingStats(false);
       setLoadingRegs(false);
     }
-  }, []);
+  }, [navigate]);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => {
+    Promise.resolve().then(() => { fetchData(); });
+  }, [fetchData]);
 
-  const handleExport = () => {
+  const handleExport = async () => {
     if (registrations.length === 0) return;
-    window.open('/api/v1/admin/registrations/export', '_blank');
+    try {
+      const res = await fetch(`${env.apiBaseUrl}/v1/admin/registrations/export`, { headers: getAuthHeaders() });
+      if (!res.ok) return;
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `PICC_2026_Danh_Sach_Doi_Thi_${Date.now()}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Export error:', err);
+    }
   };
 
   const handleVerify = (id: string) => {
@@ -210,12 +252,12 @@ export const AdminDashboardPage = () => {
 
     setConfigSaving(true);
     try {
-      const res = await fetch('/api/v1/admin/competition/config', {
+      const res = await fetch(`${env.apiBaseUrl}/v1/admin/competition/config`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({
-          openAt: new Date(openAt).toISOString(),
-          closeAt: new Date(closeAt).toISOString(),
+          openAt: openAt + ':00+07:00',
+          closeAt: closeAt + ':00+07:00',
           statusOverride: statusOverride === 'auto' ? null : statusOverride,
         }),
       });
@@ -490,14 +532,16 @@ export const AdminDashboardPage = () => {
               </FormLabel>
               <RadioGroup
                 value={statusOverride}
-                onChange={(e) => setStatusOverride(e.target.value as 'auto' | 'open' | 'paused' | 'closed')}
+                onChange={(e) => setStatusOverride(e.target.value as 'auto' | 'open' | 'paused' | 'closed' | 'live' | 'completed')}
                 sx={{ display: 'flex', flexDirection: 'row', gap: 2, flexWrap: 'wrap' }}
               >
                 {[
                   { value: 'auto', label: 'Tự động theo thời gian' },
                   { value: 'open', label: 'Bắt buộc mở' },
+                  { value: 'live', label: 'Đang diễn ra' },
                   { value: 'paused', label: 'Tạm dừng' },
                   { value: 'closed', label: 'Bắt buộc đóng' },
+                  { value: 'completed', label: 'Đã kết thúc' },
                 ].map((opt) => (
                   <FormControlLabel
                     key={opt.value}

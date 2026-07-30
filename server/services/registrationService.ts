@@ -1,6 +1,7 @@
 import { dbStore } from '../db/store';
 import { CompetitionStatusService } from './competitionStatus';
 import type { RegistrationFormValues } from '../../src/types/registration';
+import { competitionData } from '../../src/data/competition';
 
 export interface RegistrationSubmissionResult {
   success: true;
@@ -27,12 +28,15 @@ export class RegistrationService {
       };
     }
 
-    // 2. Business Rule: Team size range 3 to 5
-    if (payload.teamSize < 3 || payload.teamSize > 5) {
+    // 2. Business Rule: Team size range 3 to 4
+    if (
+      payload.teamSize < competitionData.teamRules.min ||
+      payload.teamSize > competitionData.teamRules.max
+    ) {
       throw {
         status: 400,
         code: 'INVALID_TEAM_SIZE',
-        message: 'Quy mô đội thi phải từ 03 đến 05 thành viên.',
+        message: `Quy mô đội thi phải từ ${competitionData.teamRules.min.toString().padStart(2, '0')} đến ${competitionData.teamRules.max.toString().padStart(2, '0')} thành viên.`,
       };
     }
 

@@ -7,8 +7,9 @@ import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import VisibilityOffRoundedIcon from '@mui/icons-material/VisibilityOffRounded';
 import ShieldRoundedIcon from '@mui/icons-material/ShieldRounded';
-import { useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { adminColors, adminRadius, adminShadow } from '@/theme/adminTokens';
+import { env } from '@/config/env';
 
 export const AdminLoginPage = () => {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ export const AdminLoginPage = () => {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/v1/admin/auth/login', {
+      const res = await fetch(`${env.apiBaseUrl}/v1/admin/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim().toLowerCase(), password: password }),
@@ -306,7 +307,8 @@ export const AdminLoginPage = () => {
 
           <Box sx={{ textAlign: 'center' }}>
             <Link
-              href="/"
+              component={RouterLink}
+              to="/"
               sx={{
                 fontSize: '0.8125rem',
                 color: adminColors.textMuted,

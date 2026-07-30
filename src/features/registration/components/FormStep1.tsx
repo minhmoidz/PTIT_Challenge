@@ -17,7 +17,12 @@ const EXPERIENCE_OPTIONS = [
   { value: 'ongoing', label: 'Đang tham gia dự án/dự thi khác' },
 ];
 
-export const FormStep1 = () => {
+interface FormStep1Props {
+  teamMin: number;
+  teamMax: number;
+}
+
+export const FormStep1 = ({ teamMin, teamMax }: FormStep1Props) => {
   const {
     register,
     formState: { errors },
@@ -76,7 +81,7 @@ export const FormStep1 = () => {
                 helperText={errors.teamSize?.message}
                 onChange={(e) => field.onChange(Number(e.target.value))}
               >
-                {[3, 4, 5].map((n) => (
+                {Array.from({ length: teamMax - teamMin + 1 }, (_, index) => teamMin + index).map((n) => (
                   <MenuItem key={n} value={n}>
                     {n} thành viên
                   </MenuItem>

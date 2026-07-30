@@ -11,7 +11,7 @@
 
 | ID | Topic | Decision required | Status |
 |---|---|---|---|
-| D-001 | Team size | 3–4 hay 3–5? | UNRESOLVED |
+| D-001 | Team size | Đăng ký mới gồm 3–4 thành viên | APPROVED |
 | D-002 | Eligibility | PTIT-only hay có liên trường? | UNRESOLVED |
 | D-003 | Discipline rule | Tối thiểu hai thành viên nhóm ngành là bắt buộc hay khuyến khích? | UNRESOLVED |
 | D-004 | Registration dates | Open/close date chính thức | UNRESOLVED |
@@ -24,6 +24,16 @@
 | D-011 | Storage | Google Sheets mặc định có được duyệt? | UNRESOLVED |
 | D-012 | Privacy | Notice, retention, access, deletion contact | UNRESOLVED |
 | D-013 | Asset rights | Avatar/background/logo được dùng và chuyển WebP? | UNRESOLVED |
+
+### D-001
+
+- Status: APPROVED
+- Decision: Đăng ký mới chỉ nhận đội từ 03 đến 04 thành viên. Hồ sơ công khai và registration lịch sử 05 thành viên được giữ để hiển thị/xuất dữ liệu chính xác.
+- Approved by: Project owner
+- Approved at: 2026-07-29
+- Evidence/source: Yêu cầu chuẩn hoá quy mô đội từ 3–5 xuống 3–4.
+- Files/config affected: `src/data/competition.ts`, public config, client form, Express/Vercel validation.
+- Tests updated: Client schema, Express service, Vercel schema.
 
 ## P1 — Before registration launch
 

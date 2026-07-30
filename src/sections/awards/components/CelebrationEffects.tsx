@@ -7,46 +7,6 @@ interface CelebrationEffectsProps {
 
 export const CelebrationEffects = ({ sectionRef }: CelebrationEffectsProps) => {
   const hasEnteredRef = useRef(false);
-  const loopIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  // Trigger clearly visible, energetic 3-second firework sparkle burst
-  const triggerFireworkBurst = useCallback(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return;
-    }
-
-    const isMobile = window.innerWidth < 768;
-    const colors = ['#F5A623', '#FBBF24', '#FFFDF2', '#367BEA', '#E8599A', '#FFFFFF'];
-
-    // Double-pulse firework burst centered over Champion Card
-    confetti({
-      particleCount: isMobile ? 20 : 40,
-      startVelocity: 22,
-      spread: 75,
-      ticks: 150,
-      origin: { x: 0.5, y: 0.45 },
-      colors,
-      shapes: ['circle', 'square'],
-      scalar: 0.85,
-      zIndex: 20,
-      disableForReducedMotion: true,
-    });
-
-    setTimeout(() => {
-      confetti({
-        particleCount: isMobile ? 12 : 25,
-        startVelocity: 18,
-        spread: 90,
-        ticks: 120,
-        origin: { x: 0.5, y: 0.42 },
-        colors: ['#F5A623', '#FBBF24', '#FFFFFF'],
-        shapes: ['circle'],
-        scalar: 0.75,
-        zIndex: 20,
-        disableForReducedMotion: true,
-      });
-    }, 180);
-  }, []);
 
   // Initial Entrance Celebration (Large confetti burst & gentle falling flakes)
   const runInitialCelebration = useCallback(() => {
@@ -119,25 +79,6 @@ export const CelebrationEffects = ({ sectionRef }: CelebrationEffectsProps) => {
     const targetElement = sectionRef.current;
     if (!targetElement) return;
 
-    const startFireworksLoop = () => {
-      if (loopIntervalRef.current) return;
-
-      // Trigger first burst right away
-      triggerFireworkBurst();
-
-      // Repeat burst every 3 seconds
-      loopIntervalRef.current = setInterval(() => {
-        triggerFireworkBurst();
-      }, 3000);
-    };
-
-    const stopFireworksLoop = () => {
-      if (loopIntervalRef.current) {
-        clearInterval(loopIntervalRef.current);
-        loopIntervalRef.current = null;
-      }
-    };
-
     const observer = new IntersectionObserver(
       (entries) => {
         const [entry] = entries;
@@ -149,11 +90,6 @@ export const CelebrationEffects = ({ sectionRef }: CelebrationEffectsProps) => {
             runInitialCelebration();
           }
 
-          // Start 3-second recurring fireworks loop
-          startFireworksLoop();
-        } else {
-          // Left viewport: stop recurring 3-second fireworks loop
-          stopFireworksLoop();
         }
       },
       { threshold: 0.35 }
@@ -161,11 +97,8 @@ export const CelebrationEffects = ({ sectionRef }: CelebrationEffectsProps) => {
 
     observer.observe(targetElement);
 
-    return () => {
-      stopFireworksLoop();
-      observer.disconnect();
-    };
-  }, [sectionRef, runInitialCelebration, triggerFireworkBurst]);
+    return () => observer.disconnect();
+  }, [sectionRef, runInitialCelebration]);
 
   return null;
 };

@@ -17,7 +17,7 @@ Tất cả các components UI (Hero, Countdown, Roadmap, Rules, Prizes, Benefits
 | Hạng mục | Nội dung cũ (Cần xóa/thay thế) | Nội dung mới (Đã chuẩn hóa) | Vị trí source đã sửa | Trạng thái |
 |---|---|---|---|---|
 | **Đối tượng tham gia** | "Sinh viên PTIT & toàn quốc", "Sinh viên các trường đại học toàn quốc" | **"Sinh viên Học viện Công nghệ Bưu chính Viễn thông."** | `src/data/competition.ts`, `src/sections/hero/HeroContent.tsx`, `src/sections/rules/components/ParticipantCard.tsx` | ✅ CONFIRMED |
-| **Quy mô đội thi** | "3–4 thành viên", "03–04 thành viên", Form chỉ 4 người | **"03 đến 05 thành viên"** (Đội trưởng + 2 thành viên bắt buộc; TV4/TV5 theo quy mô) | `src/data/competition.ts`, `src/features/registration/components/FormStep1.tsx`, `FormStep2.tsx` | ✅ CONFIRMED |
+| **Quy mô đội thi** | "3–5 thành viên", Form nhận TV5 | **"03 đến 04 thành viên"** (Đội trưởng + 2 thành viên bắt buộc; TV4 theo quy mô) | `src/data/competition.ts`, `src/features/registration/components/FormStep1.tsx`, `FormStep2.tsx` | ✅ APPROVED |
 | **Ghi chú cơ cấu ngành** | Chưa có hoặc ghi chưa rõ | **"Trong đội có tối thiểu 02 thành viên thuộc khối kinh tế số, marketing, truyền thông đa phương tiện hoặc thiết kế."** | `src/data/competition.ts`, `src/sections/rules/components/ParticipantCard.tsx`, `FormStep1.tsx` | ✅ CONFIRMED |
 | **Thời gian đăng ký** | "19/08/2026", "01/08 - 19/08/2026", Countdown đếm 19/08 | **"01/08/2026 – 15/08/2026"** (Timezone `+07:00`) | `src/data/competition.ts`, `src/config/milestones.ts`, `src/sections/hero/RegistrationCountdown.tsx` | ✅ CONFIRMED |
 | **Số giai đoạn cuộc thi** | 5 mốc uốn lượn cũ (Mở đơn, Đóng đơn, Công bố V1, Chung khảo, Chung kết) | **04 Giai đoạn chính**: <br>1. Đăng ký / Vòng đơn (01/08 - 15/08)<br>2. Vòng Bán kết (20/08 - 15/09)<br>3. Chạy thử nghiệm (07/09 - 01/10)<br>4. Vòng Chung kết (02/10) | `src/data/competition.ts`, `src/config/milestones.ts`, `src/sections/timeline/TimelineSection.tsx` | ✅ CONFIRMED |
@@ -62,6 +62,6 @@ Tất cả các components UI (Hero, Countdown, Roadmap, Rules, Prizes, Benefits
 
 ## 4. Báo Cáo Kiểm Tra Kỹ Thuật (QA & Build Status)
 - **Data Centralization:** 100% dữ liệu cuộc thi đọc từ `src/data/competition.ts`.
-- **Form Đăng ký:** Hỗ trợ linh hoạt 3–5 thành viên (Validation trùng MST, trùng Email, 3 Checkbox cam kết bắt buộc).
-- **TypeScript Check:** Passed 0 errors (`npx tsc --noEmit`).
-- **Production Build:** Passed in 240ms (`npx vite build`).
+- **Form Đăng ký:** Đăng ký mới chỉ nhận 3–4 thành viên; dữ liệu lịch sử 5 thành viên được giữ cho trang công khai và CSV export.
+- **TypeScript Check:** Cần chạy `pnpm typecheck` theo thay đổi hiện tại.
+- **Production Build:** Cần chạy `pnpm build` theo thay đổi hiện tại.

@@ -150,7 +150,7 @@ export const ThreadCanvas = ({ hasEnteredViewport }: ThreadCanvasProps) => {
           sx={{
             position: 'absolute',
             left: `${(step.x / 1080) * 100}%`,
-            top: `${step.y}px`,
+            top: `${(step.y / 840) * 100}%`,
             transform: `translate(-50%, -50%) rotate(${step.rotation}deg)`,
             pointerEvents: 'none',
           }}

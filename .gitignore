@@ -8,3 +8,7 @@ dist/
 coverage/
 test-results/
 playwright-report/
+
+# Auto-generated data backup
+data/*.json
+data/*.tmp

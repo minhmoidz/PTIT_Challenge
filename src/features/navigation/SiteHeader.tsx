@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { Box, Container, Typography, Button } from '@mui/material';
-import BoltRoundedIcon from '@mui/icons-material/BoltRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
@@ -9,10 +8,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { piccColors, gradientMesh } from '@/theme/palette';
 import { useRegistrationStatus } from '@/features/registration/hooks';
 import { getCtaConfig } from '@/config/registrationCtaConfig';
+import { appHash, appPath, assetPath } from '@/config/paths';
 
 const NAV_ITEMS = [
   { label: 'Giới thiệu', href: '/#gioi-thieu', id: 'gioi-thieu' },
-  { label: 'Thông tin nhanh', href: '/#thong-tin-nhanh', id: 'thong-tin-nhanh' },
   { label: 'Lộ trình', href: '/#lo-trinh', id: 'lo-trinh' },
   { label: 'Thể lệ', href: '/#the-le', id: 'the-le' },
   { label: 'Giải thưởng', href: '/#giai-thuong', id: 'giai-thuong' },
@@ -74,7 +73,7 @@ export const SiteHeader = () => {
       setActiveSection(targetId);
       isNavigatingRef.current = true;
 
-      if (window.location.pathname !== '/') {
+      if (location.pathname !== '/') {
         navigate(`/${href.startsWith('/#') ? href.substring(1) : href}`);
         return;
       }
@@ -85,14 +84,7 @@ export const SiteHeader = () => {
       } else {
         const targetElement = document.getElementById(targetId);
         if (targetElement) {
-          const headerOffset = 80;
-          const elementPosition = targetElement.getBoundingClientRect().top;
-          const offsetPosition = elementPosition + window.scrollY - headerOffset;
-
-          window.scrollTo({
-            top: offsetPosition,
-            behavior: 'smooth',
-          });
+          targetElement.scrollIntoView({ block: 'start', behavior: 'smooth' });
           window.history.pushState(null, '', `#${targetId}`);
         }
       }
@@ -101,7 +93,14 @@ export const SiteHeader = () => {
         isNavigatingRef.current = false;
       }, 750);
     } else {
+      e.preventDefault();
       setMenuOpen(false);
+      if (location.pathname === href) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        navigate(href);
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }
     }
   };
 
@@ -124,97 +123,166 @@ export const SiteHeader = () => {
         right: 0,
         zIndex: 1100,
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        bgcolor: scrolled ? 'rgba(255, 255, 255, 0.88)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(16px) saturate(180%)' : 'none',
+        bgcolor: '#FFFFFF',
         boxShadow: scrolled
-          ? '0 4px 20px rgba(23, 59, 102, 0.08), 0 1px 2px rgba(23, 59, 102, 0.04)'
-          : 'none',
-        borderBottom: scrolled ? `1px solid rgba(226, 232, 240, 0.8)` : '1px solid transparent',
+          ? '0 4px 20px rgba(5, 26, 83, 0.08)'
+          : '0 2px 10px rgba(5, 26, 83, 0.04)',
+        borderBottom: `1px solid ${piccColors.neutral[200]}`,
       }}
     >
+      {/* ── Signature PTIT Crimson Red Top Bar ── */}
+      <Box
+        sx={{
+          display: { xs: 'none', md: 'block' },
+          bgcolor: piccColors.ptitRed,
+          color: '#FFFFFF',
+          py: 0.45,
+          fontFamily: '"Manrope", sans-serif',
+        }}
+      >
+        <Container maxWidth="lg">
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              fontSize: '0.75rem',
+              fontWeight: 600,
+            }}
+          >
+            <Box
+              component="a"
+              href="https://ptit.edu.vn/"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                color: '#FFFFFF',
+                textDecoration: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.75,
+                opacity: 0.95,
+                '&:hover': { opacity: 1, textDecoration: 'underline' },
+              }}
+            >
+              <Box component="span" sx={{ fontSize: '0.85rem' }}>🌐</Box>
+              Cổng thông tin điện tử Học viện Công nghệ Bưu chính Viễn thông
+            </Box>
+
+            <Box
+              component="a"
+              href="mailto:iec@ptit.edu.vn"
+              sx={{
+                color: '#FFFFFF',
+                textDecoration: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.75,
+                opacity: 0.95,
+                '&:hover': { opacity: 1, textDecoration: 'underline' },
+              }}
+            >
+              <Box component="span" sx={{ fontSize: '0.85rem' }}>✉</Box>
+              iec@ptit.edu.vn
+            </Box>
+          </Box>
+        </Container>
+      </Box>
+
+      {/* ── Main Crisp White Navigation Bar ── */}
       <Container maxWidth="lg">
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            height: { xs: 64, md: 76 },
+            height: { xs: 64, md: 72 },
           }}
         >
-          {/* Brand Logo Link */}
+          {/* Institutional Brand Lockup */}
           <Box
             component="a"
-            href="/#hero"
+            href={appHash('hero')}
             onClick={(e) => handleNavigate(e, '/#hero')}
             sx={{
               display: 'flex',
               alignItems: 'center',
               gap: 1.5,
               textDecoration: 'none',
-              color: 'inherit',
               cursor: 'pointer',
             }}
           >
-            <Box
-              sx={{
-                width: 38,
-                height: 38,
-                borderRadius: '12px',
-                background: gradientMesh.cta,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#FFFFFF',
-                boxShadow: '0 4px 14px rgba(36, 95, 168, 0.35)',
-                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                '&:hover': {
-                  transform: 'scale(1.06) rotate(4deg)',
-                  boxShadow: '0 6px 20px rgba(36, 95, 168, 0.5)',
-                },
-              }}
-            >
-              <BoltRoundedIcon sx={{ fontSize: 22 }} />
+            {/* Logomark combination */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, md: 0.75 } }}>
+              <Box
+                component="img"
+                src={assetPath('assets/branding/ptit-logo.png')}
+                alt="PTIT"
+                sx={{ width: { xs: 30, md: 32 }, height: { xs: 38, md: 40 }, objectFit: 'contain' }}
+              />
+              <Box
+                component="img"
+                src={assetPath('assets/branding/ptit-iec-logo-2026.png')}
+                alt="PTIT IEC"
+                sx={{ width: { xs: 38, md: 40 }, height: { xs: 38, md: 40 }, objectFit: 'contain' }}
+              />
             </Box>
-            <Box>
+
+            {/* Two-line Institution & Campaign Title */}
+            <Box sx={{ borderLeft: `1px solid ${piccColors.neutral[300]}`, pl: 1.5, display: { xs: 'none', md: 'block' } }}>
               <Typography
                 sx={{
-                  fontWeight: 800,
-                  color: piccColors.ink,
-                  fontSize: '1.2rem',
-                  letterSpacing: '-0.02em',
-                  lineHeight: 1.1,
-                  display: { xs: 'none', sm: 'block' },
+                  fontSize: '0.72rem',
+                  fontWeight: 700,
+                  color: piccColors.ptitRed,
+                  lineHeight: 1.2,
+                  fontFamily: '"Manrope", sans-serif',
+                  whiteSpace: 'nowrap',
                 }}
               >
-                PICC <Box component="span" sx={{ color: piccColors.blue[600] }}>2026</Box>
+                Học viện Công nghệ Bưu chính Viễn thông
               </Typography>
               <Typography
                 sx={{
-                  fontSize: '0.65rem',
-                  fontWeight: 600,
-                  color: piccColors.pink[500],
-                  letterSpacing: '0.05em',
+                  fontSize: '0.875rem',
+                  fontWeight: 800,
+                  color: piccColors.ptitNavy,
+                  letterSpacing: '0.01em',
                   textTransform: 'uppercase',
-                  display: { xs: 'none', sm: 'block' },
+                  lineHeight: 1.25,
+                  fontFamily: '"Manrope", sans-serif',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 0.75,
+                  whiteSpace: 'nowrap',
                 }}
               >
-                Innovation Catalyst
+                ĐỔI MỚI SÁNG TẠO &amp; KHỞI NGHIỆP
+                <Box
+                  component="span"
+                  sx={{
+                    bgcolor: piccColors.ptitRed,
+                    color: '#FFFFFF',
+                    px: 0.75,
+                    py: 0.15,
+                    borderRadius: '4px',
+                    fontSize: '0.68rem',
+                    fontWeight: 800,
+                  }}
+                >
+                  PICC 2026
+                </Box>
               </Typography>
             </Box>
           </Box>
 
-          {/* Desktop Navigation Items */}
+          {/* Desktop Uppercase Navigation Items */}
           <Box
             component="nav"
             sx={{
-              display: { xs: 'none', md: 'flex' },
+              display: { xs: 'none', lg: 'flex' },
               alignItems: 'center',
-              gap: 0.5,
-              bgcolor: scrolled ? 'rgba(240, 244, 248, 0.7)' : 'rgba(255, 255, 255, 0.7)',
-              p: 0.75,
-              borderRadius: '999px',
-              border: '1px solid rgba(226, 232, 240, 0.8)',
-              backdropFilter: 'blur(12px)',
+              gap: 0.25,
             }}
           >
             {NAV_ITEMS.map((item) => {
@@ -223,44 +291,40 @@ export const SiteHeader = () => {
                 <Box key={item.href} sx={{ position: 'relative' }}>
                   <Box
                     component="a"
-                    href={item.href}
+                    href={item.href.startsWith('/#') ? appHash(item.id) : item.href}
                     onClick={(e) => handleNavigate(e, item.href)}
                     sx={{
-                      position: 'relative',
-                      zIndex: 2,
-                      px: 2,
+                      px: 1.15,
                       py: 0.85,
-                      borderRadius: '999px',
-                      color: isActive ? piccColors.blue[700] : piccColors.neutral[600],
-                      fontSize: '0.875rem',
-                      fontWeight: isActive ? 750 : 500,
+                      color: isActive ? piccColors.ptitRed : piccColors.ptitNavy,
+                      fontSize: '0.9rem',
+                      fontWeight: 750,
+                      letterSpacing: '0.02em',
+                      textTransform: 'uppercase',
+                      fontFamily: '"Manrope", sans-serif',
+                      whiteSpace: 'nowrap',
                       transition: 'color 0.2s ease',
                       display: 'block',
                       textDecoration: 'none',
                       cursor: 'pointer',
+                      position: 'relative',
                       '&:hover': {
-                        color: piccColors.blue[700],
+                        color: piccColors.ptitRed,
                       },
+                      '&::after': isActive ? {
+                        content: '""',
+                        position: 'absolute',
+                        bottom: 0,
+                        left: '15%',
+                        right: '15%',
+                        height: '2px',
+                        bgcolor: piccColors.ptitRed,
+                        borderRadius: '2px',
+                      } : {},
                     }}
                   >
                     {item.label}
                   </Box>
-                  {isActive && (
-                    <Box
-                      component={motion.div}
-                      layoutId="activePill"
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                      sx={{
-                        position: 'absolute',
-                        inset: 0,
-                        bgcolor: '#FFFFFF',
-                        borderRadius: '999px',
-                        boxShadow: '0 2px 8px rgba(23, 59, 102, 0.1)',
-                        border: `1px solid ${piccColors.blue[200]}`,
-                        zIndex: 1,
-                      }}
-                    />
-                  )}
                 </Box>
               );
             })}
@@ -270,26 +334,29 @@ export const SiteHeader = () => {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Button
               component="a"
-              href={ctaConfig.href}
+              href={ctaConfig.href.startsWith('/#') ? appHash(ctaConfig.href.slice(2)) : appPath(ctaConfig.href)}
               aria-current={isOnRegistrationPage ? 'page' : undefined}
               onClick={handleCtaClick}
               variant="contained"
               size="small"
               sx={{
-                display: { xs: 'none', sm: 'inline-flex' },
-                height: 42,
-                borderRadius: '13px',
-                px: 2.75,
+                display: { xs: 'none', md: 'inline-flex' },
+                height: 40,
+                borderRadius: '50px',
+                px: 2.5,
                 fontSize: '0.875rem',
-                fontWeight: 700,
+                fontWeight: 800,
+                letterSpacing: '0.02em',
+                fontFamily: '"Manrope", sans-serif',
                 color: '#FFFFFF',
-                background: 'linear-gradient(135deg, #173B66 0%, #245FA8 55%, #3B82F6 100%)',
-                boxShadow: '0 4px 14px rgba(36, 95, 168, 0.32)',
-                textTransform: 'none',
+                background: gradientMesh.ptitCta,
+                boxShadow: '0 4px 14px rgba(188, 38, 38, 0.35)',
+                textTransform: 'uppercase',
+                whiteSpace: 'nowrap',
                 transition: 'all 0.25s ease',
                 '&:hover': {
-                  background: 'linear-gradient(135deg, #0F2847 0%, #173B66 55%, #245FA8 100%)',
-                  boxShadow: '0 6px 20px rgba(36, 95, 168, 0.45)',
+                  background: 'linear-gradient(135deg, #a31c1c 0%, #821414 100%)',
+                  boxShadow: '0 6px 20px rgba(188, 38, 38, 0.5)',
                   transform: 'translateY(-1px)',
                 },
               }}
@@ -302,12 +369,12 @@ export const SiteHeader = () => {
               variant="text"
               size="small"
               sx={{
-                display: { xs: 'inline-flex', md: 'none' },
+                display: { xs: 'inline-flex', lg: 'none' },
                 minWidth: 42,
                 height: 42,
                 p: 0,
-                color: piccColors.ink,
-                borderRadius: 3,
+                color: piccColors.ptitNavy,
+                borderRadius: 2,
                 bgcolor: 'rgba(240, 244, 248, 0.8)',
                 '&:hover': { bgcolor: piccColors.blue[50] },
               }}
@@ -328,7 +395,7 @@ export const SiteHeader = () => {
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25, ease: 'easeInOut' }}
             sx={{
-              display: { xs: 'block', md: 'none' },
+              display: { xs: 'block', lg: 'none' },
               bgcolor: 'rgba(255, 255, 255, 0.96)',
               backdropFilter: 'blur(20px)',
               borderTop: `1px solid ${piccColors.neutral[200]}`,
@@ -345,23 +412,25 @@ export const SiteHeader = () => {
                     <Box
                       key={item.href}
                       component="a"
-                      href={item.href}
+                      href={item.href.startsWith('/#') ? appHash(item.id) : item.href}
                       onClick={(e) => handleNavigate(e, item.href)}
                       sx={{
                         px: 2.5,
                         py: 1.5,
                         borderRadius: 3,
-                        color: isActive ? piccColors.blue[700] : piccColors.neutral[700],
-                        bgcolor: isActive ? piccColors.blue[50] : 'transparent',
-                        fontSize: '1.05rem',
-                        fontWeight: isActive ? 700 : 500,
+                        color: isActive ? piccColors.ptitRed : piccColors.ptitNavy,
+                        bgcolor: isActive ? 'rgba(188, 38, 38, 0.08)' : 'transparent',
+                        fontSize: '0.95rem',
+                        fontWeight: isActive ? 800 : 600,
+                        textTransform: 'uppercase',
+                        fontFamily: '"Manrope", sans-serif',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         textDecoration: 'none',
                         transition: 'all 0.2s ease',
                         cursor: 'pointer',
-                        '&:hover': { bgcolor: piccColors.blue[50], color: piccColors.blue[700] },
+                        '&:hover': { bgcolor: 'rgba(188, 38, 38, 0.08)', color: piccColors.ptitRed },
                       }}
                     >
                       <span>{item.label}</span>
@@ -371,7 +440,7 @@ export const SiteHeader = () => {
                             width: 8,
                             height: 8,
                             borderRadius: '50%',
-                            bgcolor: piccColors.blue[600],
+                            bgcolor: piccColors.ptitRed,
                           }}
                         />
                       )}
@@ -382,20 +451,21 @@ export const SiteHeader = () => {
                 {/* Mobile Menu Bottom Prominent Registration CTA */}
                 <Button
                   component="a"
-                  href={ctaConfig.href}
+                  href={ctaConfig.href.startsWith('/#') ? appHash(ctaConfig.href.slice(2)) : appPath(ctaConfig.href)}
                   onClick={handleCtaClick}
                   variant="contained"
                   endIcon={<ArrowForwardRoundedIcon />}
                   sx={{
                     mt: 2,
-                    borderRadius: '14px',
+                    borderRadius: '50px',
                     py: 1.5,
-                    fontSize: '1rem',
+                    fontSize: '0.95rem',
                     fontWeight: 800,
                     color: '#FFFFFF',
-                    background: 'linear-gradient(135deg, #173B66 0%, #245FA8 55%, #3B82F6 100%)',
-                    boxShadow: '0 4px 16px rgba(36, 95, 168, 0.35)',
-                    textTransform: 'none',
+                    background: gradientMesh.ptitCta,
+                    boxShadow: '0 4px 16px rgba(188, 38, 38, 0.35)',
+                    textTransform: 'uppercase',
+                    fontFamily: '"Manrope", sans-serif',
                   }}
                 >
                   {isOnRegistrationPage ? 'Biểu mẫu đăng ký' : ctaConfig.heroLabel}

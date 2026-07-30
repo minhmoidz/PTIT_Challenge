@@ -11,7 +11,7 @@ import { MOCK_PUBLIC_TEAMS_FIXTURE } from '@/fixtures/publicTeamsFixture';
  * Filters out any team profile that is NOT explicitly approved and published.
  * Ensures NO sensitive internal fields (student ID, emails, phone numbers, judge notes) exist in output.
  */
-const sanitizeAndFilterPublicTeams = (teams: PublicTeamProfile[]): PublicTeamProfile[] => {
+export const sanitizeAndFilterPublicTeams = (teams: PublicTeamProfile[]): PublicTeamProfile[] => {
   if (!Array.isArray(teams)) return [];
 
   return teams
@@ -27,7 +27,7 @@ const sanitizeAndFilterPublicTeams = (teams: PublicTeamProfile[]): PublicTeamPro
         id: String(team.id),
         slug: String(team.slug),
         teamName: String(team.teamName),
-        teamSize: (team.teamSize >= 3 && team.teamSize <= 5 ? team.teamSize : 3) as 3 | 4 | 5,
+        teamSize: (team.teamSize >= 3 && team.teamSize <= 5 ? team.teamSize : 4) as 3 | 4 | 5,
         challengeCategory: team.challengeCategory,
         challengeCategoryLabel: team.challengeCategoryLabel,
         slogan: team.slogan ? String(team.slogan) : undefined,
@@ -73,7 +73,7 @@ export const fetchPublicTeams = async (
   let sourceTeams: PublicTeamProfile[] = [];
 
   try {
-    const { data } = await httpClient.get<PublicTeamProfile[]>('/public/teams', {
+    const { data } = await httpClient.get<PublicTeamProfile[]>('/v1/public/teams', {
       params,
     });
     if (Array.isArray(data)) {
@@ -128,7 +128,7 @@ export const fetchPublicTeamBySlug = async (
   slug: string,
 ): Promise<PublicTeamProfile | null> => {
   try {
-    const { data } = await httpClient.get<PublicTeamProfile>(`/public/teams/${slug}`);
+    const { data } = await httpClient.get<PublicTeamProfile>(`/v1/public/teams/${slug}`);
     if (data && data.publication?.status === 'published' && data.publication?.showTeamProfile) {
       const sanitized = sanitizeAndFilterPublicTeams([data]);
       return sanitized[0] || null;

@@ -16,7 +16,7 @@ if (env === 'production') {
     }
   }
 
-  errors.push('P0 BLOCKER: All D-001 to D-013 decisions are UNRESOLVED');
+  errors.push('P0 BLOCKER: D-002 to D-013 decisions are still UNRESOLVED (D-001 team size is approved at 3–4 members)');
   errors.push('P0 BLOCKER: Asset rights not confirmed by BTC');
   errors.push('P0 BLOCKER: No approved contact information');
 }

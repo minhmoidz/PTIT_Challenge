@@ -18,7 +18,9 @@ import { TeamCard } from '@/sections/teams/TeamCard';
 import { TeamFilter } from '@/sections/teams/TeamFilter';
 import { Top6Section } from '@/sections/teams/Top6Section';
 import { piccColors } from '@/theme/palette';
-import { SkyBackground, getSkyBackground } from '@/components/ui/SkyBackground';
+import { SkyBackground } from '@/components/ui/SkyBackground';
+import { getSkyBackground } from '@/components/ui/skyBackgroundConfig';
+import { appHash } from '@/config/paths';
 
 export const TeamsPage = () => {
   const { status } = useRegistrationStatus();
@@ -53,7 +55,13 @@ export const TeamsPage = () => {
   }, [category, teamStatus, search]);
 
   useEffect(() => {
-    loadData();
+    let cancelled = false;
+    Promise.resolve().then(() => { loadData().finally(() => {
+      if (!cancelled) {
+        // loading state handled in loadData
+      }
+    }); });
+    return () => { cancelled = true; };
   }, [loadData]);
 
   const hasData = teams.length > 0;
@@ -78,7 +86,7 @@ export const TeamsPage = () => {
         {/* Back to Home Navigation */}
         <Box sx={{ mb: 3 }}>
           <Button
-            href="/#hero"
+            href={appHash('hero')}
             startIcon={<ArrowBackRoundedIcon />}
             sx={{
               color: piccColors.blue[800],

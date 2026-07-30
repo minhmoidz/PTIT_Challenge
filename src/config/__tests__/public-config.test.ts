@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { computeRegistrationStatus } from '@/config/public-config';
+import { computeRegistrationStatus, getPublicConfig } from '@/config/public-config';
 import type { PublicPiccConfig } from '@/types/registration';
 
 const baseConfig = (overrides?: Partial<PublicPiccConfig>): PublicPiccConfig => ({
@@ -11,13 +11,17 @@ const baseConfig = (overrides?: Partial<PublicPiccConfig>): PublicPiccConfig => 
     allowSubmissions: true,
     explicitlyDisabled: false,
   },
-  teamSize: { min: 3, max: 5, approvalStatus: 'unresolved' },
+  teamSize: { min: 3, max: 4, approvalStatus: 'approved' },
   challengeSelection: { mode: 'single' },
   timeline: [],
   ...overrides,
 });
 
 describe('computeRegistrationStatus', () => {
+  it('publishes the approved 3–4 member fallback range', () => {
+    expect(getPublicConfig().teamSize).toMatchObject({ min: 3, max: 4, approvalStatus: 'approved' });
+  });
+
   it('returns not_configured when dates are missing', () => {
     const config = baseConfig({ registration: { openAt: null, closeAt: null, allowSubmissions: false, explicitlyDisabled: false } });
     expect(computeRegistrationStatus(config)).toBe('not_configured');

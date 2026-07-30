@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { Container, Typography, Box, Chip, Button, Collapse } from '@mui/material';
+import { Container, Typography, Box, Button, Collapse } from '@mui/material';
 import { motion, useReducedMotion } from 'motion/react';
-import HelpOutlineRoundedIcon from '@mui/icons-material/HelpOutlineRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import HeadsetMicRoundedIcon from '@mui/icons-material/HeadsetMicRounded';
 import { fadeInUp, staggerContainer } from '@/motion/variants';
 import { piccColors } from '@/theme/palette';
-import { SkyBackground, getSkyBackground } from '@/components/ui/SkyBackground';
+import { SkyBackground } from '@/components/ui/SkyBackground';
+import { getSkyBackground } from '@/components/ui/skyBackgroundConfig';
 import { competitionData } from '@/data/competition';
 
 interface FAQItem {
@@ -44,25 +44,15 @@ export const FAQSection = ({ items = competitionData.faq }: Props) => {
 
       <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
         {/* Section Header */}
-        <Box sx={{ textAlign: 'center', mb: { xs: 5, md: 7 } }}>
-          <Chip
-            icon={
-              <HelpOutlineRoundedIcon
-                sx={{ fontSize: 16, color: `${piccColors.blue[700]} !important` }}
-              />
-            }
-            label="Giải Đáp Thắc Mắc"
+        <Box sx={{ textAlign: 'center', mb: { xs: 5, md: 7 }, fontFamily: '"Manrope", sans-serif' }}>
+          <Box
             sx={{
-              bgcolor: 'rgba(234, 242, 255, 0.9)',
-              backdropFilter: 'blur(8px)',
-              color: piccColors.blue[700],
-              fontWeight: 800,
-              fontSize: '0.825rem',
-              mb: 2.25,
-              px: 1.5,
-              py: 0.5,
-              border: '1px solid rgba(57, 124, 232, 0.25)',
-              boxShadow: '0 4px 12px rgba(57, 124, 232, 0.08)',
+              width: 44,
+              height: 4,
+              bgcolor: piccColors.ptitRed,
+              borderRadius: 2,
+              mx: 'auto',
+              mb: 2,
             }}
           />
           <Typography
@@ -70,23 +60,25 @@ export const FAQSection = ({ items = competitionData.faq }: Props) => {
             component="h2"
             sx={{
               mb: 1.75,
-              color: piccColors.ink,
+              color: piccColors.ptitNavy,
               fontWeight: 800,
               fontSize: { xs: '2rem', sm: '2.5rem', md: '2.85rem' },
-              letterSpacing: '-0.025em',
-              lineHeight: 1.15,
+              letterSpacing: '-0.02em',
+              lineHeight: 1.2,
+              fontFamily: '"Manrope", sans-serif',
             }}
           >
-            Câu Hỏi Thường Gặp (FAQ)
+            Câu Hỏi Thường Gặp <Box component="span" sx={{ color: piccColors.ptitRed }}>(FAQ)</Box>
           </Typography>
           <Typography
             sx={{
-              color: piccColors.slate[600],
+              color: '#4e4f53',
               maxWidth: 680,
               mx: 'auto',
               fontSize: { xs: '0.95rem', md: '1.05rem' },
               lineHeight: 1.65,
-              fontWeight: 400,
+              fontWeight: 450,
+              fontFamily: '"Manrope", sans-serif',
             }}
           >
             Tìm câu trả lời nhanh cho những thắc mắc phổ biến về điều kiện tham gia, quy trình thi và quyền lợi thí sinh tại PICC 2026.

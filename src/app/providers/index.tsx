@@ -4,6 +4,7 @@ import { ThemeProvider, StyledEngineProvider, CssBaseline } from '@mui/material'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createPiccTheme } from '@/theme/createPiccTheme';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
+import { MotionConfig } from 'motion/react';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,7 +28,9 @@ export const AppProviders = ({ children }: AppProvidersProps) => (
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+          <MotionConfig reducedMotion="user">
+            <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+          </MotionConfig>
         </ThemeProvider>
       </StyledEngineProvider>
     </ErrorBoundary>

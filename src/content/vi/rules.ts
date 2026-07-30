@@ -6,7 +6,7 @@ export const rules = {
       content: [
         'Sinh viên đang học tập tại Học viện Công nghệ Bưu chính Viễn thông (PTIT).',
         'Thành lập đội thi liên ngành, khuyến khích kết hợp sinh viên các nhóm ngành khác nhau.',
-        'Mỗi đội thi có từ 03 đến 05 thành viên.',
+        'Mỗi đội thi có từ 03 đến 04 thành viên.',
         'Trong đội có tối thiểu 02 thành viên thuộc khối kinh tế số, marketing, truyền thông đa phương tiện hoặc thiết kế.',
       ],
     },

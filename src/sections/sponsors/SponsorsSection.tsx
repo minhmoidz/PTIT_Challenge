@@ -1,11 +1,11 @@
 import { Container, Typography, Box, Grid, Card, CardContent, Chip } from '@mui/material';
 import { motion } from 'motion/react';
-import HandshakeRoundedIcon from '@mui/icons-material/HandshakeRounded';
 import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
 import { fadeInUp, staggerContainer } from '@/motion/variants';
 import { piccColors } from '@/theme/palette';
 import { Tilt3DCard } from '@/components/ui/Tilt3DCard';
-import { SkyBackground, getSkyBackground } from '@/components/ui/SkyBackground';
+import { SkyBackground } from '@/components/ui/SkyBackground';
+import { getSkyBackground } from '@/components/ui/skyBackgroundConfig';
 import { competitionData } from '@/data/competition';
 
 export interface Sponsor {
@@ -37,52 +37,44 @@ export const SponsorsSection = ({ sponsors = competitionData.partners }: Props) 
 
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
         {/* Section Header */}
-        <Box sx={{ textAlign: 'center', mb: { xs: 5, md: 7 } }}>
-          <Chip
-            icon={
-              <HandshakeRoundedIcon
-                sx={{ fontSize: 16, color: `${piccColors.blue[700]} !important` }}
-              />
-            }
-            label="Hệ Sinh Thái Đồng Hành"
+        <Box sx={{ textAlign: 'center', mb: { xs: 5, md: 7 }, fontFamily: '"Manrope", sans-serif' }}>
+          <Box
             sx={{
-              bgcolor: 'rgba(234, 242, 255, 0.9)',
-              backdropFilter: 'blur(8px)',
-              color: piccColors.blue[700],
-              fontWeight: 800,
-              fontSize: '0.825rem',
-              mb: 2.25,
-              px: 1.5,
-              py: 0.5,
-              border: '1px solid rgba(57, 124, 232, 0.25)',
-              boxShadow: '0 4px 12px rgba(57, 124, 232, 0.08)',
+              width: 44,
+              height: 4,
+              bgcolor: piccColors.ptitRed,
+              borderRadius: 2,
+              mx: 'auto',
+              mb: 2,
             }}
           />
           <Typography
             variant="h2"
             component="h2"
             sx={{
-              mb: 1.75,
-              color: piccColors.ink,
+              mb: 1.5,
+              color: piccColors.ptitNavy,
               fontWeight: 800,
-              fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
-              letterSpacing: '-0.025em',
-              lineHeight: 1.15,
+              fontSize: { xs: '2rem', sm: '2.5rem', md: '2.8rem' },
+              letterSpacing: '-0.02em',
+              lineHeight: 1.2,
+              fontFamily: '"Manrope", sans-serif',
             }}
           >
-            Nhà Tài Trợ &amp; Đối Tác Đồng Hành
+            Doanh Nghiệp &amp; <Box component="span" sx={{ color: piccColors.ptitRed }}>Đối Tác Đồng Hành</Box>
           </Typography>
           <Typography
             sx={{
-              color: piccColors.slate[600],
+              color: '#4e4f53',
               maxWidth: 680,
               mx: 'auto',
               fontSize: { xs: '0.95rem', md: '1.05rem' },
               lineHeight: 1.65,
-              fontWeight: 400,
+              fontWeight: 450,
+              fontFamily: '"Manrope", sans-serif',
             }}
           >
-            Danh sách Nhà tài trợ &amp; Đối tác đồng hành chính thức đang được Ban Tổ chức cập nhật.
+            Cùng Trung tâm PTIT IEC và các tập đoàn công nghệ kết nối tri thức, hỗ trợ phát triển các giải pháp sáng tạo của sinh viên.
           </Typography>
         </Box>
 

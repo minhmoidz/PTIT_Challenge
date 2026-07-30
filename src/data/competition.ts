@@ -9,12 +9,16 @@ export interface CompetitionData {
     fullDescription: string;
     secondParagraph: string;
     objectives: string[];
+    registrationOpenDate: string;
+    registrationCloseDate: string;
   };
   eligibility: {
     target: string;
     details: string[];
   };
   teamRules: {
+    min: number;
+    max: number;
     size: string;
     rules: string[];
     warning: string;
@@ -69,9 +73,35 @@ export interface CompetitionData {
     websiteIec: string;
     phone: string;
   };
-  partners: any[];
-  mentors: any[];
-  councilMembers: any[];
+  partners: Partner[];
+  mentors: Mentor[];
+  councilMembers: CouncilMember[];
+}
+
+interface Partner {
+  name: string;
+  role?: string;
+  logo?: string;
+  website?: string;
+}
+
+interface Mentor {
+  name: string;
+  title?: string;
+  organization?: string;
+  expertise?: string[];
+  photo?: string;
+  bio?: string;
+}
+
+interface CouncilMember {
+  name: string;
+  title?: string;
+  organization?: string;
+  role?: string;
+  expertise?: string[];
+  photo?: string;
+  bio?: string;
 }
 
 export const competitionData: CompetitionData = {
@@ -90,14 +120,18 @@ export const competitionData: CompetitionData = {
       "Phát triển kỹ năng làm việc nhóm.",
       "Tăng khả năng thích ứng với thách thức thực tế.",
       "Tạo giá trị thiết thực cho doanh nghiệp và cộng đồng."
-    ]
+    ],
+    registrationOpenDate: '01/08/2026',
+    registrationCloseDate: '15/08/2026',
   },
   eligibility: {
     target: "Sinh viên PTIT",
     details: ["Sinh viên đang học tập tại Học viện Công nghệ Bưu chính Viễn thông (PTIT)."]
   },
   teamRules: {
-    size: "03–05 thành viên",
+    min: 3,
+    max: 4,
+    size: "03–04 thành viên",
     rules: ["Có tối thiểu 02 thành viên thuộc khối kinh tế số, marketing, truyền thông đa phương tiện hoặc thiết kế."],
     warning: "Trong đội có tối thiểu 02 thành viên thuộc khối kinh tế số, marketing, truyền thông đa phương tiện hoặc thiết kế."
   },
@@ -212,7 +246,7 @@ export const competitionData: CompetitionData = {
     },
     {
       question: "Một đội có bao nhiêu thành viên?",
-      answer: "03–05 thành viên."
+      answer: "03–04 thành viên."
     },
     {
       question: "Đội thi có yêu cầu về cơ cấu ngành không?",
@@ -256,7 +290,7 @@ export const competitionData: CompetitionData = {
     team: {
       fields: [
         "Tên đội thi (bắt buộc)",
-        "Số lượng thành viên (bắt buộc) - Chọn: 3, 4, 5",
+        "Số lượng thành viên (bắt buộc) - Chọn: 3, 4",
         "Email liên hệ của đội trưởng (bắt buộc)",
         "Số điện thoại đội trưởng (bắt buộc)",
         "Nhóm bài toán muốn tham gia - Các lựa chọn: Kinh tế và Kinh doanh, Công nghệ, Marketing, Truyền thông, Khác"
@@ -267,8 +301,7 @@ export const competitionData: CompetitionData = {
         "Đội trưởng (bắt buộc)",
         "Thành viên 2 (bắt buộc)",
         "Thành viên 3 (bắt buộc)",
-        "Thành viên 4 (hiển thị khi quy mô đội từ 4)",
-        "Thành viên 5 (hiển thị khi quy mô đội là 5)"
+        "Thành viên 4 (hiển thị khi quy mô đội là 4)"
       ],
       validation: [
         "Không cho trùng mã sinh viên",

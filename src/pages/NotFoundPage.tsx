@@ -1,5 +1,6 @@
 import { Container, Typography, Button, Box } from '@mui/material';
 import HomeRounded from '@mui/icons-material/HomeRounded';
+import { appHash } from '@/config/paths';
 
 export const NotFoundPage = () => (
   <Box
@@ -21,7 +22,7 @@ export const NotFoundPage = () => (
       <Typography variant="body1" sx={{ color: 'text.secondary', mb: 4 }}>
         Trang bạn đang tìm không tồn tại hoặc đã được di chuyển.
       </Typography>
-      <Button variant="contained" href="/" startIcon={<HomeRounded />}>
+      <Button variant="contained" href={appHash('hero')} startIcon={<HomeRounded />}>
         Trở về trang chủ
       </Button>
     </Container>

@@ -1,5 +1,6 @@
 import type { PublicTeamProfile } from '../../src/types/publicTeam';
 import type { RegistrationFormValues } from '../../src/types/registration';
+import { loadRegistrations, saveRegistrations, loadAuditLogs, saveAuditLogs, type DBAuditLogRecord } from './persistence';
 
 export interface DBRegistrationRecord {
   id: string;
@@ -9,17 +10,34 @@ export interface DBRegistrationRecord {
   status: 'SUBMITTED' | 'VERIFIED' | 'REJECTED';
 }
 
-/**
- * Enterprise Production DB Store Abstraction:
- * Manages persistent registrations, public team profiles, users, audit logs, and content modules.
- */
 class DBStore {
   private registrations: Map<string, DBRegistrationRecord> = new Map();
   private publicTeams: Map<string, PublicTeamProfile> = new Map();
-  private auditLogs: Array<{ action: string; entityType: string; entityId: string; timestamp: string }> = [];
+  private auditLogs: DBAuditLogRecord[] = [];
 
   constructor() {
     this.seedInitialPublicTeams();
+    this.restoreFromBackup();
+  }
+
+  private restoreFromBackup() {
+    try {
+      const saved = loadRegistrations();
+      for (const rec of saved) {
+        this.registrations.set(rec.id, rec);
+      }
+      if (saved.length > 0) {
+        console.log(`[DBStore] Restored ${saved.length} registrations from backup file.`);
+      }
+    } catch (err) {
+      console.warn('[DBStore] No backup file found, starting fresh.');
+    }
+
+    this.auditLogs = loadAuditLogs();
+  }
+
+  private persistToBackup() {
+    saveRegistrations(Array.from(this.registrations.values()));
   }
 
   private seedInitialPublicTeams() {
@@ -42,6 +60,7 @@ class DBStore {
 
     this.registrations.set(submissionId, record);
     this.addAuditLog('CREATE_REGISTRATION', 'Registration', submissionId);
+    this.persistToBackup();
 
     return { registrationCode, submissionId, submittedAt };
   }
@@ -92,6 +111,7 @@ class DBStore {
 
   public addAuditLog(action: string, entityType: string, entityId: string) {
     this.auditLogs.push({ action, entityType, entityId, timestamp: new Date().toISOString() });
+    saveAuditLogs(this.auditLogs);
   }
 }
 

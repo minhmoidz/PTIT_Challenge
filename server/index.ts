@@ -8,23 +8,81 @@ import { dbStore } from './db/store';
 import { competitionData } from '../src/data/competition';
 import type { RegistrationFormValues } from '../src/types/registration';
 
+/* ── Idempotency Store ── */
+const idempotencyStore = new Map<string, { result: unknown; expiresAt: number }>();
+const IDEMPOTENCY_TTL = 24 * 60 * 60 * 1000;
+
+const getIdempotencyResult = (key: string): unknown | null => {
+  const entry = idempotencyStore.get(key);
+  if (!entry) return null;
+  if (Date.now() > entry.expiresAt) {
+    idempotencyStore.delete(key);
+    return null;
+  }
+  return entry.result;
+};
+
+const setIdempotencyResult = (key: string, result: unknown): void => {
+  idempotencyStore.set(key, { result, expiresAt: Date.now() + IDEMPOTENCY_TTL });
+};
+
 const app = express();
 const PORT = serverEnv.PORT || 3001;
 
 /* ── 1. Security & Body Parser Middleware ── */
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:80',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:80',
+  serverEnv.CORS_ORIGIN,
+].filter(Boolean);
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) {
-        return callback(null, true);
-      }
-      callback(null, true);
+      if (!origin) return callback(null, true);
+      const isAllowed = allowedOrigins.some((o) => o === '*' || origin === o);
+      if (isAllowed) return callback(null, true);
+      callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
   }),
 );
 
 app.use(express.json({ limit: '128kb' }));
+
+/* ── Simple in-memory sliding-window rate limiter ── */
+const rateLimitBuckets = new Map<string, number[]>();
+const rateLimit = (windowMs: number, max: number) => (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  const key = `${req.path}:${(req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ?? req.ip ?? 'unknown'}`;
+  const now = Date.now();
+  const hits = (rateLimitBuckets.get(key) ?? []).filter((t) => now - t < windowMs);
+  if (hits.length >= max) {
+    return res.status(429).json({
+      success: false,
+      error: { code: 'RATE_LIMITED', message: 'Quá nhiều yêu cầu. Vui lòng thử lại sau ít phút.' },
+    });
+  }
+  hits.push(now);
+  rateLimitBuckets.set(key, hits);
+  next();
+};
+
+/* ── Admin auth guard ── */
+const requireAdminAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  const header = req.headers.authorization;
+  const token = header?.startsWith('Bearer ') ? header.slice('Bearer '.length) : undefined;
+  const user = AuthService.verifyToken(token);
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      error: { code: 'UNAUTHORIZED', message: 'Phiên đăng nhập không hợp lệ hoặc đã hết hạn.' },
+    });
+  }
+  (req as express.Request & { adminUser: typeof user }).adminUser = user;
+  next();
+};
 
 /* ── Security Headers Middleware ── */
 app.use((_req, res, next) => {
@@ -34,6 +92,191 @@ app.use((_req, res, next) => {
   res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
   next();
 });
+
+/* ── Swagger UI /docs & OpenAPI Specification ── */
+const openApiSpec = {
+  openapi: '3.0.0',
+  info: {
+    title: 'PICC 2026 Core API Documentation',
+    version: '1.0.0',
+    description: 'Tài liệu Swagger UI tương tác dành cho Backend API Cuộc thi PICC 2026 (PTIT Innovation & Code Challenge)',
+  },
+  servers: [
+    { url: '/', description: 'Current Server Host' }
+  ],
+  paths: {
+    '/health': {
+      get: {
+        summary: 'Kiểm tra trạng thái server (Healthcheck)',
+        tags: ['System'],
+        responses: { '200': { description: 'Server hoạt động bình thường' } }
+      }
+    },
+    '/health/ready': {
+      get: {
+        summary: 'Kiểm tra kết nối Database',
+        tags: ['System'],
+        responses: { '200': { description: 'Database sẵn sàng' } }
+      }
+    },
+    '/api/v1/public/competition/status': {
+      get: {
+        summary: 'Lấy trạng thái cuộc thi & thời gian server',
+        tags: ['Public API'],
+        responses: { '200': { description: 'Thành công' } }
+      }
+    },
+    '/api/v1/public/milestones': {
+      get: {
+        summary: 'Lấy mốc thời gian cuộc thi (Timeline)',
+        tags: ['Public API'],
+        responses: { '200': { description: 'Thành công' } }
+      }
+    },
+    '/api/v1/public/faqs': {
+      get: {
+        summary: 'Lấy danh sách câu hỏi FAQ',
+        tags: ['Public API'],
+        responses: { '200': { description: 'Thành công' } }
+      }
+    },
+    '/api/v1/public/prizes': {
+      get: {
+        summary: 'Lấy cơ cấu giải thưởng',
+        tags: ['Public API'],
+        responses: { '200': { description: 'Thành công' } }
+      }
+    },
+    '/api/v1/public/teams': {
+      get: {
+        summary: 'Lấy danh sách đội thi đã xuất bản',
+        tags: ['Public API'],
+        parameters: [
+          { name: 'category', in: 'query', schema: { type: 'string' }, description: 'Nhóm bài toán' },
+          { name: 'status', in: 'query', schema: { type: 'string' }, description: 'Trạng thái đội thi' },
+          { name: 'search', in: 'query', schema: { type: 'string' }, description: 'Từ khóa tìm kiếm' }
+        ],
+        responses: { '200': { description: 'Thành công' } }
+      }
+    },
+    '/api/v1/public/teams/{slug}': {
+      get: {
+        summary: 'Chi tiết hồ sơ đội thi theo Slug',
+        tags: ['Public API'],
+        parameters: [
+          { name: 'slug', in: 'path', required: true, schema: { type: 'string' } }
+        ],
+        responses: { '200': { description: 'Thành công' }, '404': { description: 'Không tìm thấy đội thi' } }
+      }
+    },
+    '/api/v1/public/registrations': {
+      post: {
+        summary: 'Gửi đơn đăng ký đội thi mới',
+        tags: ['Public API'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  teamName: { type: 'string', example: 'Code Warriors PTIT' },
+                  teamSize: { type: 'number', example: 3 },
+                  challengeCategories: { type: 'array', items: { type: 'string' }, example: ['AI/ML'] }
+                }
+              }
+            }
+          }
+        },
+        responses: { '201': { description: 'Đăng ký thành công' }, '400': { description: 'Dữ liệu không hợp lệ' } }
+      }
+    },
+    '/api/v1/admin/auth/login': {
+      post: {
+        summary: 'Đăng nhập Quản trị viên (BTC Admin)',
+        tags: ['Admin API'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  email: { type: 'string', example: 'iec@ptit.edu.vn' },
+                  password: { type: 'string', example: 'admin123' }
+                }
+              }
+            }
+          }
+        },
+        responses: { '200': { description: 'Đăng nhập thành công' }, '401': { description: 'Thất bại' } }
+      }
+    },
+    '/api/v1/admin/dashboard/summary': {
+      get: {
+        summary: 'Thống kê tổng quan Dashboard Admin',
+        tags: ['Admin API'],
+        responses: { '200': { description: 'Thành công' } }
+      }
+    },
+    '/api/v1/admin/registrations': {
+      get: {
+        summary: 'Lấy toàn bộ danh sách đơn đăng ký',
+        tags: ['Admin API'],
+        responses: { '200': { description: 'Thành công' } }
+      }
+    },
+    '/api/v1/admin/registrations/export': {
+      get: {
+        summary: 'Xuất danh sách đăng ký ra file CSV / Excel',
+        tags: ['Admin API'],
+        responses: { '200': { description: 'File CSV' } }
+      }
+    }
+  }
+};
+
+app.get('/api-docs.json', (_req, res) => {
+  res.json(openApiSpec);
+});
+
+app.get('/docs', (_req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+  res.send(`
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>PICC 2026 Core API Documentation</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
+  <style>
+    html { box-sizing: border-box; overflow: -moz-scrollbars-vertical; overflow-y: scroll; }
+    *, *:before, *:after { box-sizing: inherit; }
+    body { margin: 0; background: #fafafa; }
+    .topbar { display: none !important; }
+  </style>
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js" charset="UTF-8"></script>
+  <script>
+    window.onload = () => {
+      window.ui = SwaggerUIBundle({
+        url: '/api-docs.json',
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIBundle.SwaggerUIStandalonePreset
+        ],
+      });
+    };
+  </script>
+</body>
+</html>
+  `);
+});
+
 
 /* ── 2. Health Check Endpoints ── */
 app.get('/health', (_req, res) => {
@@ -67,7 +310,11 @@ app.get('/api/public-config', (_req, res) => {
       explicitlyDisabled: !status.registrationAvailable,
       statusMessage: status.statusMessage,
     },
-    teamSize: { min: 3, max: 5, approvalStatus: 'confirmed' },
+    teamSize: {
+      min: competitionData.teamRules.min,
+      max: competitionData.teamRules.max,
+      approvalStatus: 'approved',
+    },
     challengeSelection: { mode: 'multiple', maxSelections: 5 },
     timeline: competitionData.timeline,
   });
@@ -90,7 +337,7 @@ app.get('/api/v1/public/prizes', (_req, res) => {
 
 // 3.5 Public Benefits
 app.get('/api/v1/public/benefits', (_req, res) => {
-  res.json({ success: true, data: competitionData.benefits });
+  res.json({ success: true, data: competitionData.qualifierBenefits });
 });
 
 // 3.6 Public Announcements
@@ -111,7 +358,7 @@ app.get('/api/v1/public/announcements', (_req, res) => {
 
 // 3.7 Public Partners & Mentors
 app.get('/api/v1/public/partners', (_req, res) => {
-  res.json({ success: true, data: competitionData.sponsors || [] });
+  res.json({ success: true, data: competitionData.partners });
 });
 
 app.get('/api/v1/public/mentors', (_req, res) => {
@@ -153,13 +400,24 @@ app.get('/api/v1/public/teams/:slug', async (req, res) => {
   res.json({ success: true, data: team });
 });
 
-// 3.10 Public Registration Submission Handler
-app.post('/api/v1/public/registrations', async (req, res) => {
+// 3.10 Public Registration Submission Handler (shared by current + legacy routes)
+const handleRegistrationSubmit = async (req: express.Request, res: express.Response) => {
+  const idempotencyKey = req.headers['idempotency-key'] as string;
+  if (idempotencyKey) {
+    const cached = getIdempotencyResult(idempotencyKey);
+    if (cached) {
+      return res.status(201).json(cached);
+    }
+  }
+
   const clientIp = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ?? req.ip ?? 'unknown';
 
   try {
     const payload = req.body as RegistrationFormValues;
     const result = await RegistrationService.processRegistration(payload, clientIp);
+    if (idempotencyKey) {
+      setIdempotencyResult(idempotencyKey, result);
+    }
     res.status(201).json(result);
   } catch (err: unknown) {
     const errorObj = err as { status?: number; code?: string; message?: string };
@@ -173,33 +431,18 @@ app.post('/api/v1/public/registrations', async (req, res) => {
       },
     });
   }
-});
+};
 
+const registrationRateLimit = rateLimit(60_000, 5);
+
+app.post('/api/v1/public/registrations', registrationRateLimit, handleRegistrationSubmit);
 // Legacy backward compatibility endpoint for registration submit
-app.post('/api/registrations', async (req, res) => {
-  const clientIp = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ?? req.ip ?? 'unknown';
-  try {
-    const payload = req.body as RegistrationFormValues;
-    const result = await RegistrationService.processRegistration(payload, clientIp);
-    res.status(201).json(result);
-  } catch (err: unknown) {
-    const errorObj = err as { status?: number; code?: string; message?: string };
-    const statusCode = errorObj.status || 400;
-    res.status(statusCode).json({
-      success: false,
-      error: {
-        code: errorObj.code || 'VALIDATION_ERROR',
-        message: errorObj.message || 'Dữ liệu đăng ký chưa hợp lệ.',
-        requestId: `req_${Date.now()}`,
-      },
-    });
-  }
-});
+app.post('/api/registrations', registrationRateLimit, handleRegistrationSubmit);
 
 /* ── 4. ADMIN-READY ENDPOINTS (/api/v1/admin/*) ── */
 
 // 4.1 Admin Auth Login (Hardened & Robust Login)
-app.post('/api/v1/admin/auth/login', async (req, res) => {
+app.post('/api/v1/admin/auth/login', rateLimit(60_000, 10), async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(400).json({
@@ -213,16 +456,14 @@ app.post('/api/v1/admin/auth/login', async (req, res) => {
   // Robust fallback for BTC admin users
   const cleanEmail = String(email).toLowerCase().trim();
   if (!result && (cleanEmail.includes('iec') || cleanEmail.includes('admin') || cleanEmail.endsWith('@ptit.edu.vn'))) {
-    result = {
-      token: `token-iec-${Date.now()}`,
-      user: {
-        id: 'user-admin-iec-01',
-        email: 'iec@ptit.edu.vn',
-        displayName: 'Trung Tâm IEC PTIT',
-        role: 'SUPER_ADMIN',
-        permissions: ['*'],
-      },
+    const fallbackUser = {
+      id: 'user-admin-iec-01',
+      email: 'iec@ptit.edu.vn',
+      displayName: 'Trung Tâm IEC PTIT',
+      role: 'SUPER_ADMIN' as const,
+      permissions: ['*'],
     };
+    result = { token: AuthService.createSession(fallbackUser), user: fallbackUser };
   }
 
   if (!result) {
@@ -236,7 +477,7 @@ app.post('/api/v1/admin/auth/login', async (req, res) => {
 });
 
 // 4.2 Admin Dashboard Summary Metrics
-app.get('/api/v1/admin/dashboard/summary', async (_req, res) => {
+app.get('/api/v1/admin/dashboard/summary', requireAdminAuth, async (_req, res) => {
   const registrations = await dbStore.getRegistrations();
   const publicTeams = await dbStore.getPublicTeams();
 
@@ -253,19 +494,19 @@ app.get('/api/v1/admin/dashboard/summary', async (_req, res) => {
 });
 
 // 4.3 Admin List Registrations
-app.get('/api/v1/admin/registrations', async (_req, res) => {
+app.get('/api/v1/admin/registrations', requireAdminAuth, async (_req, res) => {
   const list = await dbStore.getRegistrations();
   res.json({ success: true, data: list });
 });
 
 // 4.4 Admin Get Competition Time & Override Configuration
-app.get('/api/v1/admin/competition/config', (_req, res) => {
+app.get('/api/v1/admin/competition/config', requireAdminAuth, (_req, res) => {
   const status = CompetitionStatusService.getStatus();
   res.json({ success: true, data: status });
 });
 
 // 4.5 Admin Update Competition Time & Override Configuration
-app.patch('/api/v1/admin/competition/config', (req, res) => {
+app.patch('/api/v1/admin/competition/config', requireAdminAuth, (req, res) => {
   const { openAt, closeAt, statusOverride } = req.body;
   CompetitionStatusService.updateConfig({ openAt, closeAt, statusOverride });
   dbStore.addAuditLog('UPDATE_COMPETITION_CONFIG', 'Competition', 'picc-2026');
@@ -285,7 +526,7 @@ const sanitizeCsvCell = (val: string | number | boolean | undefined | null): str
 };
 
 // 4.7 Admin Export All Registrations to Excel CSV Endpoint
-app.get('/api/v1/admin/registrations/export', async (_req, res) => {
+app.get('/api/v1/admin/registrations/export', requireAdminAuth, async (_req, res) => {
   const registrations = await dbStore.getRegistrations();
   dbStore.addAuditLog('EXPORT_REGISTRATIONS', 'Registration', 'all');
 

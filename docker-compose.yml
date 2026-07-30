@@ -1,30 +1,53 @@
 services:
-  frontend:
+  cloudflared:
+    container_name: picc-cloudflared
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: "${CLOUDFLARE_TUNNEL_TOKEN:-}"
+    depends_on:
+      - nginx
+
+  nginx:
+    container_name: nginx
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        VITE_BASE_PATH: "${VITE_BASE_PATH:-/cuocthi/}"
+        VITE_PUBLIC_API_BASE_URL: "${VITE_PUBLIC_API_BASE_URL:-/cuocthi/api}"
+        VITE_PUBLIC_SITE_URL: "${VITE_PUBLIC_SITE_URL:-https://challenge.p-tech.xyz/cuocthi/}"
+        VITE_APP_ENV: "${VITE_APP_ENV:-production}"
     ports:
       - "80:80"
+    environment:
+      BACKEND_URL: "http://picc-api:3001"
+    volumes:
+      - picc-data:/usr/share/nginx/html/data:ro
     depends_on:
       - api
-    networks:
-      - picc-network
 
   api:
+    container_name: picc-api
     build:
       context: .
       dockerfile: Dockerfile.api
-    ports:
-      - "3001:3001"
+    expose:
+      - "3001"
+    volumes:
+      - picc-data:/app/data
     environment:
       PORT: 3001
-      CORS_ORIGIN: http://localhost:80
-      PICC_REGISTRATION_OPEN_AT: ""
-      PICC_REGISTRATION_CLOSE_AT: ""
-      PICC_REGISTRATION_ENABLED: "false"
-    networks:
-      - picc-network
+      NODE_ENV: production
+      CORS_ORIGIN: "${CORS_ORIGIN:-https://challenge.p-tech.xyz}"
+      DATABASE_URL: "${DATABASE_URL:-}"
+      DIRECT_URL: "${DIRECT_URL:-}"
+      JWT_SECRET: "${JWT_SECRET:-picc2026-super-secret-jwt-key-change-in-prod-789213!}"
+      PICC_REGISTRATION_OPEN_AT: "${PICC_REGISTRATION_OPEN_AT:-2026-08-01T00:00:00+07:00}"
+      PICC_REGISTRATION_CLOSE_AT: "${PICC_REGISTRATION_CLOSE_AT:-2026-08-15T23:59:59+07:00}"
+      PICC_REGISTRATION_ENABLED: "${PICC_REGISTRATION_ENABLED:-true}"
 
-networks:
-  picc-network:
-    driver: bridge
+volumes:
+  picc-data:
+

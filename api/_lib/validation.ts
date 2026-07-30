@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { competitionData } from '../../src/data/competition';
 
 export const MemberSchema = z.object({
   role: z.enum(['leader', 'member']),
@@ -11,14 +12,16 @@ export const MemberSchema = z.object({
 
 export const RegistrationSchema = z.object({
   teamName: z.string().trim().min(2).max(80),
-  teamSize: z.number().int().min(3).max(5),
+  teamSize: z.number().int().min(competitionData.teamRules.min).max(competitionData.teamRules.max),
   challengeCategories: z.array(z.string()).min(1),
   otherChallengeCategory: z.string().optional(),
   previousCompetitions: z.string().max(500).optional(),
   featuredProject: z.string().trim().min(1).max(1500),
   expectations: z.string().trim().min(1).max(1000),
   companyExperience: z.enum(['none', 'previous', 'ongoing']),
-  members: z.array(MemberSchema).min(3).max(5),
+  members: z.array(MemberSchema)
+    .min(competitionData.teamRules.min)
+    .max(competitionData.teamRules.max),
   commitments: z.object({
     truthfulInformation: z.literal(true),
     mediaConsent: z.literal(true),

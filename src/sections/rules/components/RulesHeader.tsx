@@ -1,10 +1,11 @@
-import { Box, Typography, Chip, Grid } from '@mui/material';
-import MenuBookRoundedIcon from '@mui/icons-material/MenuBookRounded';
+import { Box, Typography, Grid } from '@mui/material';
 import RouteRoundedIcon from '@mui/icons-material/RouteRounded';
 import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
 import FolderZipRoundedIcon from '@mui/icons-material/FolderZipRounded';
 import { motion } from 'motion/react';
 import { fadeInUp } from '@/motion/variants';
+import { piccColors } from '@/theme/palette';
+import { competitionData } from '@/data/competition';
 
 const STATS = [
   {
@@ -15,7 +16,7 @@ const STATS = [
     bg: '#EAF2FF',
   },
   {
-    number: '3–5',
+    number: `${competitionData.teamRules.min}–${competitionData.teamRules.max}`,
     label: 'Thành viên / đội',
     icon: GroupsRoundedIcon,
     color: '#7457E8',
@@ -49,21 +50,16 @@ export const RulesHeader = () => {
         }}
       />
 
-      <Box component={motion.div} variants={fadeInUp} sx={{ position: 'relative', zIndex: 1 }}>
-        {/* Eyebrow Badge */}
-        <Chip
-          icon={<MenuBookRoundedIcon sx={{ fontSize: '15px !important', color: '#397CE8 !important' }} />}
-          label="Quy định & Thể lệ"
+      <Box component={motion.div} variants={fadeInUp} sx={{ position: 'relative', zIndex: 1, fontFamily: '"Manrope", sans-serif' }}>
+        {/* Red Accent Line */}
+        <Box
           sx={{
-            bgcolor: '#EAF2FF',
-            color: '#163A67',
-            fontWeight: 700,
-            fontSize: '0.825rem',
-            mb: 1.5,
-            px: 1.5,
-            py: 0.5,
-            border: '1px solid rgba(57, 124, 232, 0.25)',
-            boxShadow: '0 4px 12px rgba(57, 124, 232, 0.08)',
+            width: 44,
+            height: 4,
+            bgcolor: piccColors.ptitRed,
+            borderRadius: 2,
+            mx: 'auto',
+            mb: 2,
           }}
         />
 
@@ -73,25 +69,27 @@ export const RulesHeader = () => {
           component="h2"
           sx={{
             mb: 1.25,
-            color: '#163A67',
+            color: piccColors.ptitNavy,
             fontWeight: 800,
-            fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+            fontSize: { xs: '2rem', sm: '2.5rem', md: '2.8rem' },
             letterSpacing: '-0.02em',
-            lineHeight: 1.15,
+            lineHeight: 1.2,
+            fontFamily: '"Manrope", sans-serif',
           }}
         >
-          Tổng Quan Thể Lệ PICC 2026
+          Tổng Quan Thể Lệ <Box component="span" sx={{ color: piccColors.ptitRed }}>PICC 2026</Box>
         </Typography>
 
         {/* Subtitle */}
         <Typography
           sx={{
-            color: '#66768C',
+            color: '#4e4f53',
             maxWidth: 640,
             mx: 'auto',
             fontSize: { xs: '0.95rem', md: '1.05rem' },
             lineHeight: 1.6,
             mb: 3,
+            fontFamily: '"Manrope", sans-serif',
           }}
         >
           Tất cả thông tin quan trọng bạn cần biết trước khi bắt đầu hành trình tại PICC 2026.

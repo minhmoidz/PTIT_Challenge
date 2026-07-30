@@ -103,6 +103,7 @@ export interface PiccAsset {
 }
 
 export type ErrorCode =
+  | 'INVALID_TEAM_SIZE'
   | 'VALIDATION_ERROR'
   | 'REGISTRATION_NOT_OPEN'
   | 'REGISTRATION_CLOSED'
@@ -124,6 +125,7 @@ export interface ApiError {
 export interface ApiSuccess {
   success: true;
   data: {
+    registrationCode: string;
     submissionId: string;
     submittedAt: string;
   };

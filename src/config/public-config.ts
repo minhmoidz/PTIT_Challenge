@@ -1,4 +1,5 @@
 import type { PublicPiccConfig, RegistrationStatus } from '@/types/registration';
+import { competitionData } from '@/data/competition';
 
 const fallbackConfig: PublicPiccConfig = {
   serverTime: new Date().toISOString(),
@@ -11,9 +12,9 @@ const fallbackConfig: PublicPiccConfig = {
     statusMessage: 'Cổng đăng ký mở từ 01/08/2026 đến 15/08/2026.',
   },
   teamSize: {
-    min: 3,
-    max: 5,
-    approvalStatus: 'confirmed',
+    min: competitionData.teamRules.min,
+    max: competitionData.teamRules.max,
+    approvalStatus: 'approved',
   },
   challengeSelection: {
     mode: 'multiple',

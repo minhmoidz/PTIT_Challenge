@@ -2,7 +2,8 @@ import { useRef } from 'react';
 import { Container, Box, Typography } from '@mui/material';
 import { env } from '@/config/env';
 import { awards } from '@/content/vi/awards';
-import { SkyBackground, getSkyBackground } from '@/components/ui/SkyBackground';
+import { SkyBackground } from '@/components/ui/SkyBackground';
+import { getSkyBackground } from '@/components/ui/skyBackgroundConfig';
 import { CelebrationEffects } from './components/CelebrationEffects';
 import { AwardHeader } from './components/AwardHeader';
 import { AwardPodium } from './components/AwardPodium';
@@ -18,7 +19,7 @@ export const AwardsSection = () => {
       id="giai-thuong"
       ref={sectionRef}
       sx={{
-        py: { xs: 10, md: 16 },
+        py: { xs: 7, sm: 8, md: 10, lg: 12 },
         background: getSkyBackground('celebration'),
         position: 'relative',
         overflow: 'hidden',

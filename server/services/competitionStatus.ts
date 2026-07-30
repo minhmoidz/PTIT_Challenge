@@ -1,7 +1,7 @@
 import { serverEnv } from '../config/env';
 
 export interface CompetitionStatusResponse {
-  currentStatus: 'upcoming' | 'open' | 'paused' | 'closed' | 'completed';
+  currentStatus: 'upcoming' | 'open' | 'paused' | 'closed' | 'live' | 'completed';
   registrationAvailable: boolean;
   serverTime: string;
   timezone: string;
@@ -18,10 +18,10 @@ export interface CompetitionStatusResponse {
 
 let dynamicOpenAt: string = serverEnv.PICC_REGISTRATION_OPEN_AT;
 let dynamicCloseAt: string = serverEnv.PICC_REGISTRATION_CLOSE_AT;
-let dynamicStatusOverride: 'upcoming' | 'open' | 'paused' | 'closed' | null = null;
+let dynamicStatusOverride: 'upcoming' | 'open' | 'paused' | 'closed' | 'live' | 'completed' | null = null;
 
 export class CompetitionStatusService {
-  public static updateConfig(newConfig: { openAt?: string; closeAt?: string; statusOverride?: 'upcoming' | 'open' | 'paused' | 'closed' | null }) {
+  public static updateConfig(newConfig: { openAt?: string; closeAt?: string; statusOverride?: 'upcoming' | 'open' | 'paused' | 'closed' | 'live' | 'completed' | null }) {
     if (newConfig.openAt) dynamicOpenAt = newConfig.openAt;
     if (newConfig.closeAt) dynamicCloseAt = newConfig.closeAt;
     if (newConfig.statusOverride !== undefined) dynamicStatusOverride = newConfig.statusOverride;
@@ -38,7 +38,7 @@ export class CompetitionStatusService {
     const openAt = new Date(openAtStr);
     const closeAt = new Date(closeAtStr);
 
-    let currentStatus: 'upcoming' | 'open' | 'paused' | 'closed' | 'completed' = 'upcoming';
+    let currentStatus: 'upcoming' | 'open' | 'paused' | 'closed' | 'live' | 'completed' = 'upcoming';
 
     if (dynamicStatusOverride) {
       currentStatus = dynamicStatusOverride;
@@ -50,16 +50,19 @@ export class CompetitionStatusService {
       currentStatus = 'closed';
     }
 
-    const registrationAvailable = currentStatus === 'open';
+    const explicitlyEnabled = process.env.PICC_REGISTRATION_ENABLED !== 'false';
+    const registrationAvailable = (currentStatus === 'open' || currentStatus === 'live') && explicitlyEnabled;
 
     const statusMessage =
       currentStatus === 'upcoming'
         ? `Cổng đăng ký mở từ ${openAtStr.slice(0, 10)} đến ${closeAtStr.slice(0, 10)}.`
         : currentStatus === 'open'
           ? 'Cổng đăng ký đang mở. Vui lòng hoàn thành biểu mẫu nộp hồ sơ.'
-          : currentStatus === 'paused'
-            ? 'Đăng ký đang tạm dừng. Theo dõi thông báo mới nhất.'
-            : `Cổng đăng ký đã khép lại vào ${closeAtStr.slice(0, 10)}.`;
+          : currentStatus === 'live'
+            ? 'Cuộc thi đang diễn ra! Theo dõi thông báo mới nhất.'
+            : currentStatus === 'paused'
+              ? 'Đăng ký đang tạm dừng. Theo dõi thông báo mới nhất.'
+              : `Cổng đăng ký đã khép lại vào ${closeAtStr.slice(0, 10)}.`;
 
     const nextMilestone =
       now < openAt

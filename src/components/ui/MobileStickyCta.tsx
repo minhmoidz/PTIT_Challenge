@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRegistrationStatus } from '@/features/registration/hooks';
 import { getCtaConfig } from '@/config/registrationCtaConfig';
+import { gradientMesh, piccColors } from '@/theme/palette';
 
 export const MobileStickyCta = () => {
   const location = useLocation();
@@ -77,13 +78,13 @@ export const MobileStickyCta = () => {
               height: 50,
               borderRadius: '14px',
               fontWeight: 800,
-              fontSize: '0.95rem',
+              fontSize: '1rem',
               letterSpacing: '-0.01em',
-              background: 'linear-gradient(135deg, #173B66 0%, #245FA8 55%, #3B82F6 100%)',
-              boxShadow: '0 4px 14px rgba(36, 95, 168, 0.35)',
+              background: gradientMesh.ptitCta,
+              boxShadow: '0 4px 14px rgba(188, 38, 38, 0.35)',
               textTransform: 'none',
               '&:hover': {
-                background: 'linear-gradient(135deg, #0F2847 0%, #173B66 55%, #245FA8 100%)',
+                background: `linear-gradient(135deg, ${piccColors.ptitDarkRed} 0%, #821414 100%)`,
               },
             }}
           >
@@ -99,7 +100,7 @@ export const MobileStickyCta = () => {
                   }}
                 />
               )}
-              <Typography component="span" sx={{ fontWeight: 800, fontSize: '0.925rem' }}>
+              <Typography component="span" sx={{ fontWeight: 800, fontSize: '0.975rem' }}>
                 {ctaConfig.mobileLabel}
               </Typography>
             </Box>

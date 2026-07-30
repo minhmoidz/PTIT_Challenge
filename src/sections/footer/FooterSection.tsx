@@ -1,13 +1,13 @@
 import { Container, Typography, Grid, Box, Link, Chip } from '@mui/material';
-import BoltRoundedIcon from '@mui/icons-material/BoltRounded';
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
 import FacebookRoundedIcon from '@mui/icons-material/Facebook';
 import LanguageRoundedIcon from '@mui/icons-material/LanguageRounded';
 import PhoneRoundedIcon from '@mui/icons-material/PhoneRounded';
-import { piccColors, gradientMesh } from '@/theme/palette';
+import { piccColors } from '@/theme/palette';
 import { SkyBackground } from '@/components/ui/SkyBackground';
 import { competitionData } from '@/data/competition';
+import { appHash, assetPath } from '@/config/paths';
 
 const handleSmoothNav = (e: React.MouseEvent, href: string) => {
   if (href.startsWith('#')) {
@@ -30,69 +30,65 @@ export const FooterSection = () => (
     component="footer"
     id="footer"
     sx={{
-      background: 'linear-gradient(180deg, #162B4A 0%, #1B3560 40%, #0F2241 100%)',
+      background: 'linear-gradient(180deg, #051A53 0%, #081d59 50%, #030f33 100%)',
+      borderTop: `4px solid ${piccColors.ptitRed}`,
       color: '#FFFFFF',
-      pt: { xs: 9, md: 12 },
+      pt: { xs: 8, md: 10 },
       pb: { xs: 5, md: 7 },
       position: 'relative',
       overflow: 'hidden',
+      fontFamily: '"Manrope", sans-serif',
     }}
   >
     {/* Sky World Background — sunset/deep-sky variant */}
     <SkyBackground variant="sunset" />
-    <Container maxWidth="lg">
+    <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
       <Grid container spacing={5} sx={{ mb: 7 }}>
         {/* Col 1: Brand & Contact Info */}
         <Grid size={{ xs: 12, md: 5 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2.5 }}>
-            <Box
-              sx={{
-                width: 42,
-                height: 42,
-                borderRadius: '12px',
-                background: gradientMesh.cta,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#FFFFFF',
-                boxShadow: '0 4px 14px rgba(36, 95, 168, 0.4)',
-              }}
-            >
-              <BoltRoundedIcon sx={{ fontSize: 24 }} />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pr: 1.5, borderRight: '1px solid rgba(255,255,255,0.2)' }}>
+              <Box component="img" src={assetPath('assets/branding/ptit-logo.png')} alt="Học viện Công nghệ Bưu chính Viễn thông" sx={{ width: 32, height: 40, objectFit: 'contain' }} />
+              <Box component="img" src={assetPath('assets/branding/ptit-iec-logo-2026.png')} alt="PTIT Innovation & Entrepreneurship Center" sx={{ width: 85, height: 30, objectFit: 'contain', bgcolor: '#FFFFFF', borderRadius: 1, px: 0.5 }} />
             </Box>
             <Box>
               <Typography
                 sx={{
-                  fontWeight: 800,
-                  color: '#FFFFFF',
-                  fontSize: '1.35rem',
-                  letterSpacing: '-0.02em',
-                  lineHeight: 1.1,
+                  fontSize: '0.72rem',
+                  fontWeight: 700,
+                  color: piccColors.ptitRed,
+                  lineHeight: 1.2,
+                  fontFamily: '"Manrope", sans-serif',
                 }}
               >
-                PICC <Box component="span" sx={{ color: piccColors.sky[400] }}>2026</Box>
+                Học viện Công nghệ Bưu chính Viễn thông
               </Typography>
               <Typography
                 sx={{
-                  fontSize: '0.675rem',
-                  fontWeight: 700,
-                  color: piccColors.pink[400],
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
+                  fontWeight: 800,
+                  color: '#FFFFFF',
+                  fontSize: '1.05rem',
+                  letterSpacing: '0.01em',
+                  lineHeight: 1.2,
+                  fontFamily: '"Manrope", sans-serif',
                 }}
               >
-                Innovation Catalyst Challenge
+                PTIT IEC · <Box component="span" sx={{ color: piccColors.ptitRed }}>PICC 2026</Box>
               </Typography>
             </Box>
           </Box>
 
+          <Typography sx={{ color: piccColors.sky[300], fontSize: '0.78rem', fontWeight: 800, letterSpacing: '0.04em', textTransform: 'uppercase', mb: 1, fontFamily: '"Manrope", sans-serif' }}>
+            Đơn vị tổ chức · Trung tâm Đổi mới Sáng tạo và Khởi nghiệp PTIT
+          </Typography>
           <Typography
             sx={{
-              color: piccColors.neutral[400],
+              color: 'rgba(255,255,255,0.8)',
               mb: 3,
               maxWidth: 420,
               lineHeight: 1.7,
               fontSize: '0.925rem',
+              fontFamily: '"Manrope", sans-serif',
             }}
           >
             {competitionData.meta.fullDescription}
@@ -123,7 +119,7 @@ export const FooterSection = () => (
         </Grid>
 
         {/* Col 2: Quick Navigation */}
-        <Grid size={{ xs: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Typography sx={{ fontWeight: 800, color: '#FFFFFF', mb: 2.5, fontSize: '1rem', letterSpacing: '0.02em' }}>
             ĐIỀU HƯỚNG NHANH
           </Typography>
@@ -138,7 +134,7 @@ export const FooterSection = () => (
             ].map(([label, href]) => (
               <Link
                 key={label as string}
-                href={href as string}
+                href={appHash((href as string).replace('#', ''))}
                 onClick={(e) => handleSmoothNav(e, href as string)}
                 color={piccColors.neutral[400]}
                 underline="none"
@@ -157,7 +153,7 @@ export const FooterSection = () => (
         </Grid>
 
         {/* Col 3: Official Portals & Social Media Links */}
-        <Grid size={{ xs: 6, md: 4 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <Typography sx={{ fontWeight: 800, color: '#FFFFFF', mb: 2.5, fontSize: '1rem', letterSpacing: '0.02em' }}>
             KÊNH CHÍNH THỨC &amp; TRUYỀN THÔNG
           </Typography>
@@ -173,17 +169,12 @@ export const FooterSection = () => (
                 alignItems: 'center',
                 gap: 1.25,
                 color: '#FFFFFF',
-                bgcolor: 'rgba(255,255,255,0.06)',
-                p: 1.25,
-                px: 1.75,
-                borderRadius: '12px',
-                border: '1px solid rgba(255,255,255,0.12)',
-                transition: 'all 0.25s ease',
-                '&:hover': {
-                  bgcolor: 'rgba(24, 119, 242, 0.2)',
-                  borderColor: '#1877F2',
-                  transform: 'translateY(-2px)',
-                },
+                bgcolor: 'transparent',
+                p: 0,
+                borderRadius: 0,
+                border: 'none',
+                transition: 'color 0.2s ease',
+                '&:hover': { color: piccColors.sky[300] },
               }}
             >
               <FacebookRoundedIcon sx={{ color: '#1877F2', fontSize: 20 }} />
@@ -207,17 +198,12 @@ export const FooterSection = () => (
                 alignItems: 'center',
                 gap: 1.25,
                 color: '#FFFFFF',
-                bgcolor: 'rgba(255,255,255,0.06)',
-                p: 1.25,
-                px: 1.75,
-                borderRadius: '12px',
-                border: '1px solid rgba(255,255,255,0.12)',
-                transition: 'all 0.25s ease',
-                '&:hover': {
-                  bgcolor: 'rgba(24, 119, 242, 0.2)',
-                  borderColor: '#1877F2',
-                  transform: 'translateY(-2px)',
-                },
+                bgcolor: 'transparent',
+                p: 0,
+                borderRadius: 0,
+                border: 'none',
+                transition: 'color 0.2s ease',
+                '&:hover': { color: piccColors.sky[300] },
               }}
             >
               <FacebookRoundedIcon sx={{ color: '#1877F2', fontSize: 20 }} />
@@ -241,11 +227,10 @@ export const FooterSection = () => (
                 alignItems: 'center',
                 gap: 1.25,
                 color: '#FFFFFF',
-                bgcolor: 'rgba(255,255,255,0.06)',
-                p: 1.25,
-                px: 1.75,
-                borderRadius: '12px',
-                border: '1px solid rgba(255,255,255,0.12)',
+                bgcolor: 'transparent',
+                p: 0,
+                borderRadius: 0,
+                border: 'none',
                 transition: 'all 0.25s ease',
                 '&:hover': {
                   bgcolor: 'rgba(57, 124, 232, 0.2)',
@@ -275,11 +260,10 @@ export const FooterSection = () => (
                 alignItems: 'center',
                 gap: 1.25,
                 color: '#FFFFFF',
-                bgcolor: 'rgba(255,255,255,0.06)',
-                p: 1.25,
-                px: 1.75,
-                borderRadius: '12px',
-                border: '1px solid rgba(255,255,255,0.12)',
+                bgcolor: 'transparent',
+                p: 0,
+                borderRadius: 0,
+                border: 'none',
                 transition: 'all 0.25s ease',
                 '&:hover': {
                   bgcolor: 'rgba(57, 124, 232, 0.2)',

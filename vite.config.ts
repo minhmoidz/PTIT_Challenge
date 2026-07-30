@@ -2,7 +2,13 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
-export default defineConfig({
+const normalizeBasePath = (value?: string) => {
+  if (!value || value === '/') return '/';
+  return `/${value.replace(/^\/+|\/+$/g, '')}/`;
+};
+
+export default defineConfig(() => ({
+  base: normalizeBasePath(process.env.VITE_BASE_PATH),
   plugins: [react()],
   resolve: {
     alias: {
@@ -33,4 +39,4 @@ export default defineConfig({
       },
     },
   },
-});
+}));

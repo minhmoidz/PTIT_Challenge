@@ -51,6 +51,7 @@ export interface PublicTeamProfile {
   id: string;
   slug: string;
   teamName: string;
+  /** Historical published profiles may retain the former five-member team size. */
   teamSize: 3 | 4 | 5;
   challengeCategory: ChallengeCategoryType;
   challengeCategoryLabel: string;

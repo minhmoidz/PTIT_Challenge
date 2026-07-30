@@ -42,7 +42,7 @@ const router = createBrowserRouter([
     path: '*',
     element: <NotFoundPage />,
   },
-]);
+], { basename: import.meta.env.BASE_URL });
 
 export const AppRouter = () => (
   <Suspense fallback={<LoadingScreen />}>

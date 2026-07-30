@@ -36,8 +36,8 @@ const variantStyles = {
     prizeColor: '#B85D00',
     watermarkColor: 'rgba(245, 166, 35, 0.08)',
     iconComponent: EmojiEventsRoundedIcon,
-    heightElevation: { md: -30 },
-    minHeight: { xs: 'auto', md: 440 },
+    heightElevation: { lg: 'translateY(-30px)' },
+    minHeight: { xs: 'auto', lg: 440 },
   },
   'runner-up': {
     bg: '#FFFFFF',
@@ -54,7 +54,7 @@ const variantStyles = {
     watermarkColor: 'rgba(116, 131, 154, 0.07)',
     iconComponent: WorkspacePremiumRoundedIcon,
     heightElevation: { md: 0 },
-    minHeight: { xs: 'auto', md: 440 },
+    minHeight: { xs: 'auto', lg: 440 },
   },
   third: {
     bg: '#FFFFFF',
@@ -71,7 +71,7 @@ const variantStyles = {
     watermarkColor: 'rgba(201, 104, 37, 0.07)',
     iconComponent: MilitaryTechRoundedIcon,
     heightElevation: { md: 0 },
-    minHeight: { xs: 'auto', md: 440 },
+    minHeight: { xs: 'auto', lg: 440 },
   },
 };
 

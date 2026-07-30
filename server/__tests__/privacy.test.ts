@@ -28,7 +28,28 @@ describe('PICC 2026 Production Backend Security & Business Rules', () => {
     });
   });
 
-  it('3. Should reject registration with duplicate student IDs in team', async () => {
+  it('3. Should reject registration with five members', async () => {
+    const invalidPayload: any = {
+      teamName: 'Five Member Team',
+      teamSize: 5,
+      members: Array.from({ length: 5 }, (_, index) => ({
+        role: index === 0 ? 'leader' : 'member',
+        fullName: `Member ${index + 1}`,
+        studentId: `B20DCCN10${index}`,
+        major: 'IT',
+        email: `member-${index}@ptit.edu.vn`,
+        phone: `091234568${index}`,
+      })),
+      commitments: { truthfulInformation: true, mediaConsent: true, rulesAccepted: true },
+    };
+
+    await expect(RegistrationService.processRegistration(invalidPayload, '127.0.0.1')).rejects.toMatchObject({
+      code: 'INVALID_TEAM_SIZE',
+      message: 'Quy mô đội thi phải từ 03 đến 04 thành viên.',
+    });
+  });
+
+  it('4. Should reject registration with duplicate student IDs in team', async () => {
     const duplicateStudentPayload: any = {
       teamName: 'Duplicate Team',
       teamSize: 3,
@@ -45,7 +66,7 @@ describe('PICC 2026 Production Backend Security & Business Rules', () => {
     });
   });
 
-  it('4. Should reject registration missing mandatory commitments', async () => {
+  it('5. Should reject registration missing mandatory commitments', async () => {
     const missingConsentPayload: any = {
       teamName: 'No Consent Team',
       teamSize: 3,

@@ -1,15 +1,14 @@
-import { Container, Typography, Grid, Card, CardContent, Box, Chip } from '@mui/material';
+import { Container, Typography, Grid, Card, CardContent, Box } from '@mui/material';
 import { motion } from 'motion/react';
 import BusinessCenterRounded from '@mui/icons-material/BusinessCenterRounded';
 import GroupsRounded from '@mui/icons-material/GroupsRounded';
 import LightbulbRounded from '@mui/icons-material/LightbulbRounded';
 import RocketLaunchRounded from '@mui/icons-material/RocketLaunchRounded';
-import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import { introduction } from '@/content/vi/introduction';
 import { fadeInUp, staggerContainer } from '@/motion/variants';
 import { piccColors } from '@/theme/palette';
-import { Tilt3DCard } from '@/components/ui/Tilt3DCard';
-import { SkyBackground, getSkyBackground } from '@/components/ui/SkyBackground';
+import { SkyBackground } from '@/components/ui/SkyBackground';
+import { getSkyBackground } from '@/components/ui/skyBackgroundConfig';
 
 const iconMap: Record<string, React.ElementType> = {
   BusinessCenterRounded,
@@ -19,38 +18,10 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 const cardAccents = [
-  {
-    color: piccColors.blue[600],
-    bg: 'linear-gradient(135deg, #EAF2FF 0%, #DCEBFF 100%)',
-    border: 'rgba(57, 124, 232, 0.3)',
-    shadow: 'rgba(57, 124, 232, 0.15)',
-    tagBg: 'rgba(57, 124, 232, 0.1)',
-    stepColor: '#245FA8',
-  },
-  {
-    color: piccColors.pink[500],
-    bg: 'linear-gradient(135deg, #FFF0F7 0%, #FFE5F2 100%)',
-    border: 'rgba(232, 91, 159, 0.3)',
-    shadow: 'rgba(232, 91, 159, 0.15)',
-    tagBg: 'rgba(232, 91, 159, 0.1)',
-    stepColor: '#D94A8E',
-  },
-  {
-    color: piccColors.amber[600],
-    bg: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)',
-    border: 'rgba(245, 158, 11, 0.3)',
-    shadow: 'rgba(245, 158, 11, 0.15)',
-    tagBg: 'rgba(245, 158, 11, 0.12)',
-    stepColor: '#B45309',
-  },
-  {
-    color: piccColors.indigo[600],
-    bg: 'linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%)',
-    border: 'rgba(99, 102, 241, 0.3)',
-    shadow: 'rgba(99, 102, 241, 0.15)',
-    tagBg: 'rgba(99, 102, 241, 0.1)',
-    stepColor: '#4F46E5',
-  },
+  piccColors.blue[600],
+  piccColors.blue[600],
+  piccColors.blue[600],
+  piccColors.blue[600],
 ];
 
 export const IntroductionSection = () => (
@@ -58,7 +29,8 @@ export const IntroductionSection = () => (
     component="section"
     id="gioi-thieu"
     sx={{
-      py: { xs: 9, md: 14 },
+      pt: { xs: 8, sm: 10, md: 12 },
+      pb: { xs: 7, sm: 8, md: 10 },
       background: getSkyBackground('clear'),
       position: 'relative',
       overflow: 'hidden',
@@ -69,49 +41,41 @@ export const IntroductionSection = () => (
 
     <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
       {/* Section Header */}
-      <Box sx={{ textAlign: 'center', mb: { xs: 6, md: 8 } }}>
-        <Chip
-          icon={
-            <AutoAwesomeRoundedIcon
-              sx={{ fontSize: 16, color: `${piccColors.blue[700]} !important` }}
-            />
-          }
-          label="Về PICC 2026"
+      <Box sx={{ textAlign: 'center', mb: { xs: 4, sm: 5, md: 6 }, fontFamily: '"Manrope", sans-serif' }}>
+        <Box
           sx={{
-            bgcolor: 'rgba(234, 242, 255, 0.9)',
-            backdropFilter: 'blur(8px)',
-            color: piccColors.blue[700],
-            fontWeight: 800,
-            fontSize: '0.825rem',
-            mb: 2.5,
-            px: 1.5,
-            py: 0.5,
-            border: '1px solid rgba(57, 124, 232, 0.25)',
-            boxShadow: '0 4px 12px rgba(57, 124, 232, 0.08)',
+            width: 44,
+            height: 4,
+            bgcolor: piccColors.ptitRed,
+            borderRadius: 2,
+            mx: 'auto',
+            mb: 2,
           }}
         />
         <Typography
           variant="h2"
           component="h2"
           sx={{
-            mb: 2,
-            color: piccColors.ink,
+            mb: 1.5,
+            color: piccColors.ptitNavy,
             fontWeight: 800,
-            fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
-            letterSpacing: '-0.025em',
-            lineHeight: 1.15,
+            fontSize: { xs: '1.75rem', sm: '2.1rem', md: '2.4rem' },
+            letterSpacing: '-0.02em',
+            lineHeight: 1.2,
+            fontFamily: '"Manrope", sans-serif',
           }}
         >
-          Hành Trình Khai Phóng Sáng Tạo &amp; Đổi Mới
+          Hành Trình Khai Phóng Sáng Tạo &amp; <Box component="span" sx={{ color: piccColors.ptitRed }}>Đổi Mới PTIT</Box>
         </Typography>
         <Typography
           sx={{
             maxWidth: 780,
             mx: 'auto',
-            color: piccColors.slate[600],
-            fontSize: { xs: '0.975rem', md: '1.075rem' },
+            color: '#4e4f53',
+            fontSize: { xs: '0.9rem', md: '0.975rem' },
             lineHeight: 1.7,
             fontWeight: 400,
+            fontFamily: '"Manrope", sans-serif',
           }}
         >
           {introduction.paragraph}
@@ -137,42 +101,31 @@ export const IntroductionSection = () => (
                   variants={fadeInUp}
                   style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
                 >
-                  <Tilt3DCard
-                    maxTilt={8}
-                    scale={1.02}
-                    glareColor={accent.border}
-                    sx={{
-                      height: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                    }}
-                  >
                     <Card
                       sx={{
                         height: '100%',
-                        borderRadius: '24px',
-                        bgcolor: 'rgba(255, 255, 255, 0.92)',
-                        backdropFilter: 'blur(20px)',
-                        border: '1.5px solid rgba(226, 232, 240, 0.85)',
-                        boxShadow: '0 10px 32px rgba(22, 58, 103, 0.05)',
+                        borderRadius: '18px',
+                        bgcolor: '#FFFFFF',
+                        border: '1px solid rgba(226, 232, 240, 0.95)',
+                        boxShadow: '0 4px 16px rgba(22, 58, 103, 0.06)',
                         position: 'relative',
                         overflow: 'hidden',
                         display: 'flex',
                         flexDirection: 'column',
                         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                         '&:hover': {
-                          borderColor: accent.color,
-                          boxShadow: `0 16px 40px ${accent.shadow}`,
-                          transform: 'translateY(-4px)',
+                          borderColor: piccColors.blue[300],
+                          boxShadow: '0 10px 24px rgba(22, 58, 103, 0.1)',
+                          transform: 'translateY(-2px)',
                         },
                       }}
                     >
                       {/* Top Accent Gradient Bar */}
                       <Box
                         sx={{
-                          height: 4,
+                          height: 3,
                           width: '100%',
-                          background: `linear-gradient(90deg, ${accent.color} 0%, ${accent.stepColor} 100%)`,
+                          background: accent,
                         }}
                       />
 
@@ -198,13 +151,13 @@ export const IntroductionSection = () => (
                               width: 52,
                               height: 52,
                               borderRadius: '16px',
-                              background: accent.bg,
-                              color: accent.color,
+                              bgcolor: piccColors.blue[50],
+                              color: accent,
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              boxShadow: `0 8px 18px ${accent.shadow}`,
-                              border: `1px solid ${accent.border}`,
+                              boxShadow: 'none',
+                              border: `1px solid ${piccColors.blue[100]}`,
                             }}
                           >
                             <Icon sx={{ fontSize: 26 }} />
@@ -215,8 +168,8 @@ export const IntroductionSection = () => (
                               px: 1.5,
                               py: 0.5,
                               borderRadius: '999px',
-                              bgcolor: accent.tagBg,
-                              color: accent.stepColor,
+                              bgcolor: piccColors.blue[50],
+                              color: piccColors.blue[700],
                               fontWeight: 800,
                               fontSize: '0.75rem',
                               letterSpacing: '0.05em',
@@ -248,14 +201,13 @@ export const IntroductionSection = () => (
                             fontSize: '0.885rem',
                             color: piccColors.slate[600],
                             lineHeight: 1.6,
-                            fontWeight: 450,
+                            fontWeight: 400,
                           }}
                         >
                           {v.description}
                         </Typography>
                       </CardContent>
                     </Card>
-                  </Tilt3DCard>
                 </motion.div>
               </Grid>
             );

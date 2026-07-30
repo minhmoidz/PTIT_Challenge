@@ -249,12 +249,12 @@ Có thể triển khai ngay:
 - Phong cách: Candy Pastel, Clean, Friendly, Youthful.
 - Hình ảnh: bầu trời, mây, bảng chỉ dẫn, tinh thần đi lên/vượt giới hạn.
 - Đơn vị tổ chức thể hiện trong asset: PTIT và PTIT IEC; vẫn cần BTC xác nhận file logo/quyền dùng production.
+- Quy mô đội cho đăng ký mới: 03–04 thành viên (D-001 đã APPROVED). Hồ sơ lịch sử 05 thành viên vẫn được giữ để hiển thị và xuất dữ liệu.
 
 ## 3. Nội dung chưa được phép tự khóa
 
 - Ngày giờ mở/đóng đăng ký.
 - Timeline chính thức.
-- Team size 3–4 hay 3–5.
 - Eligibility và điều kiện ngành.
 - Cách nộp hồ sơ vòng đầu.
 - Chọn một hay nhiều nhóm bài toán.
@@ -2397,7 +2397,7 @@ Agent được làm foundation, components, mock form, animation và tests khi b
 
 | ID | Topic | Decision required | Status |
 |---|---|---|---|
-| D-001 | Team size | 3–4 hay 3–5? | UNRESOLVED |
+| D-001 | Team size | Đăng ký mới gồm 3–4 thành viên | APPROVED |
 | D-002 | Eligibility | PTIT-only hay có liên trường? | UNRESOLVED |
 | D-003 | Discipline rule | Tối thiểu hai thành viên nhóm ngành là bắt buộc hay khuyến khích? | UNRESOLVED |
 | D-004 | Registration dates | Open/close date chính thức | UNRESOLVED |
@@ -2410,6 +2410,16 @@ Agent được làm foundation, components, mock form, animation và tests khi b
 | D-011 | Storage | Google Sheets mặc định có được duyệt? | UNRESOLVED |
 | D-012 | Privacy | Notice, retention, access, deletion contact | UNRESOLVED |
 | D-013 | Asset rights | Avatar/background/logo được dùng và chuyển WebP? | UNRESOLVED |
+
+### D-001
+
+- Status: APPROVED
+- Decision: Đăng ký mới chỉ nhận đội từ 03 đến 04 thành viên. Hồ sơ công khai và registration lịch sử 05 thành viên được giữ để hiển thị/xuất dữ liệu chính xác.
+- Approved by: Project owner
+- Approved at: 2026-07-29
+- Evidence/source: Yêu cầu chuẩn hoá quy mô đội từ 3–5 xuống 3–4.
+- Files/config affected: `src/data/competition.ts`, public config, client form, Express/Vercel validation.
+- Tests updated: Client schema, Express service, Vercel schema.
 
 ## P1 — Before registration launch
 

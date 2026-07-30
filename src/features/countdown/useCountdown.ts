@@ -8,11 +8,12 @@ export interface CountdownValue {
   isExpired: boolean;
 }
 
-const calculateCountdown = (targetDate: Date | null): CountdownValue => {
+const calculateCountdown = (targetDate: Date | null, clockOffsetMs = 0): CountdownValue => {
   if (!targetDate) {
     return { days: 0, hours: 0, minutes: 0, seconds: 0, isExpired: true };
   }
-  const diff = targetDate.getTime() - Date.now();
+  const now = Date.now() + clockOffsetMs;
+  const diff = targetDate.getTime() - now;
   if (diff <= 0) {
     return { days: 0, hours: 0, minutes: 0, seconds: 0, isExpired: true };
   }
@@ -26,9 +27,9 @@ const calculateCountdown = (targetDate: Date | null): CountdownValue => {
   };
 };
 
-export const useCountdown = (targetDate: Date | null): CountdownValue => {
+export const useCountdown = (targetDate: Date | null, clockOffsetMs = 0): CountdownValue => {
   const [countdown, setCountdown] = useState<CountdownValue>(() =>
-    calculateCountdown(targetDate)
+    calculateCountdown(targetDate, clockOffsetMs)
   );
   const rafRef = useRef<number>(0);
 
@@ -38,7 +39,7 @@ export const useCountdown = (targetDate: Date | null): CountdownValue => {
     }
 
     const tick = () => {
-      const next = calculateCountdown(targetDate);
+      const next = calculateCountdown(targetDate, clockOffsetMs);
       setCountdown(next);
       if (!next.isExpired) {
         rafRef.current = requestAnimationFrame(tick);
@@ -50,7 +51,7 @@ export const useCountdown = (targetDate: Date | null): CountdownValue => {
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [targetDate]);
+  }, [targetDate, clockOffsetMs]);
 
   return targetDate ? countdown : { days: 0, hours: 0, minutes: 0, seconds: 0, isExpired: true };
 };

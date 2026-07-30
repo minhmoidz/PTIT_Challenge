@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Box, Container, Typography, Chip, Alert, Button, Link, Paper } from '@mui/material';
 import AppRegistrationRoundedIcon from '@mui/icons-material/AppRegistrationRounded';
 import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
@@ -7,11 +7,14 @@ import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import MenuBookRoundedIcon from '@mui/icons-material/MenuBookRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 import { useRegistrationStatus } from '@/features/registration/hooks';
 import { RegistrationForm } from '@/features/registration/components/RegistrationForm';
 import { piccColors } from '@/theme/palette';
-import { SkyBackground, getSkyBackground } from '@/components/ui/SkyBackground';
+import { SkyBackground } from '@/components/ui/SkyBackground';
+import { getSkyBackground } from '@/components/ui/skyBackgroundConfig';
+import { competitionData } from '@/data/competition';
+import { appHash } from '@/config/paths';
 
 /* ─── Real-Time Countdown Computation ─── */
 interface TimeDiff {
@@ -21,9 +24,10 @@ interface TimeDiff {
   seconds: number;
 }
 
-const getTimeDiff = (targetDate: Date | null): TimeDiff => {
+const getTimeDiff = (targetDate: Date | null, clockOffsetMs = 0): TimeDiff => {
   if (!targetDate) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
-  const diffMs = targetDate.getTime() - Date.now();
+  const now = Date.now() + clockOffsetMs;
+  const diffMs = targetDate.getTime() - now;
   if (diffMs <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
   return {
     days: Math.floor(diffMs / 86_400_000),
@@ -33,13 +37,16 @@ const getTimeDiff = (targetDate: Date | null): TimeDiff => {
   };
 };
 
-const CountdownCell = ({ value, label }: { value: number; label: string }) => (
+const CountdownCell = ({ value, label }: { value: number; label: string }) => {
+  const prefersReducedMotion = useReducedMotion();
+
+  return (
   <Box
     sx={{
       textAlign: 'center',
-      minWidth: { xs: 58, sm: 72 },
+      minWidth: { xs: 0, sm: 72 },
       py: 1.25,
-      px: 1,
+      px: { xs: 0.5, sm: 1 },
       bgcolor: '#FFFFFF',
       borderRadius: '16px',
       border: '1px solid rgba(57, 124, 232, 0.25)',
@@ -58,9 +65,9 @@ const CountdownCell = ({ value, label }: { value: number; label: string }) => (
     >
       <motion.span
         key={value}
-        initial={{ opacity: 0, y: -4 }}
+        initial={prefersReducedMotion ? false : { opacity: 0, y: -4 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.18 }}
+        transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.18 }}
       >
         {String(value).padStart(2, '0')}
       </motion.span>
@@ -78,35 +85,43 @@ const CountdownCell = ({ value, label }: { value: number; label: string }) => (
       {label}
     </Typography>
   </Box>
-);
+  );
+};
 
 /* ─── Registration Countdown Dashboard ─── */
 const RegistrationCountdownDashboard = () => {
   const { config, status } = useRegistrationStatus();
+  const prefersReducedMotion = useReducedMotion();
   const openDate = config.registration.openAt ? new Date(config.registration.openAt) : null;
   const closeDate = config.registration.closeAt ? new Date(config.registration.closeAt) : null;
+
+  const [clientStartedAt] = useState(() => Date.now());
+  const clockOffset = useMemo(
+    () => (config.serverTime ? new Date(config.serverTime).getTime() - clientStartedAt : 0),
+    [config.serverTime, clientStartedAt]
+  );
 
   const isBeforeOpen = status === 'not_open';
   const isOpen = status === 'open';
   const targetDate = isBeforeOpen ? openDate : isOpen ? closeDate : null;
 
-  const [timeDiff, setTimeDiff] = useState<TimeDiff>(() => getTimeDiff(targetDate));
+  const [timeDiff, setTimeDiff] = useState<TimeDiff>(() => getTimeDiff(targetDate, clockOffset));
 
   useEffect(() => {
     if (!targetDate) return;
     const intervalId = setInterval(() => {
-      setTimeDiff(getTimeDiff(targetDate));
+      setTimeDiff(getTimeDiff(targetDate, clockOffset));
     }, 1000);
 
     return () => clearInterval(intervalId);
-  }, [targetDate]);
+  }, [targetDate, clockOffset]);
 
   if (status === 'closed' || status === 'completed') {
     return (
       <Alert
         severity="error"
         action={
-          <Button color="inherit" size="small" href="/#lo-trinh" sx={{ fontWeight: 800 }}>
+          <Button color="inherit" size="small" href={appHash('lo-trinh')} sx={{ fontWeight: 800 }}>
             Xem lộ trình
           </Button>
         }
@@ -119,7 +134,7 @@ const RegistrationCountdownDashboard = () => {
           alignItems: 'center',
         }}
       >
-        ⛔ <strong>Cổng đăng ký đã chính thức đóng vào 15/08/2026.</strong> Theo dõi các vòng thi tiếp theo trên trang chủ.
+        ⛔ <strong>Cổng đăng ký đã chính thức đóng vào {competitionData.meta.registrationCloseDate}.</strong> Theo dõi các vòng thi tiếp theo trên trang chủ.
       </Alert>
     );
   }
@@ -146,8 +161,8 @@ const RegistrationCountdownDashboard = () => {
     ? 'ĐẾM NGƯỢC MỞ CỔNG ĐĂNG KÝ'
     : 'THỜI GIAN CÒN LẠI NỘP HỒ SƠ';
   const headingText = isBeforeOpen
-    ? 'Cổng đăng ký chính thức mở từ 01/08/2026'
-    : 'Hạn cuối nộp hồ sơ: 15/08/2026 · 23:59';
+    ? `Cổng đăng ký chính thức mở từ ${competitionData.meta.registrationOpenDate}`
+    : `Hạn cuối nộp hồ sơ: ${competitionData.meta.registrationCloseDate} · 23:59`;
   const dotColor = isBeforeOpen ? '#3B82F6' : '#10B981';
 
   return (
@@ -175,7 +190,7 @@ const RegistrationCountdownDashboard = () => {
                 bgcolor: dotColor,
                 ml: '6px !important',
                 boxShadow: `0 0 8px ${dotColor}`,
-                animation: isOpen ? 'pulseDot 2s ease-in-out infinite' : 'none',
+                animation: isOpen && !prefersReducedMotion ? 'pulseDot 2s ease-in-out infinite' : 'none',
                 '@keyframes pulseDot': {
                   '0%, 100%': { opacity: 1, transform: 'scale(1)' },
                   '50%': { opacity: 0.4, transform: 'scale(0.85)' },
@@ -215,10 +230,12 @@ const RegistrationCountdownDashboard = () => {
       {/* Real-time Countdown Digits */}
       <Box
         sx={{
-          display: 'flex',
+          display: 'grid',
+          gridTemplateColumns: { xs: 'repeat(4, minmax(0, 1fr))', sm: 'repeat(7, minmax(0, max-content))' },
           alignItems: 'center',
           justifyContent: 'center',
-          gap: { xs: 0.75, sm: 1.25 },
+          gap: { xs: 0.5, sm: 1.25 },
+          '& > :nth-of-type(even)': { display: { xs: 'none', sm: 'block' } },
         }}
         role="timer"
         aria-label={`Đếm ngược: ${timeDiff.days} ngày ${timeDiff.hours} giờ ${timeDiff.minutes} phút ${timeDiff.seconds} giây`}
@@ -247,7 +264,7 @@ export const RegistrationPage = () => {
       component="main"
       id="registration-page"
       sx={{
-        py: { xs: 10, md: 14 },
+        py: { xs: 8, sm: 9, md: 12 },
         background: getSkyBackground('hero'),
         position: 'relative',
         minHeight: '100vh',
@@ -261,7 +278,7 @@ export const RegistrationPage = () => {
         {/* Back to Home Link */}
         <Box sx={{ mb: 3 }}>
           <Button
-            href="/#hero"
+            href={appHash('hero')}
             startIcon={<ArrowBackRoundedIcon />}
             sx={{
               color: piccColors.blue[800],
@@ -340,7 +357,7 @@ export const RegistrationPage = () => {
             />
             <Chip
               icon={<GroupsRoundedIcon sx={{ fontSize: '15px !important', color: `${piccColors.pink[500]} !important` }} />}
-              label="Đội 03–05 thành viên"
+              label="Đội 03–04 thành viên"
               size="small"
               sx={{ bgcolor: '#FFFFFF', fontWeight: 700, fontSize: '0.775rem', border: '1px solid #E2E8F0' }}
             />
@@ -354,7 +371,7 @@ export const RegistrationPage = () => {
 
           <Box>
             <Link
-              href="/#the-le"
+              href={appHash('the-le')}
               underline="hover"
               sx={{
                 fontSize: '0.85rem',

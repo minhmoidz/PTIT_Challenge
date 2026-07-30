@@ -1,9 +1,10 @@
 import type { PiccAsset } from '@/types/registration';
+import { assetPath } from './paths';
 
 export const assetManifest: Record<string, PiccAsset> = {
   heroDesktop: {
     id: 'heroDesktop',
-    src: '/assets/picc/hero-sign-desktop.webp',
+    src: assetPath('assets/picc/hero-sign-desktop.webp'),
     width: 2025,
     height: 2025,
     usage: 'production-candidate',
@@ -12,7 +13,7 @@ export const assetManifest: Record<string, PiccAsset> = {
   },
   heroMobile: {
     id: 'heroMobile',
-    src: '/assets/picc/hero-sign-mobile.webp',
+    src: assetPath('assets/picc/hero-sign-mobile.webp'),
     width: 1170,
     height: 1174,
     usage: 'production-candidate',
@@ -21,7 +22,7 @@ export const assetManifest: Record<string, PiccAsset> = {
   },
   heroSignTransparent: {
     id: 'heroSignTransparent',
-    src: '/assets/picc/hero-sign-transparent.webp',
+    src: assetPath('assets/picc/hero-sign-transparent.webp'),
     width: 1024,
     height: 1024,
     usage: 'production-candidate',
@@ -30,7 +31,7 @@ export const assetManifest: Record<string, PiccAsset> = {
   },
   heroBackground: {
     id: 'heroBackground',
-    src: '/assets/picc/background.webp',
+    src: assetPath('assets/picc/background.webp'),
     width: 1920,
     height: 1080,
     usage: 'production-candidate',
@@ -39,7 +40,7 @@ export const assetManifest: Record<string, PiccAsset> = {
   },
   hero3d: {
     id: 'hero3d',
-    src: '/assets/picc/picc-hero-3d.png',
+    src: assetPath('assets/picc/picc-hero-3d.png'),
     width: 1024,
     height: 1024,
     usage: 'production-candidate',
@@ -48,14 +49,14 @@ export const assetManifest: Record<string, PiccAsset> = {
   },
   socialAvatar: {
     id: 'socialAvatar',
-    src: '/assets/picc/social-avatar.webp',
+    src: assetPath('assets/picc/social-avatar.webp'),
     usage: 'production-candidate',
     approvalStatus: 'unresolved',
     containsText: false,
   },
   facebookCover: {
     id: 'facebookCover',
-    src: '/assets/picc/facebook-cover-with-dates.webp',
+    src: assetPath('assets/picc/facebook-cover-with-dates.webp'),
     usage: 'conditional',
     approvalStatus: 'unresolved',
     containsText: true,
@@ -63,7 +64,7 @@ export const assetManifest: Record<string, PiccAsset> = {
   },
   facebookCoverPlain: {
     id: 'facebookCoverPlain',
-    src: '/assets/picc/facebook-cover.webp',
+    src: assetPath('assets/picc/facebook-cover.webp'),
     width: 1920,
     height: 1080,
     usage: 'production-candidate',
@@ -72,7 +73,7 @@ export const assetManifest: Record<string, PiccAsset> = {
   },
   lichTrinh: {
     id: 'lichTrinh',
-    src: '/assets/picc/lichtrinh.webp',
+    src: assetPath('assets/picc/lichtrinh.webp'),
     width: 2048,
     height: 758,
     usage: 'production-candidate',
@@ -81,7 +82,7 @@ export const assetManifest: Record<string, PiccAsset> = {
   },
   heroAvatar: {
     id: 'heroAvatar',
-    src: '/assets/picc/avatar-photoroom.png',
+    src: assetPath('assets/picc/avatar-photoroom.png'),
     width: 1024,
     height: 1024,
     usage: 'production-candidate',

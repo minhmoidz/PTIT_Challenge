@@ -5,6 +5,7 @@ import MapRoundedIcon from '@mui/icons-material/MapRounded';
 import FacebookRoundedIcon from '@mui/icons-material/Facebook';
 import { piccColors } from '@/theme/palette';
 import { competitionData } from '@/data/competition';
+import { appHash } from '@/config/paths';
 
 export const SuccessPage = () => (
   <Box
@@ -73,7 +74,7 @@ export const SuccessPage = () => (
         <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
           <Button
             variant="contained"
-            href="/"
+            href={appHash('hero')}
             startIcon={<HomeRoundedIcon />}
             sx={{
               borderRadius: 999,
@@ -89,7 +90,7 @@ export const SuccessPage = () => (
 
           <Button
             variant="outlined"
-            href="/#lo-trinh"
+            href={appHash('lo-trinh')}
             startIcon={<MapRoundedIcon />}
             sx={{
               borderRadius: 999,
