@@ -29,8 +29,7 @@ export const IntroductionSection = () => (
     component="section"
     id="gioi-thieu"
     sx={{
-      pt: { xs: 8, sm: 10, md: 12 },
-      pb: { xs: 7, sm: 8, md: 10 },
+      py: { xs: 8, sm: 10, md: 12 },
       background: getSkyBackground('clear'),
       position: 'relative',
       overflow: 'hidden',
@@ -41,7 +40,7 @@ export const IntroductionSection = () => (
 
     <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
       {/* Section Header */}
-      <Box sx={{ textAlign: 'center', mb: { xs: 4, sm: 5, md: 6 }, fontFamily: '"Manrope", sans-serif' }}>
+      <Box sx={{ textAlign: 'center', mb: { xs: 5, md: 7 }, fontFamily: '"Manrope", sans-serif' }}>
         <Box
           sx={{
             width: 44,
@@ -56,12 +55,12 @@ export const IntroductionSection = () => (
           variant="h2"
           component="h2"
           sx={{
-            mb: 1.5,
+            mb: 1.75,
             color: piccColors.ptitNavy,
             fontWeight: 800,
-            fontSize: { xs: '1.75rem', sm: '2.1rem', md: '2.4rem' },
-            letterSpacing: '-0.02em',
-            lineHeight: 1.2,
+            fontSize: { xs: '2rem', sm: '2.5rem', md: '2.8rem' },
+            letterSpacing: '-0.025em',
+            lineHeight: 1.15,
             fontFamily: '"Manrope", sans-serif',
           }}
         >
@@ -71,10 +70,10 @@ export const IntroductionSection = () => (
           sx={{
             maxWidth: 780,
             mx: 'auto',
-            color: '#4e4f53',
-            fontSize: { xs: '0.9rem', md: '0.975rem' },
+            color: piccColors.slate[600],
+            fontSize: { xs: '1rem', md: '1.075rem' },
             lineHeight: 1.7,
-            fontWeight: 400,
+            fontWeight: 450,
             fontFamily: '"Manrope", sans-serif',
           }}
         >

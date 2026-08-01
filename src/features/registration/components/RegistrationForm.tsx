@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import type { RegistrationFormValues } from '@/types/registration';
 import { useRegistrationStatus } from '@/features/registration/hooks';
 import { createRegistrationSchema } from '@/features/registration/model/schema';
-import { piccColors } from '@/theme/palette';
+import { piccColors, gradientMesh } from '@/theme/palette';
 import { FormStep1 } from './FormStep1';
 import { FormStep2 } from './FormStep2';
 import { FormStep3 } from './FormStep3';
@@ -359,44 +359,44 @@ export const RegistrationForm = () => {
                 Xóa dữ liệu đã nhập
               </Button>
               {activeStep < 2 ? (
-                <Button
-                  onClick={handleNext}
-                  variant="contained"
-                  sx={{
-                    borderRadius: 999,
-                    width: { xs: '100%', sm: 'auto' },
-                    px: 4,
-                    py: 1.2,
-                    fontWeight: 700,
-                    fontSize: '0.95rem',
-                    background: `linear-gradient(135deg, ${piccColors.blue[700]} 0%, ${piccColors.blue[500]} 100%)`,
-                    boxShadow: '0 4px 14px rgba(36, 95, 168, 0.35)',
-                    '&:hover': {
-                      boxShadow: '0 6px 20px rgba(36, 95, 168, 0.45)',
-                    },
-                  }}
-                >
+                  <Button
+                    onClick={handleNext}
+                    variant="contained"
+                    sx={{
+                      borderRadius: 999,
+                      width: { xs: '100%', sm: 'auto' },
+                      px: 4,
+                      py: 1.2,
+                      fontWeight: 700,
+                      fontSize: '0.95rem',
+                      background: gradientMesh.ptitCta,
+                      boxShadow: '0 4px 14px rgba(188, 38, 38, 0.3)',
+                      '&:hover': {
+                        boxShadow: '0 6px 20px rgba(188, 38, 38, 0.4)',
+                      },
+                    }}
+                  >
                   Tiếp tục
                 </Button>
               ) : isFormOpen ? (
-                <Button
-                  type="submit"
-                  variant="contained"
-                  disabled={isSubmitting}
-                  sx={{
-                    borderRadius: 999,
-                    width: { xs: '100%', sm: 'auto' },
-                    px: 4.5,
-                    py: 1.3,
-                    fontWeight: 800,
-                    fontSize: '1rem',
-                    background: `linear-gradient(135deg, ${piccColors.pink[500]} 0%, ${piccColors.pink[700]} 100%)`,
-                    boxShadow: '0 6px 20px rgba(232, 91, 159, 0.35)',
-                    '&:hover': {
-                      boxShadow: '0 8px 24px rgba(232, 91, 159, 0.5)',
-                    },
-                  }}
-                >
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    disabled={isSubmitting}
+                    sx={{
+                      borderRadius: 999,
+                      width: { xs: '100%', sm: 'auto' },
+                      px: 4.5,
+                      py: 1.3,
+                      fontWeight: 800,
+                      fontSize: '1rem',
+                      background: gradientMesh.ptitCta,
+                      boxShadow: '0 6px 20px rgba(188, 38, 38, 0.35)',
+                      '&:hover': {
+                        boxShadow: '0 8px 24px rgba(188, 38, 38, 0.5)',
+                      },
+                    }}
+                  >
                   {isSubmitting ? 'Đang gửi hồ sơ...' : 'Gửi Đăng Ký Tranh Tài'}
                 </Button>
               ) : (

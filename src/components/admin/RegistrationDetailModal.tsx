@@ -5,6 +5,7 @@ import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import PhoneRoundedIcon from '@mui/icons-material/PhoneRounded';
+import { adminColors } from '@/theme/adminTokens';
 
 interface TeamMember {
   fullName: string;
@@ -47,7 +48,7 @@ export const RegistrationDetailModal = ({ open, registration, onClose, onVerify,
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth paperProps={{ sx: { borderRadius: 4, p: 1 } }}>
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pb: 1 }}>
         <Box>
-          <Typography variant="h6" sx={{ fontWeight: 800, color: '#163A67' }}>
+          <Typography variant="h6" sx={{ fontWeight: 800, color: adminColors.text }}>
             Chi Tiết Đơn Đăng Ký — {data.teamName}
           </Typography>
           <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
@@ -65,8 +66,8 @@ export const RegistrationDetailModal = ({ open, registration, onClose, onVerify,
 
       <DialogContent sx={{ pt: 2.5 }}>
         {/* Team Summary Info */}
-        <Box sx={{ p: 2.5, borderRadius: 3, bgcolor: '#F8FAFC', border: '1px solid #E2E8F0', mb: 3 }}>
-          <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#163A67', mb: 1.5 }}>
+        <Box sx={{ p: 2.5, borderRadius: 3, bgcolor: adminColors.surfaceMuted, border: `1px solid ${adminColors.border}`, mb: 3 }}>
+          <Typography variant="subtitle2" sx={{ fontWeight: 800, color: adminColors.text, mb: 1.5 }}>
             📌 Thông Tin Tổng Quan Đội Thi
           </Typography>
           <Grid container spacing={2}>
@@ -82,14 +83,14 @@ export const RegistrationDetailModal = ({ open, registration, onClose, onVerify,
 
             <Grid size={{ xs: 12, sm: 4 }}>
               <Typography variant="caption" color="text.secondary" display="block">Nhóm bài toán</Typography>
-              <Typography variant="body2" sx={{ fontWeight: 700, color: '#397CE8' }}>
+              <Typography variant="body2" sx={{ fontWeight: 700, color: adminColors.primary }}>
                 {data.challengeCategories?.join(', ') || 'Chưa chọn'}
               </Typography>
             </Grid>
 
             <Grid size={{ xs: 12 }}>
               <Typography variant="caption" color="text.secondary" display="block">Mô tả dự án nổi bật / Ý tưởng</Typography>
-              <Typography variant="body2" sx={{ fontWeight: 600, color: '#334155', mt: 0.5 }}>
+              <Typography variant="body2" sx={{ fontWeight: 600, color: adminColors.textSecondary, mt: 0.5 }}>
                 {data.featuredProject || '—'}
               </Typography>
             </Grid>
@@ -97,18 +98,18 @@ export const RegistrationDetailModal = ({ open, registration, onClose, onVerify,
         </Box>
 
         {/* Full Team Members List */}
-        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#163A67', mb: 2 }}>
+        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: adminColors.text, mb: 2 }}>
           👥 Danh Sách Tất Cả Thành Viên ({data.members?.length || 0} Người)
         </Typography>
 
         <Grid container spacing={2}>
           {data.members?.map((m, i) => (
             <Grid size={{ xs: 12, sm: 6 }} key={i}>
-              <Box sx={{ p: 2, borderRadius: 3, border: '1px solid #E2E8F0', bgcolor: m.role === 'leader' ? '#EEF2FF' : '#FFFFFF' }}>
+              <Box sx={{ p: 2, borderRadius: 3, border: `1px solid ${adminColors.border}`, bgcolor: m.role === 'leader' ? adminColors.primaryLight : '#FFFFFF' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <PersonRoundedIcon sx={{ fontSize: 18, color: '#397CE8' }} />
-                    <Typography variant="body2" sx={{ fontWeight: 800, color: '#1E293B' }}>
+                    <PersonRoundedIcon sx={{ fontSize: 18, color: adminColors.primary }} />
+                    <Typography variant="body2" sx={{ fontWeight: 800, color: adminColors.text }}>
                       {m.fullName}
                     </Typography>
                   </Box>
@@ -120,15 +121,15 @@ export const RegistrationDetailModal = ({ open, registration, onClose, onVerify,
                   />
                 </Box>
 
-                <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.75, color: '#475569', mt: 0.5 }}>
+                <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.75, color: adminColors.textMuted, mt: 0.5 }}>
                   <BadgeRoundedIcon sx={{ fontSize: 14 }} /> Mã SV: <strong>{m.studentId}</strong> ({m.major || 'PTIT'})
                 </Typography>
 
-                <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.75, color: '#475569', mt: 0.5 }}>
+                <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.75, color: adminColors.textMuted, mt: 0.5 }}>
                   <EmailRoundedIcon sx={{ fontSize: 14 }} /> {m.email}
                 </Typography>
 
-                <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.75, color: '#475569', mt: 0.5 }}>
+                <Typography variant="caption" sx={{ display: 'flex', alignItems: 'center', gap: 0.75, color: adminColors.textMuted, mt: 0.5 }}>
                   <PhoneRoundedIcon sx={{ fontSize: 14 }} /> {m.phone}
                 </Typography>
               </Box>

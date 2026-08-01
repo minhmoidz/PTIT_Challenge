@@ -38,11 +38,11 @@ export const AwardHeader = () => {
         {/* Subtitle */}
         <Typography
           sx={{
-            color: '#4e4f53',
+            color: piccColors.slate[600],
             maxWidth: 640,
             mx: 'auto',
-            fontSize: { xs: '0.95rem', md: '1.05rem' },
-            lineHeight: 1.6,
+            fontSize: { xs: '1rem', md: '1.075rem' },
+            lineHeight: 1.7,
             mb: 3.5,
             fontFamily: '"Manrope", sans-serif',
           }}

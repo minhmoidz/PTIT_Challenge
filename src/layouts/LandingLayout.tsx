@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { SkipLink } from '@/components/ui/SkipLink';
+import { ScrollProgress } from '@/components/ui/ScrollProgress';
 import { SiteHeader } from '@/features/navigation/SiteHeader';
 import { FooterSection } from '@/sections/footer/FooterSection';
 import { MobileStickyCta } from '@/components/ui/MobileStickyCta';
@@ -43,6 +44,7 @@ export const LandingLayout = () => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <SkipLink />
+      <ScrollProgress />
       <SiteHeader />
       <Box
         component="main"

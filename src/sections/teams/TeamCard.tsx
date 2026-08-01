@@ -41,13 +41,13 @@ export const TeamCard = ({ team }: Props) => {
       case 'emerald':
         return {
           bgcolor: 'rgba(16, 185, 129, 0.12)',
-          color: '#047857',
+          color: piccColors.emerald[700],
           border: '1px solid rgba(16, 185, 129, 0.3)',
         };
       case 'purple':
         return {
           bgcolor: 'rgba(139, 92, 246, 0.12)',
-          color: '#6D28D9',
+          color: piccColors.indigo[700],
           border: '1px solid rgba(139, 92, 246, 0.3)',
         };
       case 'amber':
@@ -59,14 +59,14 @@ export const TeamCard = ({ team }: Props) => {
       case 'gray':
         return {
           bgcolor: 'rgba(100, 116, 139, 0.12)',
-          color: '#475569',
+          color: piccColors.slate[600],
           border: '1px solid rgba(100, 116, 139, 0.3)',
         };
       default:
         return {
-          bgcolor: 'rgba(57, 124, 232, 0.12)',
-          color: '#1E40AF',
-          border: '1px solid rgba(57, 124, 232, 0.3)',
+          bgcolor: 'rgba(36, 95, 168, 0.12)',
+          color: piccColors.blue[800],
+          border: '1px solid rgba(36, 95, 168, 0.3)',
         };
     }
   };
@@ -111,9 +111,9 @@ export const TeamCard = ({ team }: Props) => {
                 height: 48,
                 borderRadius: '14px',
                 objectFit: 'contain',
-                bgcolor: '#F8FAFC',
+                bgcolor: piccColors.slate[50],
                 p: 0.75,
-                border: '1px solid #E2E8F0',
+                border: `1px solid ${piccColors.slate[200]}`,
               }}
             />
           ) : (
@@ -191,11 +191,11 @@ export const TeamCard = ({ team }: Props) => {
             label={team.challengeCategoryLabel}
             size="small"
             sx={{
-              bgcolor: 'rgba(234, 242, 255, 0.8)',
+              bgcolor: 'rgba(240, 247, 255, 0.8)',
               color: piccColors.blue[800],
               fontWeight: 700,
               fontSize: '0.75rem',
-              border: '1px solid rgba(57, 124, 232, 0.2)',
+              border: '1px solid rgba(36, 95, 168, 0.2)',
             }}
           />
           <Chip
@@ -230,7 +230,7 @@ export const TeamCard = ({ team }: Props) => {
             px: 1,
             borderRadius: 3,
             '&:hover': {
-              bgcolor: 'rgba(57, 124, 232, 0.08)',
+              bgcolor: 'rgba(36, 95, 168, 0.08)',
             },
           }}
         >

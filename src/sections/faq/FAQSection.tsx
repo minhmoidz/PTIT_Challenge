@@ -34,7 +34,7 @@ export const FAQSection = ({ items = competitionData.faq }: Props) => {
       component="section"
       id="faq"
       sx={{
-        py: { xs: 9, md: 14 },
+        py: { xs: 8, sm: 10, md: 12 },
         background: getSkyBackground('calm'),
         position: 'relative',
         overflow: 'hidden',
@@ -62,9 +62,9 @@ export const FAQSection = ({ items = competitionData.faq }: Props) => {
               mb: 1.75,
               color: piccColors.ptitNavy,
               fontWeight: 800,
-              fontSize: { xs: '2rem', sm: '2.5rem', md: '2.85rem' },
-              letterSpacing: '-0.02em',
-              lineHeight: 1.2,
+              fontSize: { xs: '2rem', sm: '2.5rem', md: '2.8rem' },
+              letterSpacing: '-0.025em',
+              lineHeight: 1.15,
               fontFamily: '"Manrope", sans-serif',
             }}
           >
@@ -72,11 +72,11 @@ export const FAQSection = ({ items = competitionData.faq }: Props) => {
           </Typography>
           <Typography
             sx={{
-              color: '#4e4f53',
+              color: piccColors.slate[600],
               maxWidth: 680,
               mx: 'auto',
-              fontSize: { xs: '0.95rem', md: '1.05rem' },
-              lineHeight: 1.65,
+              fontSize: { xs: '1rem', md: '1.075rem' },
+              lineHeight: 1.7,
               fontWeight: 450,
               fontFamily: '"Manrope", sans-serif',
             }}

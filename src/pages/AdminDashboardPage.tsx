@@ -20,6 +20,8 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { adminColors, adminRadius, adminShadow } from '@/theme/adminTokens';
 import { RegistrationDetailModal } from '@/components/admin/RegistrationDetailModal';
 import { env } from '@/config/env';
+import type { PublicTeamProfile } from '@/types/publicTeam';
+import { TEAM_STATUS_MAP } from '@/types/publicTeam';
 
 /* ── Types ── */
 interface TeamMember {
@@ -144,13 +146,74 @@ const getAuthHeaders = (): Record<string, string> => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
+/* ── Admin Section Routing ── */
+export type AdminSection = 'overview' | 'registrations' | 'teams' | 'settings';
+
+const SECTION_ROUTES: Record<AdminSection, string> = {
+  overview: '/admin/dashboard',
+  registrations: '/admin/registrations',
+  teams: '/admin/teams',
+  settings: '/admin/settings',
+};
+
+const SECTION_TABS: { key: AdminSection; label: string }[] = [
+  { key: 'overview', label: 'Tổng quan' },
+  { key: 'registrations', label: 'Hồ sơ đăng ký' },
+  { key: 'teams', label: 'Đội thi công khai' },
+  { key: 'settings', label: 'Cấu hình cuộc thi' },
+];
+
+const SECTION_META: Record<AdminSection, { title: string; description: string }> = {
+  overview: { title: 'Tổng quan cuộc thi', description: 'Kiểm tra trạng thái đăng ký, hồ sơ cần xử lý và cấu hình hệ thống.' },
+  registrations: { title: 'Hồ sơ đăng ký', description: 'Danh sách hồ sơ đăng ký từ thí sinh.' },
+  teams: { title: 'Đội thi công khai', description: 'Các đội thi đã được xuất bản công khai.' },
+  settings: { title: 'Cấu hình cuộc thi', description: 'Điều chỉnh thời gian đăng ký và trạng thái cuộc thi.' },
+};
+
+const teamBadgeColors: Record<string, { bg: string; text: string; border: string }> = {
+  blue: { bg: adminColors.status.verified.bg, text: adminColors.status.verified.text, border: adminColors.status.verified.border },
+  purple: { bg: adminColors.primaryLight, text: adminColors.primary, border: adminColors.primaryBorder },
+  amber: { bg: adminColors.status.needs_revision.bg, text: adminColors.status.needs_revision.text, border: adminColors.status.needs_revision.border },
+  emerald: { bg: adminColors.successBg, text: adminColors.success, border: adminColors.successBorder },
+  gold: { bg: '#FFF7E0', text: '#B45309', border: '#FCD34D' },
+  gray: { bg: adminColors.surfaceMuted, text: adminColors.textMuted, border: adminColors.border },
+};
+
+const TeamStatusBadge = ({ status, label }: { status: string; label: string }) => {
+  const color = TEAM_STATUS_MAP[status as keyof typeof TEAM_STATUS_MAP]?.color || 'gray';
+  const cfg = teamBadgeColors[color];
+  return (
+    <Box
+      component="span"
+      sx={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        px: 1.25,
+        py: 0.35,
+        borderRadius: '6px',
+        fontSize: '0.75rem',
+        fontWeight: 700,
+        bgcolor: cfg.bg,
+        color: cfg.text,
+        border: `1px solid ${cfg.border}`,
+        whiteSpace: 'nowrap',
+      }}
+    >
+      {label}
+    </Box>
+  );
+};
+
 /* ════════════════════════════════════════════════════════════ */
-export const AdminDashboardPage = () => {
+export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSection } = {}) => {
   const navigate = useNavigate();
+  const contentSection: 'registrations' | 'teams' | 'settings' = section === 'overview' ? 'registrations' : section;
   const [stats, setStats] = useState({ totalRegistrations: 0, submittedCount: 0, verifiedCount: 0, publicProfilesCount: 0, publishedTeamsCount: 0 });
   const [registrations, setRegistrations] = useState<RegistrationItem[]>([]);
+  const [teams, setTeams] = useState<PublicTeamProfile[]>([]);
   const [loadingRegs, setLoadingRegs] = useState(false);
   const [loadingStats, setLoadingStats] = useState(false);
+  const [loadingTeams, setLoadingTeams] = useState(false);
   const [selectedReg, setSelectedReg] = useState<RegistrationItem | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [openAt, setOpenAt] = useState('2026-08-01T00:00');
@@ -169,17 +232,18 @@ export const AdminDashboardPage = () => {
   const [configSaving, setConfigSaving] = useState(false);
   const [configSuccess, setConfigSuccess] = useState(false);
   const [configError, setConfigError] = useState('');
-  const [activeSection, setActiveSection] = useState<'registrations' | 'settings'>('registrations');
 
   const fetchData = useCallback(async () => {
     setLoadingStats(true);
     setLoadingRegs(true);
+    setLoadingTeams(true);
     try {
       const authHeaders = getAuthHeaders();
-      const [sumRes, regRes, cfgRes] = await Promise.all([
+      const [sumRes, regRes, cfgRes, teamsRes] = await Promise.all([
         fetch(`${env.apiBaseUrl}/v1/admin/dashboard/summary`, { headers: authHeaders }),
         fetch(`${env.apiBaseUrl}/v1/admin/registrations`, { headers: authHeaders }),
         fetch(`${env.apiBaseUrl}/v1/admin/competition/config`, { headers: authHeaders }),
+        fetch(`${env.apiBaseUrl}/v1/public/teams`, { headers: authHeaders }),
       ]);
 
       if (sumRes.status === 401 || regRes.status === 401 || cfgRes.status === 401) {
@@ -201,11 +265,15 @@ export const AdminDashboardPage = () => {
         if (cfgData.data.closeAt) setCloseAt(formatToLocalDatetime(cfgData.data.closeAt));
         setStatusOverride(cfgData.data.statusOverride || 'auto');
       }
+
+      const teamsData = await teamsRes.json();
+      if (teamsData.success && Array.isArray(teamsData.data?.teams)) setTeams(teamsData.data.teams);
     } catch (err) {
       console.error('Fetch error:', err);
     } finally {
       setLoadingStats(false);
       setLoadingRegs(false);
+      setLoadingTeams(false);
     }
   }, [navigate]);
 
@@ -297,8 +365,8 @@ export const AdminDashboardPage = () => {
   return (
     <Box>
       <PageHeader
-        title="Tổng quan cuộc thi"
-        description="Kiểm tra trạng thái đăng ký, hồ sơ cần xử lý và cấu hình hệ thống."
+        title={SECTION_META[section].title}
+        description={SECTION_META[section].description}
         actions={
           <>
             <Button
@@ -310,51 +378,54 @@ export const AdminDashboardPage = () => {
             >
               Làm mới
             </Button>
-            <Tooltip title={registrations.length === 0 ? 'Không có dữ liệu để xuất' : 'Xuất danh sách Excel'}>
-              <span>
-                <Button
-                  variant="contained"
-                  size="small"
-                  startIcon={<FileDownloadRoundedIcon sx={{ fontSize: '0.9rem !important' }} />}
-                  onClick={handleExport}
-                  disabled={registrations.length === 0}
-                  sx={{ textTransform: 'none', fontSize: '0.8125rem', bgcolor: adminColors.primary, borderRadius: adminRadius.button, boxShadow: 'none', '&:hover': { bgcolor: adminColors.primaryHover, boxShadow: 'none' } }}
-                >
-                  Xuất Excel
-                </Button>
-              </span>
-            </Tooltip>
+            {contentSection === 'registrations' && (
+              <Tooltip title={registrations.length === 0 ? 'Không có dữ liệu để xuất' : 'Xuất danh sách Excel'}>
+                <span>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    startIcon={<FileDownloadRoundedIcon sx={{ fontSize: '0.9rem !important' }} />}
+                    onClick={handleExport}
+                    disabled={registrations.length === 0}
+                    sx={{ textTransform: 'none', fontSize: '0.8125rem', bgcolor: adminColors.primary, borderRadius: adminRadius.button, boxShadow: 'none', '&:hover': { bgcolor: adminColors.primaryHover, boxShadow: 'none' } }}
+                  >
+                    Xuất Excel
+                  </Button>
+                </span>
+              </Tooltip>
+            )}
           </>
         }
       />
 
       {/* ── KPI Row ── */}
-      <Grid container spacing={2} sx={{ mb: 3 }}>
-        {[
-          { label: 'Tổng hồ sơ', value: stats.totalRegistrations, icon: AssignmentRoundedIcon, color: adminColors.primary, emptyLabel: 'Chưa có hồ sơ' },
-          { label: 'Chờ xét duyệt', value: stats.submittedCount, icon: HourglassTopRoundedIcon, color: adminColors.warning, emptyLabel: 'Không có mục chờ' },
-          { label: 'Đã xác minh', value: stats.verifiedCount, icon: TaskAltRoundedIcon, color: adminColors.success, emptyLabel: 'Chưa có hồ sơ xác minh' },
-          { label: 'Hồ sơ công khai', value: stats.publicProfilesCount, icon: PublicRoundedIcon, color: adminColors.info, emptyLabel: 'Chưa có hồ sơ công khai' },
-          { label: 'Đội đã xuất bản', value: stats.publishedTeamsCount, icon: GroupsRoundedIcon, color: '#6E56CF', emptyLabel: 'Chưa có đội xuất bản' },
-        ].map((kpi) => (
-          <Grid key={kpi.label} size={{ xs: 6, sm: 4, md: 2.4 }}>
-            <KpiCard {...kpi} loading={loadingStats} />
-          </Grid>
-        ))}
-      </Grid>
+      {section === 'overview' && (
+        <Grid container spacing={2} sx={{ mb: 3 }}>
+          {[
+            { label: 'Tổng hồ sơ', value: stats.totalRegistrations, icon: AssignmentRoundedIcon, color: adminColors.primary, emptyLabel: 'Chưa có hồ sơ' },
+            { label: 'Chờ xét duyệt', value: stats.submittedCount, icon: HourglassTopRoundedIcon, color: adminColors.warning, emptyLabel: 'Không có mục chờ' },
+            { label: 'Đã xác minh', value: stats.verifiedCount, icon: TaskAltRoundedIcon, color: adminColors.success, emptyLabel: 'Chưa có hồ sơ xác minh' },
+            { label: 'Hồ sơ công khai', value: stats.publicProfilesCount, icon: PublicRoundedIcon, color: adminColors.info, emptyLabel: 'Chưa có hồ sơ công khai' },
+            { label: 'Đội đã xuất bản', value: stats.publishedTeamsCount, icon: GroupsRoundedIcon, color: '#6E56CF', emptyLabel: 'Chưa có đội xuất bản' },
+          ].map((kpi) => (
+            <Grid key={kpi.label} size={{ xs: 6, sm: 4, md: 2.4 }}>
+              <KpiCard {...kpi} loading={loadingStats} />
+            </Grid>
+          ))}
+        </Grid>
+      )}
 
       {/* ── Section Tabs ── */}
-      <Box sx={{ display: 'flex', gap: 1, mb: 2.5 }}>
-        <Button sx={sectionBtnSx(activeSection === 'registrations')} onClick={() => setActiveSection('registrations')}>
-          Hồ sơ đăng ký
-        </Button>
-        <Button sx={sectionBtnSx(activeSection === 'settings')} onClick={() => setActiveSection('settings')}>
-          Cấu hình thời gian
-        </Button>
+      <Box sx={{ display: 'flex', gap: 1, mb: 2.5, flexWrap: 'wrap' }}>
+        {SECTION_TABS.map((tab) => (
+          <Button key={tab.key} sx={sectionBtnSx(section === tab.key)} onClick={() => navigate(SECTION_ROUTES[tab.key])}>
+            {tab.label}
+          </Button>
+        ))}
       </Box>
 
       {/* ═══ REGISTRATION TABLE ═══ */}
-      {activeSection === 'registrations' && (
+      {contentSection === 'registrations' && (
         <Box
           sx={{
             bgcolor: adminColors.surface,
@@ -457,8 +528,87 @@ export const AdminDashboardPage = () => {
         </Box>
       )}
 
+      {/* ═══ PUBLIC TEAMS TABLE ═══ */}
+      {contentSection === 'teams' && (
+        <Box
+          sx={{
+            bgcolor: adminColors.surface,
+            border: `1px solid ${adminColors.border}`,
+            borderRadius: adminRadius.cardLg,
+            boxShadow: adminShadow.card,
+            overflow: 'hidden',
+          }}
+        >
+          <Box sx={{ px: 3, py: 2.25, borderBottom: `1px solid ${adminColors.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Typography sx={{ fontWeight: 700, fontSize: '0.9375rem', color: adminColors.text }}>
+              Đội thi công khai
+            </Typography>
+            <Typography sx={{ fontSize: '0.8125rem', color: adminColors.textMuted }}>
+              {teams.length} đội đã xuất bản
+            </Typography>
+          </Box>
+
+          {loadingTeams ? (
+            <Box sx={{ p: 3 }}>
+              {[...Array(3)].map((_, i) => (
+                <Skeleton key={i} height={52} sx={{ mb: 1, borderRadius: '8px' }} />
+              ))}
+            </Box>
+          ) : teams.length === 0 ? (
+            <Box sx={{ py: 8, textAlign: 'center' }}>
+              <GroupsRoundedIcon sx={{ fontSize: 40, color: adminColors.textDisabled, mb: 1.5 }} />
+              <Typography sx={{ fontWeight: 700, fontSize: '0.9375rem', color: adminColors.textSecondary, mb: 0.5 }}>
+                Chưa có đội thi công khai
+              </Typography>
+              <Typography sx={{ fontSize: '0.8125rem', color: adminColors.textMuted, maxWidth: 340, mx: 'auto' }}>
+                Các đội thi sẽ xuất hiện tại đây khi hồ sơ được xác minh và xuất bản công khai.
+              </Typography>
+            </Box>
+          ) : (
+            <Box sx={{ overflowX: 'auto' }}>
+              <Table size="small">
+                <TableHead>
+                  <TableRow sx={{ '& .MuiTableCell-head': { bgcolor: adminColors.surfaceMuted, fontWeight: 700, fontSize: '0.75rem', color: adminColors.textMuted, textTransform: 'uppercase', letterSpacing: '0.06em', py: 1.5, borderBottom: `1px solid ${adminColors.border}` } }}>
+                    <TableCell>Tên đội</TableCell>
+                    <TableCell>Nhóm bài toán</TableCell>
+                    <TableCell align="center">Thành viên</TableCell>
+                    <TableCell>Vòng thi</TableCell>
+                    <TableCell>Xuất bản</TableCell>
+                    <TableCell>Ngày cập nhật</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {teams.map((team) => (
+                    <TableRow
+                      key={team.id}
+                      hover
+                      sx={{ '& .MuiTableCell-root': { fontSize: '0.8125rem', color: adminColors.text, py: 1.5, borderBottom: `1px solid ${adminColors.border}` }, '&:last-child .MuiTableCell-root': { borderBottom: 'none' }, '&:hover': { bgcolor: adminColors.surfaceHover } }}
+                    >
+                      <TableCell sx={{ fontWeight: 600 }}>{team.teamName}</TableCell>
+                      <TableCell>
+                        <Typography sx={{ fontSize: '0.75rem', color: adminColors.textSecondary }}>
+                          {team.challengeCategoryLabel || team.challengeCategory}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align="center">{team.teamSize}</TableCell>
+                      <TableCell><TeamStatusBadge status={team.competitionStatus} label={team.statusLabel} /></TableCell>
+                      <TableCell>
+                        <Typography sx={{ fontSize: '0.75rem', color: adminColors.textMuted }}>
+                          {team.publication.status}
+                        </Typography>
+                      </TableCell>
+                      <TableCell sx={{ color: adminColors.textMuted, whiteSpace: 'nowrap' }}>{formatDate(team.updatedAt)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+          )}
+        </Box>
+      )}
+
       {/* ═══ COMPETITION SETTINGS ═══ */}
-      {activeSection === 'settings' && (
+      {contentSection === 'settings' && (
         <Box
           sx={{
             bgcolor: adminColors.surface,

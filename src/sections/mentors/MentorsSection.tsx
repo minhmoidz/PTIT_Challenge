@@ -28,7 +28,7 @@ export const MentorsSection = ({ mentors = competitionData.mentors }: Props) => 
       component="section"
       id="mentors"
       sx={{
-        py: { xs: 9, md: 14 },
+        py: { xs: 8, sm: 10, md: 12 },
         background: getSkyBackground('clear'),
         position: 'relative',
         overflow: 'hidden',
@@ -66,11 +66,11 @@ export const MentorsSection = ({ mentors = competitionData.mentors }: Props) => 
           </Typography>
           <Typography
             sx={{
-              color: '#4e4f53',
+              color: piccColors.slate[600],
               maxWidth: 720,
               mx: 'auto',
-              fontSize: { xs: '0.95rem', md: '1.05rem' },
-              lineHeight: 1.65,
+              fontSize: { xs: '1rem', md: '1.075rem' },
+              lineHeight: 1.7,
               fontWeight: 450,
               fontFamily: '"Manrope", sans-serif',
             }}

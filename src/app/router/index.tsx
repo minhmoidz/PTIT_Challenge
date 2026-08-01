@@ -35,6 +35,9 @@ const router = createBrowserRouter([
     element: <AdminLayout />,
     children: [
       { path: 'admin/dashboard', element: <AdminDashboardPage /> },
+      { path: 'admin/registrations', element: <AdminDashboardPage section="registrations" /> },
+      { path: 'admin/teams', element: <AdminDashboardPage section="teams" /> },
+      { path: 'admin/settings', element: <AdminDashboardPage section="settings" /> },
     ],
   },
   // ── 404

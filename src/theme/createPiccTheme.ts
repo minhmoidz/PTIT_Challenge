@@ -11,9 +11,9 @@ declare module '@mui/material/styles' {
 }
 
 const typography = {
-  fontFamily: '"Inter", system-ui, -apple-system, sans-serif',
+  fontFamily: '"Manrope", "Inter", system-ui, -apple-system, sans-serif',
   h1: {
-    fontFamily: '"Plus Jakarta Sans", "Inter", system-ui, sans-serif',
+    fontFamily: '"Manrope", "Inter", system-ui, sans-serif',
     fontSize: '2.25rem',
     lineHeight: 1.08,
     fontWeight: 800,
@@ -24,18 +24,18 @@ const typography = {
     },
   },
   h2: {
-    fontFamily: '"Plus Jakarta Sans", "Inter", system-ui, sans-serif',
-    fontSize: '1.75rem',
+    fontFamily: '"Manrope", "Inter", system-ui, sans-serif',
+    fontSize: '2rem',
     lineHeight: 1.15,
-    fontWeight: 700,
+    fontWeight: 800,
     letterSpacing: '-0.02em',
     '@media (min-width: 900px)': {
-      fontSize: '2.5rem',
-      lineHeight: 1.1,
+      fontSize: '2.8rem',
+      lineHeight: 1.12,
     },
   },
   h3: {
-    fontFamily: '"Plus Jakarta Sans", "Inter", system-ui, sans-serif',
+    fontFamily: '"Manrope", "Inter", system-ui, sans-serif',
     fontSize: '1.25rem',
     lineHeight: 1.25,
     fontWeight: 700,
@@ -45,6 +45,7 @@ const typography = {
     },
   },
   body1: {
+    fontFamily: '"Manrope", "Inter", system-ui, sans-serif',
     fontSize: '0.975rem',
     lineHeight: 1.65,
     fontWeight: 400,
@@ -54,10 +55,12 @@ const typography = {
     },
   },
   body2: {
+    fontFamily: '"Manrope", "Inter", system-ui, sans-serif',
     fontSize: '0.875rem',
     lineHeight: 1.55,
   },
   button: {
+    fontFamily: '"Manrope", "Inter", system-ui, sans-serif',
     fontSize: '0.925rem',
     fontWeight: 700,
     lineHeight: 1,
@@ -120,15 +123,52 @@ export const createPiccTheme = () =>
             '--site-header-height': '64px',
             '--mobile-sticky-cta-clearance': '88px',
             scrollPaddingTop: 'calc(var(--site-header-height) + 12px)',
+            scrollbarColor: `${piccColors.blue[400]} ${piccColors.sky[50]}`,
+            scrollbarWidth: 'thin',
+            '&::-webkit-scrollbar': {
+              width: 11,
+              height: 11,
+            },
+            '&::-webkit-scrollbar-track': {
+              background: piccColors.sky[50],
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: piccColors.blue[300],
+              borderRadius: 8,
+              border: `3px solid ${piccColors.sky[50]}`,
+              backgroundClip: 'padding-box',
+              '&:hover': {
+                background: piccColors.blue[400],
+              },
+            },
             '@media (min-width: 900px)': {
               '--site-header-height': '98px',
             },
           },
           body: {
             fontSynthesis: 'none',
+            textRendering: 'optimizeLegibility',
+            WebkitFontSmoothing: 'antialiased',
+            MozOsxFontSmoothing: 'grayscale',
           },
           'section[id], div[id]': {
             scrollMarginTop: 'calc(var(--site-header-height) + 12px)',
+          },
+          img: {
+            maxWidth: '100%',
+            display: 'block',
+          },
+          '::selection': {
+            backgroundColor: 'rgba(188, 38, 38, 0.16)',
+            color: piccColors.ptitDarkRed,
+          },
+          'input::placeholder, textarea::placeholder': {
+            color: piccColors.neutral[400],
+            opacity: 1,
+          },
+          ':focus-visible': {
+            outline: '2px solid rgba(36, 95, 168, 0.55)',
+            outlineOffset: 2,
           },
           '@media (prefers-reduced-motion: reduce)': {
             html: { scrollBehavior: 'auto' },
@@ -147,10 +187,14 @@ export const createPiccTheme = () =>
             borderRadius: 999,
             padding: '10px 24px',
             boxShadow: 'none',
-            transition: 'background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease',
+            transition:
+              'background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
             '&.Mui-focusVisible': {
               outline: `3px solid ${piccColors.ptitRed}`,
               outlineOffset: 2,
+            },
+            '&:active': {
+              transform: 'translateY(0) scale(0.98)',
             },
           },
           containedPrimary: {

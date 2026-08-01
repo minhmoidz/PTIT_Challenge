@@ -19,7 +19,7 @@ export const AwardsSection = () => {
       id="giai-thuong"
       ref={sectionRef}
       sx={{
-        py: { xs: 7, sm: 8, md: 10, lg: 12 },
+        py: { xs: 8, sm: 10, md: 12 },
         background: getSkyBackground('celebration'),
         position: 'relative',
         overflow: 'hidden',

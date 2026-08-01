@@ -52,7 +52,7 @@ export const CTASection = () => {
       component="section"
       id="final-cta"
       sx={{
-        py: { xs: 6, sm: 7, md: 8, lg: 10 },
+        py: { xs: 7, sm: 8, md: 10 },
         background: getSkyBackground('clear'),
         position: 'relative',
         overflow: 'hidden',
@@ -140,9 +140,10 @@ export const CTASection = () => {
                   mb: 1.75,
                   fontWeight: 850,
                   color: piccColors.ink,
-                  fontSize: { xs: '1.85rem', sm: '2.4rem', md: '3rem' },
+                  fontSize: { xs: '1.9rem', sm: '2.4rem', md: '2.8rem' },
                   letterSpacing: '-0.025em',
                   lineHeight: 1.15,
+                  fontFamily: '"Manrope", sans-serif',
                 }}
               >
                 {getFinalCtaTitle()}

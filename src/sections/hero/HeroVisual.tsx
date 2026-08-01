@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect, useState } from 'react';
+import { useRef, useCallback, useEffect, useState, useMemo } from 'react';
 import { Box, Typography, Link, Chip } from '@mui/material';
 import { motion, useMotionValue, useSpring, useTransform, useReducedMotion } from 'motion/react';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
@@ -8,8 +8,8 @@ import FlagRoundedIcon from '@mui/icons-material/FlagRounded';
 import { assetManifest } from '@/config/asset-manifest';
 import { piccColors } from '@/theme/palette';
 import {
-  EVENT_MILESTONES,
   getNextEventMilestone,
+  buildEffectiveMilestones,
 } from '@/config/milestones';
 
 /* ─── Real-Time Countdown State ─── */
@@ -117,10 +117,37 @@ const DigitBlock = ({
 );
 
 /* ─── Main Time Portal Hero Visual Component ─── */
-export const HeroVisual = () => {
+export const HeroVisual = ({ registrationTimes }: { registrationTimes?: { openAt?: string; closeAt?: string } }) => {
   const logoSrc = assetManifest.heroAvatar?.src ?? '';
   const cardRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
+
+  /* Real-time Countdown Sync (uses live registration window from server config) */
+  const milestones = useMemo(() => buildEffectiveMilestones(registrationTimes), [registrationTimes]);
+  const [milestoneInfo, setMilestoneInfo] = useState(() => getNextEventMilestone(milestones));
+  const [countdown, setCountdown] = useState<CountdownState>(() =>
+    computeTimeDiff(milestoneInfo.targetDate),
+  );
+
+  useEffect(() => {
+    const updateCountdown = () => {
+      const info = getNextEventMilestone(milestones);
+      setMilestoneInfo(info);
+      setCountdown(computeTimeDiff(info.targetDate));
+    };
+
+    updateCountdown();
+    const timerId = setInterval(updateCountdown, 1000);
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') updateCountdown();
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    return () => {
+      clearInterval(timerId);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
+  }, [milestones]);
 
   /* Mouse Parallax Effect */
   const mouseX = useMotionValue(0.5);
@@ -147,31 +174,6 @@ export const HeroVisual = () => {
   const rotateY = useTransform(smoothX, [0, 1], [-4, 4]);
   const logoX = useTransform(smoothX, [0, 1], [-6, 6]);
   const logoY = useTransform(smoothY, [0, 1], [-6, 6]);
-
-  /* Real-time Countdown Sync */
-  const [milestoneInfo, setMilestoneInfo] = useState(() => getNextEventMilestone());
-  const [countdown, setCountdown] = useState<CountdownState>(() =>
-    computeTimeDiff(milestoneInfo.targetDate),
-  );
-
-  useEffect(() => {
-    const updateCountdown = () => {
-      const info = getNextEventMilestone();
-      setMilestoneInfo(info);
-      setCountdown(computeTimeDiff(info.targetDate));
-    };
-
-    const timerId = setInterval(updateCountdown, 1000);
-    const onVisibilityChange = () => {
-      if (document.visibilityState === 'visible') updateCountdown();
-    };
-    document.addEventListener('visibilitychange', onVisibilityChange);
-
-    return () => {
-      clearInterval(timerId);
-      document.removeEventListener('visibilitychange', onVisibilityChange);
-    };
-  }, []);
 
   const activeMilestone = milestoneInfo.nextMilestone ?? milestoneInfo.currentMilestone;
 
@@ -319,6 +321,7 @@ export const HeroVisual = () => {
             countdown={countdown}
             activeMilestone={activeMilestone}
             activeStepIndex={milestoneInfo.activeStepIndex}
+            totalMilestones={milestones.length}
           />
         )}
       </Box>
@@ -468,10 +471,12 @@ const CountdownCard = ({
   countdown,
   activeMilestone,
   activeStepIndex,
+  totalMilestones,
 }: {
   countdown: CountdownState;
   activeMilestone: ReturnType<typeof getNextEventMilestone>['nextMilestone'];
   activeStepIndex: number;
+  totalMilestones: number;
 }) => (
   <Box
     sx={{
@@ -585,7 +590,7 @@ const CountdownCard = ({
     </Box>
 
     {/* ── TIER 4: Footer Progress & Action ── */}
-    <MilestoneProgress activeIndex={activeStepIndex} total={EVENT_MILESTONES.length} />
+    <MilestoneProgress activeIndex={activeStepIndex} total={totalMilestones} />
   </Box>
 );
 

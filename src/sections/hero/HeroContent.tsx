@@ -29,9 +29,9 @@ const getStatusBadge = (status: RegistrationStatus): string => {
 
 /* ─── Animation helpers ─── */
 const fadeUp = (delay: number) => ({
-  initial: { opacity: 1, y: 8 },
+  initial: { opacity: 0, y: 16 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as number[], delay },
+  transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as number[], delay },
 });
 
 interface Props {
@@ -173,7 +173,7 @@ export const HeroContent = ({ status }: Props) => {
       <motion.div {...fadeUp(0.28)}>
         <Typography
           sx={{
-            color: '#4e4f53',
+            color: piccColors.slate[600],
             mb: 3.5,
             maxWidth: 520,
             fontSize: { xs: '1.05rem', md: '1.125rem' },

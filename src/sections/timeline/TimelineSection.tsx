@@ -500,8 +500,7 @@ export const TimelineSection = () => {
       ref={sectionRef}
       aria-labelledby="timeline-heading"
       sx={{
-        pt: { xs: 8, sm: 10, md: 12 },
-        pb: { xs: 7, sm: 8, md: 10 },
+        py: { xs: 8, sm: 10, md: 12 },
         background: getSkyBackground('journey'),
         position: 'relative',
         overflow: 'hidden',
@@ -526,7 +525,7 @@ export const TimelineSection = () => {
         <Box
           sx={{
             textAlign: 'center',
-            mb: { xs: 4, sm: 5, md: 6 },
+            mb: { xs: 5, md: 7 },
             maxWidth: 720,
             mx: 'auto',
             fontFamily: '"Manrope", sans-serif',
@@ -562,11 +561,11 @@ export const TimelineSection = () => {
             variant="h2"
             id="timeline-heading"
             sx={{
-              fontSize: { xs: '1.75rem', sm: '2.1rem', md: '2.4rem' },
+              fontSize: { xs: '2rem', sm: '2.5rem', md: '2.8rem' },
               fontWeight: 800,
-              lineHeight: 1.2,
-              letterSpacing: '-0.02em',
-              mb: 1.5,
+              lineHeight: 1.15,
+              letterSpacing: '-0.025em',
+              mb: 1.75,
               fontFamily: '"Manrope", sans-serif',
             }}
           >
@@ -580,9 +579,9 @@ export const TimelineSection = () => {
 
           <Typography
             sx={{
-              fontSize: { xs: '0.9rem', md: '0.975rem' },
+              fontSize: { xs: '1rem', md: '1.075rem' },
               color: piccColors.slate[600],
-              lineHeight: 1.65,
+              lineHeight: 1.7,
               maxWidth: 680,
               mx: 'auto',
               fontFamily: '"Manrope", sans-serif',

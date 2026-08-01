@@ -75,13 +75,13 @@ useEffect(() => {
               p: 5,
               textAlign: 'center',
               borderRadius: '24px',
-              border: '1px solid #E2E8F0',
+              border: `1px solid ${piccColors.slate[200]}`,
             }}
           >
-            <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 800, color: '#163A67', mb: 1.5 }}>
+            <Typography variant="h2" sx={{ fontSize: '1.5rem', fontWeight: 800, color: piccColors.ptitNavy, mb: 1.5 }}>
               Hồ sơ đội thi không tồn tại
             </Typography>
-            <Typography sx={{ color: '#64748B', mb: 3, fontSize: '0.925rem' }}>
+            <Typography sx={{ color: piccColors.slate[500], mb: 3, fontSize: '0.925rem' }}>
               Hồ sơ đội thi này có thể chưa được Ban Tổ chức duyệt xuất bản hoặc đường dẫn không đúng.
             </Typography>
             <Button
@@ -139,7 +139,7 @@ useEffect(() => {
               color: piccColors.blue[800],
               fontWeight: 700,
               fontSize: '0.875rem',
-              '&:hover': { bgcolor: 'rgba(57, 124, 232, 0.08)' },
+              '&:hover': { bgcolor: 'rgba(36, 95, 168, 0.08)' },
             }}
           >
             Danh sách đội thi
@@ -155,7 +155,7 @@ useEffect(() => {
                 borderRadius: 999,
                 fontWeight: 700,
                 fontSize: '0.825rem',
-                borderColor: 'rgba(57, 124, 232, 0.3)',
+                borderColor: 'rgba(36, 95, 168, 0.3)',
               }}
             >
               {copied ? 'Đã chép link' : 'Chia sẻ'}
@@ -171,7 +171,7 @@ useEffect(() => {
             borderRadius: '28px',
             bgcolor: 'rgba(255, 255, 255, 0.95)',
             backdropFilter: 'blur(20px)',
-            border: '1.5px solid rgba(57, 124, 232, 0.25)',
+            border: '1.5px solid rgba(36, 95, 168, 0.25)',
             boxShadow: '0 16px 48px rgba(22, 58, 103, 0.08)',
             mb: 5,
           }}
@@ -183,7 +183,7 @@ useEffect(() => {
                 width: 72,
                 height: 72,
                 borderRadius: '20px',
-                background: 'linear-gradient(135deg, #397CE8 0%, #173B66 100%)',
+                background: `linear-gradient(135deg, ${piccColors.blue[600]} 0%, ${piccColors.blue[900]} 100%)`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -216,7 +216,7 @@ useEffect(() => {
                   sx={{
                     fontWeight: 800,
                     bgcolor: 'rgba(16, 185, 129, 0.12)',
-                    color: '#047857',
+                    color: piccColors.emerald[700],
                     border: '1px solid rgba(16, 185, 129, 0.3)',
                   }}
                 />
@@ -233,7 +233,7 @@ useEffect(() => {
                   icon={<CategoryRoundedIcon sx={{ fontSize: 16 }} />}
                   label={team.challengeCategoryLabel}
                   size="small"
-                  sx={{ bgcolor: '#EFF6FF', fontWeight: 700 }}
+                  sx={{ bgcolor: piccColors.blue[50], fontWeight: 700 }}
                 />
                 <Chip
                   icon={<GroupsRoundedIcon sx={{ fontSize: 16 }} />}
@@ -250,10 +250,10 @@ useEffect(() => {
           {/* Short Description */}
           {team.shortDescription && (
             <Box sx={{ mb: 4.5 }}>
-              <Typography variant="h3" component="h3" sx={{ fontSize: '1.15rem', fontWeight: 800, color: '#163A67', mb: 1.5 }}>
+              <Typography variant="h3" component="h3" sx={{ fontSize: '1.15rem', fontWeight: 800, color: piccColors.ptitNavy, mb: 1.5 }}>
                 Mô tả ngắn về đội thi
               </Typography>
-              <Typography sx={{ fontSize: '0.975rem', color: '#334155', lineHeight: 1.7 }}>
+              <Typography sx={{ fontSize: '0.975rem', color: piccColors.slate[700], lineHeight: 1.7 }}>
                 {team.shortDescription}
               </Typography>
             </Box>
@@ -262,7 +262,7 @@ useEffect(() => {
           {/* Public Members Section (Only if showMemberNames === true) */}
           {team.publication.showMemberNames && team.publicMembers && team.publicMembers.length > 0 && (
             <Box sx={{ mb: 4.5 }}>
-              <Typography variant="h3" component="h3" sx={{ fontSize: '1.15rem', fontWeight: 800, color: '#163A67', mb: 2.5 }}>
+              <Typography variant="h3" component="h3" sx={{ fontSize: '1.15rem', fontWeight: 800, color: piccColors.ptitNavy, mb: 2.5 }}>
                 Thành viên đội thi
               </Typography>
               <Grid container spacing={2}>
@@ -273,8 +273,8 @@ useEffect(() => {
                       sx={{
                         p: 2,
                         borderRadius: 3,
-                        bgcolor: '#F8FAFC',
-                        border: '1px solid #E2E8F0',
+                        bgcolor: piccColors.slate[50],
+                        border: `1px solid ${piccColors.slate[200]}`,
                         display: 'flex',
                         alignItems: 'center',
                         gap: 1.5,
@@ -285,7 +285,7 @@ useEffect(() => {
                           width: 40,
                           height: 40,
                           borderRadius: '50%',
-                          bgcolor: 'rgba(57, 124, 232, 0.12)',
+                          bgcolor: 'rgba(36, 95, 168, 0.12)',
                           color: piccColors.blue[700],
                           display: 'flex',
                           alignItems: 'center',
@@ -295,10 +295,10 @@ useEffect(() => {
                         <PersonRoundedIcon />
                       </Box>
                       <Box>
-                        <Typography sx={{ fontWeight: 800, fontSize: '0.925rem', color: '#1E293B' }}>
+                        <Typography sx={{ fontWeight: 800, fontSize: '0.925rem', color: piccColors.slate[800] }}>
                           {member.displayName}
                         </Typography>
-                        <Typography sx={{ fontSize: '0.775rem', color: '#64748B', fontWeight: 600 }}>
+                        <Typography sx={{ fontSize: '0.775rem', color: piccColors.slate[500], fontWeight: 600 }}>
                           {member.role || 'Thành viên'} • {member.major || 'Sinh viên PTIT'}
                         </Typography>
                       </Box>
@@ -312,7 +312,7 @@ useEffect(() => {
           {/* Public Project Summary Section (Only if showProjectSummary === true) */}
           {team.publication.showProjectSummary && team.project && (
             <Box sx={{ mb: 3 }}>
-              <Typography variant="h3" component="h3" sx={{ fontSize: '1.15rem', fontWeight: 800, color: '#163A67', mb: 2 }}>
+              <Typography variant="h3" component="h3" sx={{ fontSize: '1.15rem', fontWeight: 800, color: piccColors.ptitNavy, mb: 2 }}>
                 Dự án / Giải pháp công khai
               </Typography>
               <Paper
@@ -320,17 +320,17 @@ useEffect(() => {
                 sx={{
                   p: 3,
                   borderRadius: 4,
-                  bgcolor: 'rgba(234, 242, 255, 0.5)',
-                  border: '1px solid rgba(57, 124, 232, 0.2)',
+                  bgcolor: 'rgba(240, 247, 255, 0.5)',
+                  border: '1px solid rgba(36, 95, 168, 0.2)',
                 }}
               >
                 {team.project.title && (
-                  <Typography variant="h4" component="h4" sx={{ fontSize: '1.1rem', fontWeight: 800, color: '#1E40AF', mb: 1 }}>
+                  <Typography variant="h4" component="h4" sx={{ fontSize: '1.1rem', fontWeight: 800, color: piccColors.blue[800], mb: 1 }}>
                     {team.project.title}
                   </Typography>
                 )}
                 {team.project.summary && (
-                  <Typography sx={{ fontSize: '0.925rem', color: '#334155', lineHeight: 1.65, mb: 2 }}>
+                  <Typography sx={{ fontSize: '0.925rem', color: piccColors.slate[700], lineHeight: 1.65, mb: 2 }}>
                     {team.project.summary}
                   </Typography>
                 )}
@@ -346,7 +346,7 @@ useEffect(() => {
           )}
 
           {/* Privacy Note */}
-          <Alert severity="info" sx={{ borderRadius: 3, bgcolor: '#EFF6FF', fontSize: '0.8rem', mt: 4 }}>
+          <Alert severity="info" sx={{ borderRadius: 3, bgcolor: piccColors.blue[50], fontSize: '0.8rem', mt: 4 }}>
             🔒 <strong>Bảo mật thông tin:</strong> Hồ sơ đội thi được công khai theo phạm vi quyền hiển thị do Ban Tổ chức phê duyệt và đội thi xác nhận. Mọi dữ liệu liên hệ cá nhân (email, số điện thoại, mã sinh viên) đều được bảo vệ nghiêm ngặt.
           </Alert>
         </Paper>

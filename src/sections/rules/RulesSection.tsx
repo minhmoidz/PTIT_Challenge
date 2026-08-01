@@ -20,7 +20,7 @@ export const RulesSection = () => {
       component="section"
       id="the-le"
       sx={{
-        py: { xs: 8, md: 12 },
+        py: { xs: 8, sm: 10, md: 12 },
         background: getSkyBackground('clear'),
         position: 'relative',
         overflow: 'hidden',

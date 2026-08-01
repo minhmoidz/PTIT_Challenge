@@ -123,11 +123,13 @@ export const SiteHeader = () => {
         right: 0,
         zIndex: 1100,
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        bgcolor: '#FFFFFF',
+        bgcolor: scrolled ? 'rgba(255, 255, 255, 0.86)' : 'rgba(255, 255, 255, 0.98)',
+        backdropFilter: scrolled ? 'blur(16px) saturate(160%)' : 'none',
+        WebkitBackdropFilter: scrolled ? 'blur(16px) saturate(160%)' : 'none',
         boxShadow: scrolled
-          ? '0 4px 20px rgba(5, 26, 83, 0.08)'
+          ? '0 8px 32px rgba(5, 26, 83, 0.1)'
           : '0 2px 10px rgba(5, 26, 83, 0.04)',
-        borderBottom: `1px solid ${piccColors.neutral[200]}`,
+        borderBottom: `1px solid ${scrolled ? 'rgba(188, 38, 38, 0.14)' : piccColors.neutral[200]}`,
       }}
     >
       {/* ── Signature PTIT Crimson Red Top Bar ── */}
@@ -311,16 +313,22 @@ export const SiteHeader = () => {
                       '&:hover': {
                         color: piccColors.ptitRed,
                       },
-                      '&::after': isActive ? {
+                      '&::after': {
                         content: '""',
                         position: 'absolute',
                         bottom: 0,
                         left: '15%',
                         right: '15%',
-                        height: '2px',
+                        height: 2,
                         bgcolor: piccColors.ptitRed,
                         borderRadius: '2px',
-                      } : {},
+                        transform: isActive ? 'scaleX(1)' : 'scaleX(0)',
+                        transformOrigin: 'left',
+                        transition: 'transform 0.28s cubic-bezier(0.4, 0, 0.2, 1)',
+                      },
+                      '&:hover::after': {
+                        transform: 'scaleX(1)',
+                      },
                     }}
                   >
                     {item.label}

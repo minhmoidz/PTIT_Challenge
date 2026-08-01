@@ -3,6 +3,7 @@ import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import { useFormContext, useWatch } from 'react-hook-form';
 import type { RegistrationFormValues } from '@/types/registration';
+import { piccColors } from '@/theme/palette';
 
 interface FormStep2Props {
   teamMin: number;
@@ -23,7 +24,7 @@ export const FormStep2 = ({ teamMin, teamMax }: FormStep2Props) => {
 
   return (
     <Box>
-      <Typography variant="h3" component="h3" sx={{ fontSize: '1.15rem', fontWeight: 800, color: '#163A67', mb: 3 }}>
+      <Typography variant="h3" component="h3" sx={{ fontSize: '1.15rem', fontWeight: 800, color: piccColors.ptitNavy, mb: 3 }}>
         Phần II — Thông tin các thành viên đội thi ({teamSize} thành viên)
       </Typography>
 
@@ -33,8 +34,8 @@ export const FormStep2 = ({ teamMin, teamMax }: FormStep2Props) => {
         sx={{
           mb: 4,
           borderRadius: 3,
-          bgcolor: '#EFF6FF',
-          border: '1px solid rgba(59, 130, 246, 0.3)',
+          bgcolor: piccColors.blue[50],
+          border: '1px solid rgba(36, 95, 168, 0.3)',
           fontWeight: 650,
           fontSize: '0.85rem',
         }}
@@ -48,14 +49,14 @@ export const FormStep2 = ({ teamMin, teamMax }: FormStep2Props) => {
           mb: 4,
           p: 2.5,
           borderRadius: 4,
-          bgcolor: 'rgba(234, 242, 255, 0.6)',
-          border: '1px solid rgba(57, 124, 232, 0.25)',
+          bgcolor: 'rgba(240, 247, 255, 0.6)',
+          border: '1px solid rgba(36, 95, 168, 0.25)',
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <PersonRoundedIcon sx={{ color: '#397CE8' }} />
-            <Typography sx={{ fontWeight: 800, color: '#163A67', fontSize: '0.975rem' }}>
+            <PersonRoundedIcon sx={{ color: piccColors.blue[600] }} />
+            <Typography sx={{ fontWeight: 800, color: piccColors.ptitNavy, fontSize: '0.975rem' }}>
               Thành viên 1 — Đội trưởng
             </Typography>
           </Box>
@@ -63,7 +64,7 @@ export const FormStep2 = ({ teamMin, teamMax }: FormStep2Props) => {
             icon={<StarRoundedIcon sx={{ fontSize: '13px !important', color: '#FFFFFF !important' }} />}
             label="ĐỘI TRƯỞNG"
             size="small"
-            sx={{ bgcolor: '#397CE8', color: '#FFFFFF', fontWeight: 800, fontSize: '0.65rem' }}
+            sx={{ bgcolor: piccColors.blue[600], color: '#FFFFFF', fontWeight: 800, fontSize: '0.65rem' }}
           />
         </Box>
 
@@ -136,7 +137,7 @@ export const FormStep2 = ({ teamMin, teamMax }: FormStep2Props) => {
             boxShadow: '0 2px 10px rgba(22, 58, 103, 0.04)',
           }}
         >
-          <Typography sx={{ fontWeight: 800, mb: 2, color: '#163A67', fontSize: '0.975rem' }}>
+          <Typography sx={{ fontWeight: 800, mb: 2, color: piccColors.ptitNavy, fontSize: '0.975rem' }}>
             Thành viên {index + 1}
           </Typography>
           <Grid container spacing={2}>

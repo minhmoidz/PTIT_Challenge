@@ -65,7 +65,7 @@ export const HeroSection = () => {
                 justifyContent: { xs: 'center', md: 'flex-end' },
               }}
             >
-              <HeroVisual />
+              <HeroVisual registrationTimes={config.registration} />
             </Box>
           </Grid>
         </Grid>

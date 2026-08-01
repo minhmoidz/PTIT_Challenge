@@ -2,6 +2,7 @@ import { Grid, TextField, MenuItem, Typography, Box } from '@mui/material';
 import { useFormContext, useWatch, Controller } from 'react-hook-form';
 import type { RegistrationFormValues } from '@/types/registration';
 import { competitionData } from '@/data/competition';
+import { piccColors } from '@/theme/palette';
 
 const CHALLENGE_OPTIONS = [
   { value: 'business', label: 'Kinh tế và Kinh doanh' },
@@ -34,7 +35,7 @@ export const FormStep1 = ({ teamMin, teamMax }: FormStep1Props) => {
 
   return (
     <Box>
-      <Typography variant="h3" component="h3" sx={{ fontSize: '1.15rem', fontWeight: 800, color: '#163A67', mb: 3 }}>
+      <Typography variant="h3" component="h3" sx={{ fontSize: '1.15rem', fontWeight: 800, color: piccColors.ptitNavy, mb: 3 }}>
         Phần I — Thông tin đội thi
       </Typography>
 
@@ -44,12 +45,12 @@ export const FormStep1 = ({ teamMin, teamMax }: FormStep1Props) => {
           p: 1.75,
           px: 2.25,
           borderRadius: 3,
-          bgcolor: '#EFF6FF',
-          border: '1px solid rgba(59, 130, 246, 0.3)',
+          bgcolor: piccColors.blue[50],
+          border: '1px solid rgba(36, 95, 168, 0.3)',
           mb: 3,
         }}
       >
-        <Typography sx={{ fontSize: '0.825rem', color: '#1E40AF', fontWeight: 650, lineHeight: 1.5 }}>
+        <Typography sx={{ fontSize: '0.825rem', color: piccColors.blue[800], fontWeight: 650, lineHeight: 1.5 }}>
           📌 Rule Lưu ý: {competitionData.teamRules.warning}
         </Typography>
       </Box>
@@ -193,7 +194,7 @@ export const FormStep1 = ({ teamMin, teamMax }: FormStep1Props) => {
         </Grid>
       </Grid>
 
-      <Typography variant="h3" component="h3" sx={{ fontSize: '1.15rem', fontWeight: 800, color: '#163A67', mb: 3, mt: 4 }}>
+      <Typography variant="h3" component="h3" sx={{ fontSize: '1.15rem', fontWeight: 800, color: piccColors.ptitNavy, mb: 3, mt: 4 }}>
         Kinh nghiệm và Kỳ vọng
       </Typography>
 

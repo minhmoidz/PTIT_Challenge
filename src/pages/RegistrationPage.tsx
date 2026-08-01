@@ -49,7 +49,7 @@ const CountdownCell = ({ value, label }: { value: number; label: string }) => {
       px: { xs: 0.5, sm: 1 },
       bgcolor: '#FFFFFF',
       borderRadius: '16px',
-      border: '1px solid rgba(57, 124, 232, 0.25)',
+      border: '1px solid rgba(36, 95, 168, 0.25)',
       boxShadow: '0 4px 14px rgba(22, 58, 103, 0.05)',
     }}
   >
@@ -58,7 +58,7 @@ const CountdownCell = ({ value, label }: { value: number; label: string }) => {
         fontVariantNumeric: 'tabular-nums',
         fontSize: { xs: '1.6rem', sm: '2.1rem' },
         fontWeight: 850,
-        color: '#163A67',
+        color: piccColors.ptitNavy,
         lineHeight: 1,
         letterSpacing: '-0.02em',
       }}
@@ -163,7 +163,7 @@ const RegistrationCountdownDashboard = () => {
   const headingText = isBeforeOpen
     ? `Cổng đăng ký chính thức mở từ ${competitionData.meta.registrationOpenDate}`
     : `Hạn cuối nộp hồ sơ: ${competitionData.meta.registrationCloseDate} · 23:59`;
-  const dotColor = isBeforeOpen ? '#3B82F6' : '#10B981';
+  const dotColor = isBeforeOpen ? piccColors.blue[600] : piccColors.emerald[500];
 
   return (
     <Paper
@@ -171,9 +171,9 @@ const RegistrationCountdownDashboard = () => {
       sx={{
         p: { xs: 2.5, sm: 3.25 },
         borderRadius: '24px',
-        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(238, 246, 255, 0.95) 100%)',
+        background: `linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, ${piccColors.blue[50]}cc 100%)`,
         backdropFilter: 'blur(16px)',
-        border: '1.5px solid rgba(57, 124, 232, 0.28)',
+        border: '1.5px solid rgba(36, 95, 168, 0.28)',
         boxShadow: '0 12px 36px rgba(22, 58, 103, 0.08)',
         textAlign: 'center',
       }}
@@ -201,12 +201,12 @@ const RegistrationCountdownDashboard = () => {
           label={badgeLabel}
           size="small"
           sx={{
-            bgcolor: 'rgba(57, 124, 232, 0.1)',
+            bgcolor: 'rgba(36, 95, 168, 0.1)',
             color: piccColors.blue[800],
             fontWeight: 800,
             fontSize: '0.675rem',
             letterSpacing: '0.08em',
-            border: '1px solid rgba(57, 124, 232, 0.2)',
+            border: '1px solid rgba(36, 95, 168, 0.2)',
           }}
         />
       </Box>
@@ -215,7 +215,7 @@ const RegistrationCountdownDashboard = () => {
         sx={{
           fontSize: { xs: '1.05rem', sm: '1.25rem' },
           fontWeight: 800,
-          color: '#163A67',
+          color: piccColors.ptitNavy,
           mb: 2,
           display: 'flex',
           alignItems: 'center',
@@ -241,11 +241,11 @@ const RegistrationCountdownDashboard = () => {
         aria-label={`Đếm ngược: ${timeDiff.days} ngày ${timeDiff.hours} giờ ${timeDiff.minutes} phút ${timeDiff.seconds} giây`}
       >
         <CountdownCell value={timeDiff.days} label="Ngày" />
-        <Typography sx={{ color: 'rgba(57, 124, 232, 0.4)', fontWeight: 800, fontSize: '1.25rem' }}>:</Typography>
+        <Typography sx={{ color: 'rgba(36, 95, 168, 0.4)', fontWeight: 800, fontSize: '1.25rem' }}>:</Typography>
         <CountdownCell value={timeDiff.hours} label="Giờ" />
-        <Typography sx={{ color: 'rgba(57, 124, 232, 0.4)', fontWeight: 800, fontSize: '1.25rem' }}>:</Typography>
+        <Typography sx={{ color: 'rgba(36, 95, 168, 0.4)', fontWeight: 800, fontSize: '1.25rem' }}>:</Typography>
         <CountdownCell value={timeDiff.minutes} label="Phút" />
-        <Typography sx={{ color: 'rgba(57, 124, 232, 0.4)', fontWeight: 800, fontSize: '1.25rem' }}>:</Typography>
+        <Typography sx={{ color: 'rgba(36, 95, 168, 0.4)', fontWeight: 800, fontSize: '1.25rem' }}>:</Typography>
         <CountdownCell value={timeDiff.seconds} label="Giây" />
       </Box>
 
@@ -284,7 +284,7 @@ export const RegistrationPage = () => {
               color: piccColors.blue[800],
               fontWeight: 700,
               fontSize: '0.875rem',
-              '&:hover': { bgcolor: 'rgba(57, 124, 232, 0.08)' },
+              '&:hover': { bgcolor: 'rgba(36, 95, 168, 0.08)' },
             }}
           >
             Quay lại trang chủ
@@ -297,15 +297,15 @@ export const RegistrationPage = () => {
             icon={<AppRegistrationRoundedIcon sx={{ fontSize: 16, color: `${piccColors.blue[700]} !important` }} />}
             label="Đăng ký PICC 2026"
             sx={{
-              bgcolor: 'rgba(234, 242, 255, 0.9)',
+              bgcolor: piccColors.blue[50],
               color: piccColors.blue[700],
               fontWeight: 800,
               fontSize: '0.825rem',
               mb: 2,
               px: 1.5,
               py: 0.5,
-              border: '1px solid rgba(57, 124, 232, 0.25)',
-              boxShadow: '0 4px 12px rgba(57, 124, 232, 0.08)',
+              border: '1px solid rgba(36, 95, 168, 0.25)',
+              boxShadow: '0 4px 12px rgba(36, 95, 168, 0.08)',
             }}
           />
 

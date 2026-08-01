@@ -55,16 +55,48 @@ export interface NextMilestoneResult {
   activeStepIndex: number;
 }
 
-export const getNextEventMilestone = (nowDate = new Date()): NextMilestoneResult => {
+const formatDateStr = (iso: string): string => {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso.slice(0, 10).replace(/-/g, '/');
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} · ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+
+/** Build the milestone list with the registration window dates overridden by the live server config. */
+export const buildEffectiveMilestones = (registration?: { openAt?: string; closeAt?: string }): EventMilestone[] => {
+  if (!registration) return EVENT_MILESTONES;
+
+  const openAt = registration.openAt ? new Date(registration.openAt) : null;
+  const closeAt = registration.closeAt ? new Date(registration.closeAt) : null;
+  const validOpen = openAt !== null && !isNaN(openAt.getTime());
+  const validClose = closeAt !== null && !isNaN(closeAt.getTime());
+
+  if (!validOpen && !validClose) return EVENT_MILESTONES;
+
+  return EVENT_MILESTONES.map((ms) => {
+    if (ms.id === 'mo-don' && validOpen && registration.openAt) {
+      return { ...ms, dateIso: registration.openAt, dateStr: formatDateStr(registration.openAt) };
+    }
+    if (ms.id === 'dong-don' && validClose && registration.closeAt) {
+      return { ...ms, dateIso: registration.closeAt, dateStr: formatDateStr(registration.closeAt) };
+    }
+    return ms;
+  });
+};
+
+export const getNextEventMilestone = (
+  milestones: EventMilestone[] = EVENT_MILESTONES,
+  nowDate = new Date(),
+): NextMilestoneResult => {
   const nowMs = nowDate.getTime();
 
-  for (let i = 0; i < EVENT_MILESTONES.length; i++) {
-    const ms = EVENT_MILESTONES[i];
+  for (let i = 0; i < milestones.length; i++) {
+    const ms = milestones[i];
     const msTime = new Date(ms.dateIso).getTime();
 
     if (msTime > nowMs) {
       return {
-        currentMilestone: i > 0 ? EVENT_MILESTONES[i - 1] : null,
+        currentMilestone: i > 0 ? milestones[i - 1] : null,
         nextMilestone: ms,
         isAllCompleted: false,
         targetDate: new Date(ms.dateIso),
@@ -74,10 +106,10 @@ export const getNextEventMilestone = (nowDate = new Date()): NextMilestoneResult
   }
 
   return {
-    currentMilestone: EVENT_MILESTONES[EVENT_MILESTONES.length - 1],
+    currentMilestone: milestones[milestones.length - 1],
     nextMilestone: null,
     isAllCompleted: true,
     targetDate: null,
-    activeStepIndex: EVENT_MILESTONES.length,
+    activeStepIndex: milestones.length,
   };
 };

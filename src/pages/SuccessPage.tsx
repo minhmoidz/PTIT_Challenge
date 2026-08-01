@@ -1,9 +1,12 @@
 import { Container, Typography, Button, Box, Paper } from '@mui/material';
-import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
+import { motion } from 'motion/react';
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import MapRoundedIcon from '@mui/icons-material/MapRounded';
 import FacebookRoundedIcon from '@mui/icons-material/Facebook';
 import { piccColors } from '@/theme/palette';
+import { SkyBackground } from '@/components/ui/SkyBackground';
+import { getSkyBackground } from '@/components/ui/skyBackgroundConfig';
 import { competitionData } from '@/data/competition';
 import { appHash } from '@/config/paths';
 
@@ -14,32 +17,73 @@ export const SuccessPage = () => (
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      bgcolor: piccColors.sky[50],
+      bgcolor: getSkyBackground('hero'),
+      position: 'relative',
       py: 8,
+      overflow: 'hidden',
     }}
   >
-    <Container maxWidth="md">
+    <SkyBackground variant="hero" />
+
+    <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
       <Paper
         elevation={0}
         sx={{
           p: { xs: 4, sm: 6 },
           textAlign: 'center',
-          borderRadius: 6,
+          borderRadius: '32px',
+          bgcolor: 'rgba(255, 255, 255, 0.92)',
+          backdropFilter: 'blur(20px)',
           border: '1px solid rgba(226, 232, 240, 0.9)',
-          boxShadow: '0 20px 60px rgba(23, 59, 102, 0.1)',
+          boxShadow: '0 24px 70px rgba(23, 59, 102, 0.12)',
+          position: 'relative',
+          overflow: 'hidden',
         }}
       >
-        <CheckCircleRoundedIcon
-          sx={{ fontSize: 72, color: piccColors.emerald[600], mb: 2 }}
+        {/* Top accent ribbon */}
+        <Box
+          aria-hidden="true"
+          sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 5,
+            background: `linear-gradient(90deg, ${piccColors.ptitRed} 0%, ${piccColors.emerald[500]} 50%, ${piccColors.pink[500]} 100%)`,
+          }}
         />
+
+        {/* Animated success badge */}
+        <Box
+          component={motion.div}
+          initial={{ scale: 0.6, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 14 }}
+          sx={{
+            width: 88,
+            height: 88,
+            mx: 'auto',
+            mb: 3,
+            borderRadius: '50%',
+            background: `linear-gradient(135deg, ${piccColors.emerald[500]} 0%, ${piccColors.emerald[600]} 100%)`,
+            boxShadow: '0 12px 32px rgba(5, 150, 105, 0.35)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <CheckRoundedIcon sx={{ fontSize: 44, color: '#FFFFFF' }} />
+        </Box>
+
         <Typography
           variant="h2"
           component="h1"
           sx={{
             mb: 2,
-            fontWeight: 800,
+            fontWeight: 850,
             fontSize: { xs: '2rem', sm: '2.5rem' },
             color: piccColors.ink,
+            letterSpacing: '-0.02em',
           }}
         >
           Đăng ký thành công!
@@ -50,7 +94,7 @@ export const SuccessPage = () => (
           sx={{
             color: piccColors.slate[600],
             mb: 2,
-            lineHeight: 1.65,
+            lineHeight: 1.7,
             maxWidth: 640,
             mx: 'auto',
             fontSize: '1rem',
@@ -62,7 +106,7 @@ export const SuccessPage = () => (
         <Typography
           variant="body2"
           sx={{
-            color: piccColors.indigo[700],
+            color: piccColors.blue[700],
             fontWeight: 700,
             mb: 4,
             fontSize: '0.925rem',
@@ -81,8 +125,8 @@ export const SuccessPage = () => (
               px: 3,
               py: 1.2,
               fontWeight: 700,
-              bgcolor: piccColors.blue[600],
-              '&:hover': { bgcolor: piccColors.blue[800] },
+              bgcolor: piccColors.ptitRed,
+              '&:hover': { bgcolor: piccColors.ptitDarkRed },
             }}
           >
             Về trang chủ
