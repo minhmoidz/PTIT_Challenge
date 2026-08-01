@@ -66,7 +66,7 @@ export const AdminLoginPage = () => {
         minHeight: '100vh',
         display: 'flex',
         bgcolor: adminColors.bg,
-        backgroundImage: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(37, 95, 199, 0.12), transparent)',
+        backgroundImage: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(56, 130, 241, 0.12), transparent)',
       }}
     >
       {/* Left Branding Panel */}
@@ -111,7 +111,7 @@ export const AdminLoginPage = () => {
             </Box>
             <Box>
               <Typography sx={{ fontWeight: 800, fontSize: '1rem', color: '#FFFFFF', letterSpacing: '-0.01em' }}>PICC Admin</Typography>
-              <Typography sx={{ fontSize: '0.6875rem', color: 'rgba(148, 176, 212, 0.9)', letterSpacing: '0.04em' }}>Command Center</Typography>
+              <Typography sx={{ fontSize: '0.6875rem', color: 'rgba(154, 195, 249, 0.9)', letterSpacing: '0.04em' }}>Command Center</Typography>
             </Box>
           </Box>
 
@@ -130,7 +130,7 @@ export const AdminLoginPage = () => {
             <Box component="span" sx={{ color: 'rgba(100, 180, 250, 0.9)' }}>PICC 2026</Box>
           </Typography>
 
-          <Typography sx={{ color: 'rgba(148, 176, 212, 0.9)', fontSize: '0.9375rem', lineHeight: 1.65, maxWidth: 340 }}>
+          <Typography sx={{ color: 'rgba(154, 195, 249, 0.9)', fontSize: '0.9375rem', lineHeight: 1.65, maxWidth: 340 }}>
             Hệ thống quản trị dành cho Ban Tổ chức PTIT Innovation Catalyst Challenge. Truy cập bằng tài khoản được cấp quyền.
           </Typography>
         </Box>
@@ -146,7 +146,7 @@ export const AdminLoginPage = () => {
             p: 2,
           }}
         >
-          <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(148, 176, 212, 0.85)', lineHeight: 1.6 }}>
+          <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(154, 195, 249, 0.85)', lineHeight: 1.6 }}>
             Chỉ dành cho thành viên Ban Tổ chức được cấp quyền. Mọi truy cập trái phép sẽ bị ghi nhận và xử lý theo quy định.
           </Typography>
         </Box>
@@ -294,7 +294,7 @@ export const AdminLoginPage = () => {
                 mt: 0.5,
                 '&:hover': {
                   bgcolor: adminColors.primaryHover,
-                  boxShadow: '0 4px 12px rgba(37, 95, 199, 0.3)',
+                  boxShadow: '0 4px 12px rgba(56, 130, 241, 0.3)',
                 },
                 '&:disabled': { opacity: 0.65 },
               }}

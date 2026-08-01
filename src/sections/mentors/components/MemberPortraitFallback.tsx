@@ -34,7 +34,7 @@ export const MemberPortraitFallback = ({
           borderRadius: '16px',
           overflow: 'hidden',
           position: 'relative',
-          bgcolor: 'rgba(234, 242, 255, 0.6)',
+          bgcolor: 'rgba(223, 235, 253, 0.6)',
         }}
       >
         <Box
@@ -56,7 +56,7 @@ export const MemberPortraitFallback = ({
             position: 'absolute',
             inset: 0,
             background:
-              'linear-gradient(to top, rgba(23, 59, 102, 0.25) 0%, transparent 60%)',
+              'linear-gradient(to top, rgba(15, 42, 82, 0.25) 0%, transparent 60%)',
             pointerEvents: 'none',
           }}
         />
@@ -75,8 +75,8 @@ export const MemberPortraitFallback = ({
         overflow: 'hidden',
         position: 'relative',
         background:
-          'linear-gradient(135deg, #EAF2FF 0%, #F0F4FF 50%, #E0E7FF 100%)',
-        border: '1px solid rgba(57, 124, 232, 0.2)',
+          'linear-gradient(135deg, #DFEBFD 0%, #F0F4FF 50%, #E0E7FF 100%)',
+        border: '1px solid rgba(56, 130, 241, 0.2)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -90,7 +90,7 @@ export const MemberPortraitFallback = ({
           position: 'absolute',
           inset: 0,
           backgroundImage:
-            'radial-gradient(circle, rgba(57, 124, 232, 0.12) 1px, transparent 1px)',
+            'radial-gradient(circle, rgba(56, 130, 241, 0.12) 1px, transparent 1px)',
           backgroundSize: '20px 20px',
           opacity: 0.6,
           pointerEvents: 'none',
@@ -105,7 +105,7 @@ export const MemberPortraitFallback = ({
           width: '75%',
           height: '75%',
           borderRadius: '50%',
-          border: '1.5px dashed rgba(57, 124, 232, 0.25)',
+          border: '1.5px dashed rgba(56, 130, 241, 0.25)',
           pointerEvents: 'none',
         }}
       />
@@ -141,8 +141,8 @@ export const MemberPortraitFallback = ({
             height: 64,
             borderRadius: '50%',
             bgcolor: '#FFFFFF',
-            boxShadow: '0 8px 24px rgba(36, 95, 168, 0.15)',
-            border: '2px solid rgba(57, 124, 232, 0.3)',
+            boxShadow: '0 8px 24px rgba(56, 130, 241, 0.15)',
+            border: '2px solid rgba(56, 130, 241, 0.3)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -153,7 +153,7 @@ export const MemberPortraitFallback = ({
             sx={{
               fontWeight: 900,
               fontSize: '1.4rem',
-              color: '#173B66',
+              color: '#0F2A52',
               letterSpacing: '0.05em',
             }}
           >

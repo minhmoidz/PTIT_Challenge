@@ -54,7 +54,7 @@ export const HeroContent = ({ status }: Props) => {
             gap: 0.75,
             flexWrap: 'wrap',
             border: `1px solid ${piccColors.ptitRed}`,
-            bgcolor: 'rgba(188, 38, 38, 0.06)',
+            bgcolor: 'rgba(255, 31, 31, 0.06)',
             borderRadius: '999px',
             px: 1.75,
             py: 0.6,
@@ -214,15 +214,15 @@ export const HeroContent = ({ status }: Props) => {
                 fontFamily: '"Manrope", sans-serif',
                 color: '#FFFFFF',
                 background: gradientMesh.ptitCta,
-                boxShadow: '0 6px 20px rgba(188, 38, 38, 0.35)',
+                boxShadow: '0 6px 20px rgba(255, 31, 31, 0.35)',
                 textTransform: 'uppercase',
                 whiteSpace: 'nowrap',
                 position: 'relative',
                 overflow: 'hidden',
                 transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                 '&:hover': {
-                  background: 'linear-gradient(135deg, #a31c1c 0%, #821414 100%)',
-                  boxShadow: '0 8px 26px rgba(188, 38, 38, 0.5)',
+                  background: 'linear-gradient(135deg, #B81111 0%, #8F1010 100%)',
+                  boxShadow: '0 8px 26px rgba(255, 31, 31, 0.5)',
                   transform: 'translateY(-2px)',
                   '& .MuiButton-endIcon': {
                     transform: 'translateX(3px)',
@@ -252,14 +252,14 @@ export const HeroContent = ({ status }: Props) => {
                 textTransform: 'none',
                 whiteSpace: 'nowrap',
                 color: piccColors.ptitNavy,
-                borderColor: 'rgba(5, 26, 83, 0.28)',
+                borderColor: 'rgba(15, 42, 82, 0.28)',
                 bgcolor: '#FFFFFF',
                 transition: 'all 0.25s ease',
                 '&:hover': {
                   borderColor: piccColors.ptitRed,
                   color: piccColors.ptitRed,
                   bgcolor: '#FFFFFF',
-                  boxShadow: '0 4px 16px rgba(188, 38, 38, 0.12)',
+                  boxShadow: '0 4px 16px rgba(255, 31, 31, 0.12)',
                   transform: 'translateY(-2px)',
                 },
               }}
@@ -302,9 +302,9 @@ export const HeroContent = ({ status }: Props) => {
             display: 'flex',
             alignItems: 'stretch',
             bgcolor: 'rgba(255,255,255,0.88)',
-            border: '1px solid rgba(226, 232, 240, 0.9)',
+            border: '1px solid rgba(223, 230, 239, 0.9)',
             borderRadius: '18px',
-            boxShadow: '0 2px 12px rgba(23,59,102,0.06)',
+            boxShadow: '0 2px 12px rgba(15, 42, 82,0.06)',
             backdropFilter: 'blur(12px)',
             overflow: 'hidden',
             maxWidth: 540,
@@ -325,8 +325,8 @@ export const HeroContent = ({ status }: Props) => {
             },
             {
               Icon: FlagRoundedIcon,
-              color: piccColors.emerald[600],
-              bg: piccColors.emerald[50],
+              color: piccColors.yellow[700],
+              bg: piccColors.yellow[50],
               value: '04 giai đoạn chính',
             },
           ].map((item, i, arr) => (
@@ -342,7 +342,7 @@ export const HeroContent = ({ status }: Props) => {
                 py: 1.5,
                 px: 1,
                 borderRight:
-                  i < arr.length - 1 ? '1px solid rgba(226,232,240,0.7)' : 'none',
+                  i < arr.length - 1 ? '1px solid rgba(223, 230, 239,0.7)' : 'none',
                 textAlign: 'center',
               }}
             >

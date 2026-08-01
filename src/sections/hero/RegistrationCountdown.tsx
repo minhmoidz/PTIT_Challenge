@@ -19,8 +19,8 @@ const CountdownCell = ({ value, label }: { value: number; label: string }) => (
       px: 0.75,
       bgcolor: 'rgba(244, 248, 253, 0.9)',
       borderRadius: '14px',
-      border: '1px solid rgba(57, 124, 232, 0.2)',
-      boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.8), 0 2px 8px rgba(22, 58, 103, 0.04)',
+      border: '1px solid rgba(56, 130, 241, 0.2)',
+      boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.8), 0 2px 8px rgba(15, 42, 82, 0.04)',
     }}
   >
     <Typography
@@ -29,7 +29,7 @@ const CountdownCell = ({ value, label }: { value: number; label: string }) => (
         display: 'block',
         fontSize: { xs: '1.5rem', sm: '1.85rem' },
         fontWeight: 850,
-        color: '#163A67',
+        color: '#0F2A52',
         lineHeight: 1.05,
         letterSpacing: '-0.025em',
       }}
@@ -45,7 +45,7 @@ const CountdownCell = ({ value, label }: { value: number; label: string }) => (
     </Typography>
     <Typography
       sx={{
-        color: '#64748B',
+        color: '#67788F',
         fontSize: '0.65rem',
         fontWeight: 750,
         textTransform: 'uppercase',
@@ -75,7 +75,7 @@ export const RegistrationCountdown = ({ targetDate, status, clockOffsetMs = 0 }:
           px: 3,
           py: 1.25,
           mb: 3,
-          border: '1px solid rgba(226,232,240,0.9)',
+          border: '1px solid rgba(223, 230, 239,0.9)',
         }}
       >
         <Typography sx={{ fontWeight: 700, color: piccColors.slate[700], fontSize: '0.9rem' }}>
@@ -110,11 +110,11 @@ export const RegistrationCountdown = ({ targetDate, status, clockOffsetMs = 0 }:
         aria-label={`${label} ${countdown.days} ngày ${countdown.hours} giờ ${countdown.minutes} phút ${countdown.seconds} giây`}
       >
         <CountdownCell value={countdown.days} label="Ngày" />
-        <Typography sx={{ color: 'rgba(57, 124, 232, 0.4)', fontWeight: 800, fontSize: '1.25rem' }}>:</Typography>
+        <Typography sx={{ color: 'rgba(56, 130, 241, 0.4)', fontWeight: 800, fontSize: '1.25rem' }}>:</Typography>
         <CountdownCell value={countdown.hours} label="Giờ" />
-        <Typography sx={{ color: 'rgba(57, 124, 232, 0.4)', fontWeight: 800, fontSize: '1.25rem' }}>:</Typography>
+        <Typography sx={{ color: 'rgba(56, 130, 241, 0.4)', fontWeight: 800, fontSize: '1.25rem' }}>:</Typography>
         <CountdownCell value={countdown.minutes} label="Phút" />
-        <Typography sx={{ color: 'rgba(57, 124, 232, 0.4)', fontWeight: 800, fontSize: '1.25rem' }}>:</Typography>
+        <Typography sx={{ color: 'rgba(56, 130, 241, 0.4)', fontWeight: 800, fontSize: '1.25rem' }}>:</Typography>
         <CountdownCell value={countdown.seconds} label="Giây" />
       </Box>
     </Box>

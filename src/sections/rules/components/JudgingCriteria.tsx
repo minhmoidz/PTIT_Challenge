@@ -5,7 +5,7 @@ import { motion } from 'motion/react';
 import { fadeInUp } from '@/motion/variants';
 import { competitionData } from '@/data/competition';
 
-const COLORS = ['#397CE8', '#7457E8', '#1B9B72', '#E8599A'];
+const COLORS = ['#3882F1', '#6A73DC', '#059669', '#D65890'];
 
 export const JudgingCriteria = () => {
   return (
@@ -15,14 +15,14 @@ export const JudgingCriteria = () => {
           height: '100%',
           borderRadius: 4,
           bgcolor: '#FFFFFF',
-          border: '1px solid #DDE6F1',
-          boxShadow: '0 8px 30px rgba(22, 58, 103, 0.05)',
+          border: '1px solid #DFE6EF',
+          boxShadow: '0 8px 30px rgba(15, 42, 82, 0.05)',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           '&:hover': {
-            boxShadow: '0 14px 40px rgba(22, 58, 103, 0.1)',
+            boxShadow: '0 14px 40px rgba(15, 42, 82, 0.1)',
             transform: 'translateY(-3px)',
           },
         }}
@@ -36,7 +36,7 @@ export const JudgingCriteria = () => {
                 height: 36,
                 borderRadius: '10px',
                 bgcolor: '#FFF0F7',
-                color: '#E8599A',
+                color: '#D65890',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -45,10 +45,10 @@ export const JudgingCriteria = () => {
               <StarsRoundedIcon sx={{ fontSize: 19 }} />
             </Box>
             <Box>
-              <Typography sx={{ fontSize: '0.675rem', fontWeight: 800, color: '#E8599A', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              <Typography sx={{ fontSize: '0.675rem', fontWeight: 800, color: '#D65890', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                 Đánh Giá Bài Thi
               </Typography>
-              <Typography sx={{ fontSize: { xs: '1.1rem', md: '1.2rem' }, fontWeight: 800, color: '#163A67', lineHeight: 1.2 }}>
+              <Typography sx={{ fontSize: { xs: '1.1rem', md: '1.2rem' }, fontWeight: 800, color: '#0F2A52', lineHeight: 1.2 }}>
                 04 Tiêu Chí Chấm Giải
               </Typography>
             </Box>
@@ -63,8 +63,8 @@ export const JudgingCriteria = () => {
                     p: 1.5,
                     px: 1.75,
                     borderRadius: 2.5,
-                    bgcolor: '#F8FAFD',
-                    border: '1px solid #DDE6F1',
+                    bgcolor: '#F7F9FC',
+                    border: '1px solid #DFE6EF',
                     display: 'flex',
                     alignItems: 'flex-start',
                     gap: 1.25,
@@ -88,7 +88,7 @@ export const JudgingCriteria = () => {
                     <CheckCircleRoundedIcon sx={{ fontSize: 15 }} />
                   </Box>
 
-                  <Typography sx={{ fontSize: '0.85rem', fontWeight: 700, color: '#163A67', lineHeight: 1.45 }}>
+                  <Typography sx={{ fontSize: '0.85rem', fontWeight: 700, color: '#0F2A52', lineHeight: 1.45 }}>
                     {criterion}
                   </Typography>
                 </Box>

@@ -29,11 +29,11 @@ interface ParticleFieldProps {
 }
 
 const DEFAULT_COLORS = [
-  'rgba(79, 143, 234, 0.6)',  // PICC blue
-  'rgba(232, 91, 159, 0.5)',  // PICC pink
+  'rgba(56, 130, 241, 0.6)',  // PICC blue
+  'rgba(214, 88, 144, 0.5)',  // PICC pink
   'rgba(253, 209, 102, 0.5)', // PICC yellow
-  'rgba(79, 143, 234, 0.3)',  // light blue
-  'rgba(232, 91, 159, 0.3)',  // light pink
+  'rgba(56, 130, 241, 0.3)',  // light blue
+  'rgba(214, 88, 144, 0.3)',  // light pink
   'rgba(165, 180, 252, 0.4)', // indigo
 ];
 

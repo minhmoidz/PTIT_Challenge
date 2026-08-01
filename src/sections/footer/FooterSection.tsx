@@ -30,7 +30,7 @@ export const FooterSection = () => (
     component="footer"
     id="footer"
     sx={{
-      background: 'linear-gradient(180deg, #051A53 0%, #081d59 50%, #030f33 100%)',
+      background: 'linear-gradient(180deg, #0F2A52 0%, #081d59 50%, #030f33 100%)',
       borderTop: `4px solid ${piccColors.ptitRed}`,
       color: '#FFFFFF',
       pt: { xs: 8, md: 10 },
@@ -56,7 +56,7 @@ export const FooterSection = () => (
                 sx={{
                   fontSize: '0.72rem',
                   fontWeight: 700,
-                  color: piccColors.ptitRed,
+                  color: piccColors.sky[300],
                   lineHeight: 1.2,
                   fontFamily: '"Manrope", sans-serif',
                 }}
@@ -73,7 +73,7 @@ export const FooterSection = () => (
                   fontFamily: '"Manrope", sans-serif',
                 }}
               >
-                PTIT IEC · <Box component="span" sx={{ color: piccColors.ptitRed }}>PICC 2026</Box>
+                PTIT IEC · <Box component="span" sx={{ color: piccColors.amber[300] }}>PICC 2026</Box>
               </Typography>
             </Box>
           </Box>
@@ -233,7 +233,7 @@ export const FooterSection = () => (
                 border: 'none',
                 transition: 'all 0.25s ease',
                 '&:hover': {
-                  bgcolor: 'rgba(57, 124, 232, 0.2)',
+                  bgcolor: 'rgba(56, 130, 241, 0.2)',
                   borderColor: piccColors.sky[400],
                   transform: 'translateY(-2px)',
                 },
@@ -266,7 +266,7 @@ export const FooterSection = () => (
                 border: 'none',
                 transition: 'all 0.25s ease',
                 '&:hover': {
-                  bgcolor: 'rgba(57, 124, 232, 0.2)',
+                  bgcolor: 'rgba(56, 130, 241, 0.2)',
                   borderColor: piccColors.sky[400],
                   transform: 'translateY(-2px)',
                 },
@@ -298,7 +298,7 @@ export const FooterSection = () => (
           gap: 2,
         }}
       >
-        <Typography sx={{ color: piccColors.neutral[500], fontSize: '0.825rem' }}>
+        <Typography sx={{ color: piccColors.neutral[300], fontSize: '0.825rem' }}>
           &copy; {new Date().getFullYear()} PTIT Innovation Catalyst Challenge (PICC 2026). Tất cả quyền được bảo lưu.
         </Typography>
 
@@ -352,7 +352,7 @@ export const FooterSection = () => (
               color: piccColors.neutral[200],
               fontWeight: 600,
               fontSize: '0.75rem',
-              '&:hover': { bgcolor: 'rgba(57, 124, 232, 0.25)', color: '#FFFFFF' },
+              '&:hover': { bgcolor: 'rgba(56, 130, 241, 0.25)', color: '#FFFFFF' },
             }}
           />
           <Chip
@@ -369,7 +369,7 @@ export const FooterSection = () => (
               color: piccColors.neutral[200],
               fontWeight: 600,
               fontSize: '0.75rem',
-              '&:hover': { bgcolor: 'rgba(57, 124, 232, 0.25)', color: '#FFFFFF' },
+              '&:hover': { bgcolor: 'rgba(56, 130, 241, 0.25)', color: '#FFFFFF' },
             }}
           />
         </Box>

@@ -105,8 +105,8 @@ export const IntroductionSection = () => (
                         height: '100%',
                         borderRadius: '18px',
                         bgcolor: '#FFFFFF',
-                        border: '1px solid rgba(226, 232, 240, 0.95)',
-                        boxShadow: '0 4px 16px rgba(22, 58, 103, 0.06)',
+                        border: '1px solid rgba(223, 230, 239, 0.95)',
+                        boxShadow: '0 4px 16px rgba(15, 42, 82, 0.06)',
                         position: 'relative',
                         overflow: 'hidden',
                         display: 'flex',
@@ -114,7 +114,7 @@ export const IntroductionSection = () => (
                         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                         '&:hover': {
                           borderColor: piccColors.blue[300],
-                          boxShadow: '0 10px 24px rgba(22, 58, 103, 0.1)',
+                          boxShadow: '0 10px 24px rgba(15, 42, 82, 0.1)',
                           transform: 'translateY(-2px)',
                         },
                       }}

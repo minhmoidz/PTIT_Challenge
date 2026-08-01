@@ -39,7 +39,7 @@ export const BenefitsSection = () => {
           }
           label="Đặc Quyền Vòng Trong"
           sx={{
-            bgcolor: 'rgba(234, 242, 255, 0.9)',
+            bgcolor: 'rgba(223, 235, 253, 0.9)',
             backdropFilter: 'blur(8px)',
             color: piccColors.blue[700],
             fontWeight: 800,
@@ -47,8 +47,8 @@ export const BenefitsSection = () => {
             mb: 2.25,
             px: 1.5,
             py: 0.5,
-            border: '1px solid rgba(57, 124, 232, 0.25)',
-            boxShadow: '0 4px 12px rgba(57, 124, 232, 0.08)',
+            border: '1px solid rgba(56, 130, 241, 0.25)',
+            boxShadow: '0 4px 12px rgba(56, 130, 241, 0.08)',
           }}
         />
         <Typography
@@ -118,8 +118,8 @@ export const BenefitsSection = () => {
                         borderRadius: '22px',
                         bgcolor: 'rgba(255, 255, 255, 0.92)',
                         backdropFilter: 'blur(20px)',
-                        border: '1.5px solid rgba(226, 232, 240, 0.85)',
-                        boxShadow: '0 8px 30px rgba(22, 58, 103, 0.05)',
+                        border: '1.5px solid rgba(223, 230, 239, 0.85)',
+                        boxShadow: '0 8px 30px rgba(15, 42, 82, 0.05)',
                         position: 'relative',
                         overflow: 'hidden',
                         display: 'flex',
@@ -245,8 +245,8 @@ export const BenefitsSection = () => {
               borderRadius: '999px',
               bgcolor: 'rgba(255, 255, 255, 0.85)',
               backdropFilter: 'blur(12px)',
-              border: '1px solid rgba(57, 124, 232, 0.2)',
-              boxShadow: '0 4px 16px rgba(22, 58, 103, 0.04)',
+              border: '1px solid rgba(56, 130, 241, 0.2)',
+              boxShadow: '0 4px 16px rgba(15, 42, 82, 0.04)',
             }}
           >
             <AutoAwesomeRoundedIcon sx={{ fontSize: 18, color: piccColors.blue[600] }} />

@@ -46,7 +46,7 @@ export const FormStep1 = ({ teamMin, teamMax }: FormStep1Props) => {
           px: 2.25,
           borderRadius: 3,
           bgcolor: piccColors.blue[50],
-          border: '1px solid rgba(36, 95, 168, 0.3)',
+          border: '1px solid rgba(56, 130, 241, 0.3)',
           mb: 3,
         }}
       >

@@ -92,7 +92,7 @@ export const TeamsPage = () => {
               color: piccColors.blue[800],
               fontWeight: 700,
               fontSize: '0.875rem',
-              '&:hover': { bgcolor: 'rgba(36, 95, 168, 0.08)' },
+              '&:hover': { bgcolor: 'rgba(56, 130, 241, 0.08)' },
             }}
           >
             Quay lại trang chủ
@@ -112,8 +112,8 @@ export const TeamsPage = () => {
               mb: 2,
               px: 1.5,
               py: 0.5,
-              border: '1px solid rgba(36, 95, 168, 0.25)',
-              boxShadow: '0 4px 12px rgba(36, 95, 168, 0.08)',
+              border: '1px solid rgba(56, 130, 241, 0.25)',
+              boxShadow: '0 4px 12px rgba(56, 130, 241, 0.08)',
             }}
           />
 
@@ -158,7 +158,7 @@ export const TeamsPage = () => {
                   textAlign: 'center',
                   borderRadius: 4,
                   bgcolor: 'rgba(255, 255, 255, 0.9)',
-                  border: '1px solid rgba(226, 232, 240, 0.9)',
+                  border: '1px solid rgba(223, 230, 239, 0.9)',
                 }}
               >
                 <Typography sx={{ fontSize: '2.1rem', fontWeight: 850, color: piccColors.blue[700], lineHeight: 1 }}>
@@ -178,7 +178,7 @@ export const TeamsPage = () => {
                   textAlign: 'center',
                   borderRadius: 4,
                   bgcolor: 'rgba(255, 255, 255, 0.9)',
-                  border: '1px solid rgba(226, 232, 240, 0.9)',
+                  border: '1px solid rgba(223, 230, 239, 0.9)',
                 }}
               >
                 <Typography sx={{ fontSize: '2.1rem', fontWeight: 850, color: piccColors.indigo[500], lineHeight: 1 }}>
@@ -198,7 +198,7 @@ export const TeamsPage = () => {
                   textAlign: 'center',
                   borderRadius: 4,
                   bgcolor: 'rgba(255, 255, 255, 0.9)',
-                  border: '1px solid rgba(226, 232, 240, 0.9)',
+                  border: '1px solid rgba(223, 230, 239, 0.9)',
                 }}
               >
                 <Typography sx={{ fontSize: '2.1rem', fontWeight: 850, color: piccColors.emerald[500], lineHeight: 1 }}>
@@ -251,7 +251,7 @@ export const TeamsPage = () => {
               textAlign: 'center',
               borderRadius: '24px',
               bgcolor: 'rgba(255, 255, 255, 0.92)',
-              border: '1.5px dashed rgba(36, 95, 168, 0.3)',
+              border: '1.5px dashed rgba(56, 130, 241, 0.3)',
               my: 4,
             }}
           >

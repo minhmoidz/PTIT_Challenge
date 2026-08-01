@@ -35,7 +35,7 @@ export const FormStep2 = ({ teamMin, teamMax }: FormStep2Props) => {
           mb: 4,
           borderRadius: 3,
           bgcolor: piccColors.blue[50],
-          border: '1px solid rgba(36, 95, 168, 0.3)',
+          border: '1px solid rgba(56, 130, 241, 0.3)',
           fontWeight: 650,
           fontSize: '0.85rem',
         }}
@@ -49,8 +49,8 @@ export const FormStep2 = ({ teamMin, teamMax }: FormStep2Props) => {
           mb: 4,
           p: 2.5,
           borderRadius: 4,
-          bgcolor: 'rgba(240, 247, 255, 0.6)',
-          border: '1px solid rgba(36, 95, 168, 0.25)',
+          bgcolor: 'rgba(241, 246, 254, 0.6)',
+          border: '1px solid rgba(56, 130, 241, 0.25)',
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
@@ -133,8 +133,8 @@ export const FormStep2 = ({ teamMin, teamMax }: FormStep2Props) => {
             p: 2.5,
             borderRadius: 4,
             bgcolor: '#FFFFFF',
-            border: '1px solid rgba(226, 232, 240, 0.9)',
-            boxShadow: '0 2px 10px rgba(22, 58, 103, 0.04)',
+            border: '1px solid rgba(223, 230, 239, 0.9)',
+            boxShadow: '0 2px 10px rgba(15, 42, 82, 0.04)',
           }}
         >
           <Typography sx={{ fontWeight: 800, mb: 2, color: piccColors.ptitNavy, fontSize: '0.975rem' }}>

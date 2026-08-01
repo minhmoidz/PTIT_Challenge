@@ -46,7 +46,7 @@ export const AwardsSection = () => {
           <Typography
             sx={{
               textAlign: 'center',
-              color: '#65758B',
+              color: '#67788F',
               mt: 4,
               mb: 4,
               fontStyle: 'italic',

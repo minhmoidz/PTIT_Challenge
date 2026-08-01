@@ -13,8 +13,8 @@ const TIMELINE_STEPS = [
     title: 'Nộp Hồ Sơ',
     desc: 'Đăng ký và gửi đề xuất sơ bộ.',
     icon: AssignmentTurnedInRoundedIcon,
-    accentColor: '#397CE8',
-    bgColor: '#EAF2FF',
+    accentColor: '#3882F1',
+    bgColor: '#DFEBFD',
   },
   {
     stepNumber: '02',
@@ -22,7 +22,7 @@ const TIMELINE_STEPS = [
     title: 'Chung Khảo',
     desc: 'Pitching và phản biện.',
     icon: RecordVoiceOverRoundedIcon,
-    accentColor: '#7457E8',
+    accentColor: '#6A73DC',
     bgColor: '#F0EDFF',
   },
   {
@@ -31,7 +31,7 @@ const TIMELINE_STEPS = [
     title: 'Chung Kết',
     desc: 'Vinh danh và trao giải.',
     icon: EmojiEventsRoundedIcon,
-    accentColor: '#E8599A',
+    accentColor: '#D65890',
     bgColor: '#FFF0F7',
   },
 ];
@@ -44,8 +44,8 @@ export const CompetitionTimeline = () => {
           height: '100%',
           borderRadius: 4,
           bgcolor: '#FFFFFF',
-          border: '1px solid #DDE6F1',
-          boxShadow: '0 8px 30px rgba(22, 58, 103, 0.05)',
+          border: '1px solid #DFE6EF',
+          boxShadow: '0 8px 30px rgba(15, 42, 82, 0.05)',
           position: 'relative',
           overflow: 'hidden',
           display: 'flex',
@@ -53,7 +53,7 @@ export const CompetitionTimeline = () => {
           justifyContent: 'space-between',
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           '&:hover': {
-            boxShadow: '0 14px 40px rgba(22, 58, 103, 0.1)',
+            boxShadow: '0 14px 40px rgba(15, 42, 82, 0.1)',
             transform: 'translateY(-3px)',
           },
         }}
@@ -66,8 +66,8 @@ export const CompetitionTimeline = () => {
                 width: 36,
                 height: 36,
                 borderRadius: '10px',
-                bgcolor: '#EAF2FF',
-                color: '#397CE8',
+                bgcolor: '#DFEBFD',
+                color: '#3882F1',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -76,10 +76,10 @@ export const CompetitionTimeline = () => {
               <RouteRoundedIcon sx={{ fontSize: 19 }} />
             </Box>
             <Box>
-              <Typography sx={{ fontSize: '0.675rem', fontWeight: 800, color: '#397CE8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              <Typography sx={{ fontSize: '0.675rem', fontWeight: 800, color: '#3882F1', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                 Bản Đồ Chinh Phục
               </Typography>
-              <Typography sx={{ fontSize: { xs: '1.1rem', md: '1.2rem' }, fontWeight: 800, color: '#163A67', lineHeight: 1.2 }}>
+              <Typography sx={{ fontSize: { xs: '1.1rem', md: '1.2rem' }, fontWeight: 800, color: '#0F2A52', lineHeight: 1.2 }}>
                 Lộ Trình Ba Vòng Thi
               </Typography>
             </Box>
@@ -100,7 +100,7 @@ export const CompetitionTimeline = () => {
                 left: '14%',
                 right: '14%',
                 height: 2.5,
-                background: 'linear-gradient(90deg, #397CE8 0%, #7457E8 50%, #E8599A 100%)',
+                background: 'linear-gradient(90deg, #3882F1 0%, #6A73DC 50%, #D65890 100%)',
                 transformOrigin: 'left',
                 display: { xs: 'none', md: 'block' },
                 zIndex: 0,
@@ -120,7 +120,7 @@ export const CompetitionTimeline = () => {
                 bottom: 24,
                 left: 28,
                 width: 2.5,
-                background: 'linear-gradient(180deg, #397CE8 0%, #7457E8 50%, #E8599A 100%)',
+                background: 'linear-gradient(180deg, #3882F1 0%, #6A73DC 50%, #D65890 100%)',
                 transformOrigin: 'top',
                 display: { xs: 'block', md: 'none' },
                 zIndex: 0,
@@ -146,8 +146,8 @@ export const CompetitionTimeline = () => {
                         p: 1.75,
                         pl: { xs: 6.5, md: 1.75 },
                         borderRadius: '12px',
-                        bgcolor: '#F8FAFD',
-                        border: '1px solid #DDE6F1',
+                        bgcolor: '#F7F9FC',
+                        border: '1px solid #DFE6EF',
                         transition: 'all 0.25s ease',
                         overflow: 'hidden',
                         '&:hover': {
@@ -203,14 +203,14 @@ export const CompetitionTimeline = () => {
                           <Typography sx={{ fontSize: '0.675rem', fontWeight: 700, color: node.accentColor, textTransform: 'uppercase' }}>
                             {node.label}
                           </Typography>
-                          <Typography sx={{ fontSize: '0.925rem', fontWeight: 700, color: '#163A67' }}>
+                          <Typography sx={{ fontSize: '0.925rem', fontWeight: 700, color: '#0F2A52' }}>
                             {node.title}
                           </Typography>
                         </Box>
                       </Box>
 
                       {/* Node Description */}
-                      <Typography sx={{ fontSize: '0.8rem', color: '#66768C', lineHeight: 1.45, fontWeight: 500, position: 'relative', zIndex: 1 }}>
+                      <Typography sx={{ fontSize: '0.8rem', color: '#67788F', lineHeight: 1.45, fontWeight: 500, position: 'relative', zIndex: 1 }}>
                         {node.desc}
                       </Typography>
                     </Box>

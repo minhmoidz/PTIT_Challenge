@@ -13,7 +13,7 @@ export const CouncilMemberCard = ({ member }: CouncilMemberCardProps) => {
     <Tilt3DCard
       maxTilt={8}
       scale={1.02}
-      glareColor="rgba(57, 124, 232, 0.12)"
+      glareColor="rgba(56, 130, 241, 0.12)"
       sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
     >
       <Card
@@ -22,8 +22,8 @@ export const CouncilMemberCard = ({ member }: CouncilMemberCardProps) => {
           borderRadius: '20px',
           bgcolor: 'rgba(255, 255, 255, 0.92)',
           backdropFilter: 'blur(18px)',
-          border: '1.5px solid rgba(226, 232, 240, 0.85)',
-          boxShadow: '0 8px 28px rgba(22, 58, 103, 0.04)',
+          border: '1.5px solid rgba(223, 230, 239, 0.85)',
+          boxShadow: '0 8px 28px rgba(15, 42, 82, 0.04)',
           position: 'relative',
           overflow: 'hidden',
           display: 'flex',
@@ -32,7 +32,7 @@ export const CouncilMemberCard = ({ member }: CouncilMemberCardProps) => {
           '&:hover': {
             borderColor: piccColors.blue[400],
             bgcolor: '#FFFFFF',
-            boxShadow: '0 14px 36px rgba(22, 58, 103, 0.1)',
+            boxShadow: '0 14px 36px rgba(15, 42, 82, 0.1)',
             transform: 'translateY(-4px)',
           },
         }}
@@ -42,7 +42,7 @@ export const CouncilMemberCard = ({ member }: CouncilMemberCardProps) => {
           sx={{
             height: 3,
             width: '100%',
-            background: 'linear-gradient(90deg, #397CE8 0%, #6366F1 100%)',
+            background: 'linear-gradient(90deg, #3882F1 0%, #6366F1 100%)',
           }}
         />
 
@@ -69,12 +69,12 @@ export const CouncilMemberCard = ({ member }: CouncilMemberCardProps) => {
               label={member.competitionRole}
               size="small"
               sx={{
-                bgcolor: 'rgba(57, 124, 232, 0.1)',
+                bgcolor: 'rgba(56, 130, 241, 0.1)',
                 color: piccColors.blue[800],
                 fontWeight: 750,
                 fontSize: '0.725rem',
                 letterSpacing: '0.02em',
-                border: '1px solid rgba(57, 124, 232, 0.2)',
+                border: '1px solid rgba(56, 130, 241, 0.2)',
                 height: 24,
               }}
             />

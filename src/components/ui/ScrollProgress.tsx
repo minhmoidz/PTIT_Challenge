@@ -34,7 +34,7 @@ export const ScrollProgress = () => {
         width: '100%',
         zIndex: 1300,
         background: gradientMesh.ptitCta,
-        boxShadow: '0 0 8px rgba(188, 38, 38, 0.4)',
+        boxShadow: '0 0 8px rgba(255, 31, 31, 0.4)',
         transform: `scaleX(${progress})`,
         transformOrigin: 'left',
         transition: 'transform 0.1s linear',

@@ -44,7 +44,7 @@ export const REGISTRATION_CTA_CONFIG: Record<string, CtaConfig> = {
     mobileLabel: 'Theo dõi hành trình',
     href: '/#lo-trinh',
     helperText: 'Đăng ký đã đóng vào 15/08/2026.',
-    dotColor: '#64748B', // slate
+    dotColor: '#67788F', // slate
     showMobileSticky: false,
   },
   live: {

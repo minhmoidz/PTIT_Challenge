@@ -52,14 +52,14 @@ const DigitBlock = ({
         py: { xs: 1.25, sm: 1.5 },
         px: { xs: 0.75, sm: 1 },
         bgcolor: 'rgba(244, 248, 253, 0.85)',
-        border: '1px solid rgba(57, 124, 232, 0.18)',
+        border: '1px solid rgba(56, 130, 241, 0.18)',
         borderRadius: '16px',
-        boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.8), 0 2px 8px rgba(22, 58, 103, 0.04)',
+        boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.8), 0 2px 8px rgba(15, 42, 82, 0.04)',
         transition: 'all 0.25s ease',
         '&:hover': {
           bgcolor: '#FFFFFF',
-          borderColor: 'rgba(57, 124, 232, 0.35)',
-          boxShadow: '0 4px 14px rgba(57, 124, 232, 0.12)',
+          borderColor: 'rgba(56, 130, 241, 0.35)',
+          boxShadow: '0 4px 14px rgba(56, 130, 241, 0.12)',
         },
       }}
     >
@@ -67,7 +67,7 @@ const DigitBlock = ({
         sx={{
           fontSize: { xs: '1.75rem', sm: '2.25rem', md: '2.4rem' },
           fontWeight: 850,
-          color: '#163A67',
+          color: '#0F2A52',
           lineHeight: 1,
           fontVariantNumeric: 'tabular-nums',
           letterSpacing: '-0.03em',
@@ -88,7 +88,7 @@ const DigitBlock = ({
         sx={{
           fontSize: { xs: '0.625rem', sm: '0.6875rem' },
           fontWeight: 750,
-          color: '#64748B',
+          color: '#67788F',
           textTransform: 'uppercase',
           letterSpacing: '0.08em',
           mt: 0.5,
@@ -104,7 +104,7 @@ const DigitBlock = ({
         sx={{
           fontSize: { xs: '1.25rem', sm: '1.5rem' },
           fontWeight: 800,
-          color: 'rgba(57, 124, 232, 0.35)',
+          color: 'rgba(56, 130, 241, 0.35)',
           mx: { xs: 0.25, sm: 0.5 },
           alignSelf: 'center',
           userSelect: 'none',
@@ -221,7 +221,7 @@ export const HeroVisual = ({ registrationTimes }: { registrationTimes?: { openAt
             inset: '-15%',
             borderRadius: '50%',
             background:
-              'radial-gradient(circle, rgba(57,124,232,0.32) 0%, rgba(99,102,241,0.18) 40%, rgba(232,91,159,0.12) 65%, transparent 78%)',
+              'radial-gradient(circle, rgba(56, 130, 241,0.32) 0%, rgba(106, 115, 220,0.18) 40%, rgba(214, 88, 144,0.12) 65%, transparent 78%)',
             filter: 'blur(32px)',
             zIndex: 0,
           }}
@@ -230,11 +230,11 @@ export const HeroVisual = ({ registrationTimes }: { registrationTimes?: { openAt
         {/* Outer Orbit Ring 1 (Indigo/Blue 3D Tilt) */}
         <OrbitalRing
           size={350}
-          color="rgba(57, 124, 232, 0.38)"
+          color="rgba(56, 130, 241, 0.38)"
           tiltX={64}
           tiltY={10}
           duration={26}
-          nodeColor="#397CE8"
+          nodeColor="#3882F1"
           nodeTop
           zIndex={1}
           prefersReducedMotion={prefersReducedMotion}
@@ -243,7 +243,7 @@ export const HeroVisual = ({ registrationTimes }: { registrationTimes?: { openAt
         {/* Secondary campaign orbit */}
         <OrbitalRing
           size={300}
-          color="rgba(99, 102, 241, 0.22)"
+          color="rgba(106, 115, 220, 0.22)"
           tiltX={52}
           tiltY={-20}
           duration={34}
@@ -263,7 +263,7 @@ export const HeroVisual = ({ registrationTimes }: { registrationTimes?: { openAt
             width: '48%',
             height: 12,
             background:
-              'linear-gradient(180deg, rgba(57,124,232,0.22) 0%, rgba(57,124,232,0.02) 100%)',
+              'linear-gradient(180deg, rgba(56, 130, 241,0.22) 0%, rgba(56, 130, 241,0.02) 100%)',
             borderRadius: '50%',
             filter: 'blur(5px)',
             zIndex: 2,
@@ -283,7 +283,7 @@ export const HeroVisual = ({ registrationTimes }: { registrationTimes?: { openAt
             position: 'relative',
             zIndex: 4,
             width: { xs: 150, sm: 180, md: 200 },
-            filter: 'drop-shadow(0 16px 36px rgba(22,58,103,0.24))',
+            filter: 'drop-shadow(0 16px 36px rgba(15, 42, 82,0.24))',
           }}
         >
           {logoSrc ? (
@@ -298,7 +298,7 @@ export const HeroVisual = ({ registrationTimes }: { registrationTimes?: { openAt
           )}
         </Box>
 
-        <FloatingGem size={12} top="15%" right="12%" color1="#F5A623" color2="#E85B9F" duration={5} delay={0} shape="circle" prefersReducedMotion={prefersReducedMotion} />
+        <FloatingGem size={12} top="15%" right="12%" color1="#E7C34D" color2="#D65890" duration={5} delay={0} shape="circle" prefersReducedMotion={prefersReducedMotion} />
       </Box>
 
       {/* ══ 2. STACKED COUNTDOWN CARD (Overlapping Unified Composition) ══ */}
@@ -453,11 +453,11 @@ const LogoFallback = () => (
       width: 170,
       height: 170,
       borderRadius: '24px',
-      background: 'linear-gradient(135deg, #173B66 0%, #397CE8 100%)',
+      background: 'linear-gradient(135deg, #0F2A52 0%, #3882F1 100%)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      boxShadow: '0 12px 32px rgba(23,59,102,0.3)',
+      boxShadow: '0 12px 32px rgba(15, 42, 82,0.3)',
     }}
   >
     <Typography sx={{ color: '#fff', fontWeight: 900, fontSize: '2.2rem', letterSpacing: '-0.04em' }}>
@@ -481,19 +481,19 @@ const CountdownCard = ({
   <Box
     sx={{
       bgcolor: 'rgba(255, 255, 255, 0.95)',
-      border: '1.5px solid rgba(57, 124, 232, 0.28)',
+      border: '1.5px solid rgba(56, 130, 241, 0.28)',
       borderRadius: '26px',
       boxShadow:
-        '0 20px 50px rgba(22, 58, 103, 0.12), 0 4px 16px rgba(57, 124, 232, 0.08)',
+        '0 20px 50px rgba(15, 42, 82, 0.12), 0 4px 16px rgba(56, 130, 241, 0.08)',
       backdropFilter: 'blur(20px)',
       overflow: 'hidden',
       position: 'relative',
       p: { xs: 2.75, sm: 3.25, md: 3.5 },
       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
       '&:hover': {
-        borderColor: 'rgba(57, 124, 232, 0.45)',
+        borderColor: 'rgba(56, 130, 241, 0.45)',
         boxShadow:
-          '0 26px 60px rgba(22, 58, 103, 0.16), 0 6px 20px rgba(57, 124, 232, 0.14)',
+          '0 26px 60px rgba(15, 42, 82, 0.16), 0 6px 20px rgba(56, 130, 241, 0.14)',
       },
     }}
   >
@@ -506,7 +506,7 @@ const CountdownCard = ({
         left: 0,
         right: 0,
         height: 4,
-        background: 'linear-gradient(90deg, #245FA8 0%, #4F8FEA 100%)',
+        background: 'linear-gradient(90deg, #1C52A6 0%, #3882F1 100%)',
       }}
     />
 
@@ -523,18 +523,18 @@ const CountdownCard = ({
     >
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
         <Chip
-          icon={<AutoAwesomeRoundedIcon sx={{ fontSize: '13px !important', color: '#397CE8 !important' }} />}
+          icon={<AutoAwesomeRoundedIcon sx={{ fontSize: '13px !important', color: '#3882F1 !important' }} />}
           label="MỐC SỰ KIỆN TIẾP THEO"
           size="small"
           sx={{
-            bgcolor: 'rgba(57, 124, 232, 0.1)',
+            bgcolor: 'rgba(56, 130, 241, 0.1)',
             color: piccColors.blue[700],
             fontWeight: 800,
             fontSize: '0.675rem',
             letterSpacing: '0.08em',
             height: 22,
             px: 0.5,
-            border: '1px solid rgba(57, 124, 232, 0.2)',
+            border: '1px solid rgba(56, 130, 241, 0.2)',
           }}
         />
       </Box>
@@ -563,7 +563,7 @@ const CountdownCard = ({
       sx={{
         fontSize: { xs: '1.25rem', sm: '1.45rem', md: '1.55rem' },
         fontWeight: 850,
-        color: '#163A67',
+        color: '#0F2A52',
         lineHeight: 1.25,
         mb: 2.25,
         letterSpacing: '-0.015em',
@@ -609,7 +609,7 @@ const MilestoneProgress = ({
     <Box
       sx={{
         pt: 1.75,
-        borderTop: '1px dashed rgba(226, 232, 240, 0.85)',
+        borderTop: '1px dashed rgba(223, 230, 239, 0.85)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -636,7 +636,7 @@ const MilestoneProgress = ({
           sx={{
             flex: 1,
             height: 5,
-            bgcolor: 'rgba(57, 124, 232, 0.12)',
+            bgcolor: 'rgba(56, 130, 241, 0.12)',
             borderRadius: 3,
             overflow: 'hidden',
             maxWidth: 140,
@@ -649,7 +649,7 @@ const MilestoneProgress = ({
             transition={{ duration: 0.8, ease: 'easeOut', delay: 0.5 }}
             sx={{
               height: '100%',
-              background: 'linear-gradient(90deg, #397CE8 0%, #6366F1 100%)',
+              background: 'linear-gradient(90deg, #3882F1 0%, #6366F1 100%)',
               borderRadius: 3,
             }}
           />
@@ -687,16 +687,16 @@ const CompletedPanel = () => (
   <Box
     sx={{
       bgcolor: 'rgba(255, 255, 255, 0.95)',
-      border: '1.5px solid rgba(57, 124, 232, 0.28)',
+      border: '1.5px solid rgba(56, 130, 241, 0.28)',
       borderRadius: '26px',
       p: 3.5,
       textAlign: 'center',
-      boxShadow: '0 20px 50px rgba(22, 58, 103, 0.12)',
+      boxShadow: '0 20px 50px rgba(15, 42, 82, 0.12)',
       backdropFilter: 'blur(20px)',
     }}
   >
     <Typography
-      sx={{ fontWeight: 850, fontSize: '1.15rem', color: '#163A67', mb: 0.5 }}
+      sx={{ fontWeight: 850, fontSize: '1.15rem', color: '#0F2A52', mb: 0.5 }}
     >
       PICC 2026 đã khép lại
     </Typography>
@@ -719,7 +719,7 @@ const CompletedPanel = () => (
         color: '#FFFFFF',
         fontWeight: 800,
         fontSize: '0.85rem',
-        boxShadow: '0 4px 14px rgba(57, 124, 232, 0.3)',
+        boxShadow: '0 4px 14px rgba(56, 130, 241, 0.3)',
         transition: 'all 0.2s ease',
         '&:hover': {
           bgcolor: piccColors.blue[800],

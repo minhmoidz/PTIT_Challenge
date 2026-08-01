@@ -127,9 +127,9 @@ export const SiteHeader = () => {
         backdropFilter: scrolled ? 'blur(16px) saturate(160%)' : 'none',
         WebkitBackdropFilter: scrolled ? 'blur(16px) saturate(160%)' : 'none',
         boxShadow: scrolled
-          ? '0 8px 32px rgba(5, 26, 83, 0.1)'
-          : '0 2px 10px rgba(5, 26, 83, 0.04)',
-        borderBottom: `1px solid ${scrolled ? 'rgba(188, 38, 38, 0.14)' : piccColors.neutral[200]}`,
+          ? '0 8px 32px rgba(15, 42, 82, 0.1)'
+          : '0 2px 10px rgba(15, 42, 82, 0.04)',
+        borderBottom: `1px solid ${scrolled ? 'rgba(255, 31, 31, 0.14)' : piccColors.neutral[200]}`,
       }}
     >
       {/* ── Signature PTIT Crimson Red Top Bar ── */}
@@ -358,13 +358,13 @@ export const SiteHeader = () => {
                 fontFamily: '"Manrope", sans-serif',
                 color: '#FFFFFF',
                 background: gradientMesh.ptitCta,
-                boxShadow: '0 4px 14px rgba(188, 38, 38, 0.35)',
+                boxShadow: '0 4px 14px rgba(255, 31, 31, 0.35)',
                 textTransform: 'uppercase',
                 whiteSpace: 'nowrap',
                 transition: 'all 0.25s ease',
                 '&:hover': {
-                  background: 'linear-gradient(135deg, #a31c1c 0%, #821414 100%)',
-                  boxShadow: '0 6px 20px rgba(188, 38, 38, 0.5)',
+                  background: 'linear-gradient(135deg, #B81111 0%, #8F1010 100%)',
+                  boxShadow: '0 6px 20px rgba(255, 31, 31, 0.5)',
                   transform: 'translateY(-1px)',
                 },
               }}
@@ -407,7 +407,7 @@ export const SiteHeader = () => {
               bgcolor: 'rgba(255, 255, 255, 0.96)',
               backdropFilter: 'blur(20px)',
               borderTop: `1px solid ${piccColors.neutral[200]}`,
-              boxShadow: '0 10px 30px rgba(23, 59, 102, 0.12)',
+              boxShadow: '0 10px 30px rgba(15, 42, 82, 0.12)',
               overflow: 'hidden',
               py: 2.5,
             }}
@@ -427,7 +427,7 @@ export const SiteHeader = () => {
                         py: 1.5,
                         borderRadius: 3,
                         color: isActive ? piccColors.ptitRed : piccColors.ptitNavy,
-                        bgcolor: isActive ? 'rgba(188, 38, 38, 0.08)' : 'transparent',
+                        bgcolor: isActive ? 'rgba(255, 31, 31, 0.08)' : 'transparent',
                         fontSize: '0.95rem',
                         fontWeight: isActive ? 800 : 600,
                         textTransform: 'uppercase',
@@ -438,7 +438,7 @@ export const SiteHeader = () => {
                         textDecoration: 'none',
                         transition: 'all 0.2s ease',
                         cursor: 'pointer',
-                        '&:hover': { bgcolor: 'rgba(188, 38, 38, 0.08)', color: piccColors.ptitRed },
+                        '&:hover': { bgcolor: 'rgba(255, 31, 31, 0.08)', color: piccColors.ptitRed },
                       }}
                     >
                       <span>{item.label}</span>
@@ -471,7 +471,7 @@ export const SiteHeader = () => {
                     fontWeight: 800,
                     color: '#FFFFFF',
                     background: gradientMesh.ptitCta,
-                    boxShadow: '0 4px 16px rgba(188, 38, 38, 0.35)',
+                    boxShadow: '0 4px 16px rgba(255, 31, 31, 0.35)',
                     textTransform: 'uppercase',
                     fontFamily: '"Manrope", sans-serif',
                   }}

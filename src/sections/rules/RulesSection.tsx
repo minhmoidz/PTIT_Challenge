@@ -78,14 +78,14 @@ export const RulesSection = () => {
                   py: 1.5,
                   fontWeight: 800,
                   fontSize: '0.95rem',
-                  bgcolor: '#397CE8',
+                  bgcolor: '#3882F1',
                   color: '#FFFFFF',
-                  boxShadow: '0 8px 24px rgba(57, 124, 232, 0.3)',
+                  boxShadow: '0 8px 24px rgba(56, 130, 241, 0.3)',
                   transition: 'all 0.3s ease',
                   '&:hover': {
-                    bgcolor: '#163A67',
+                    bgcolor: '#0F2A52',
                     transform: 'translateY(-2px) scale(1.02)',
-                    boxShadow: '0 12px 32px rgba(22, 58, 103, 0.4)',
+                    boxShadow: '0 12px 32px rgba(15, 42, 82, 0.4)',
                   },
                 }}
               >

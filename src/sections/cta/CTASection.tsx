@@ -78,8 +78,8 @@ export const CTASection = () => {
               background:
                 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(238, 246, 255, 0.95) 50%, rgba(255, 255, 255, 0.95) 100%)',
               backdropFilter: 'blur(20px)',
-              border: '1.5px solid rgba(57, 124, 232, 0.25)',
-              boxShadow: '0 16px 48px rgba(22, 58, 103, 0.06)',
+              border: '1.5px solid rgba(56, 130, 241, 0.25)',
+              boxShadow: '0 16px 48px rgba(15, 42, 82, 0.06)',
               textAlign: 'center',
               position: 'relative',
               overflow: 'hidden',
@@ -94,7 +94,7 @@ export const CTASection = () => {
                 right: 0,
                 height: 4,
                 background:
-                  'linear-gradient(90deg, #397CE8 0%, #E85B9F 50%, #059669 100%)',
+                  'linear-gradient(90deg, #3882F1 0%, #D65890 50%, #059669 100%)',
               }}
             />
 
@@ -117,15 +117,15 @@ export const CTASection = () => {
                   }
                   label={ctaConfig.helperText}
                   sx={{
-                    bgcolor: 'rgba(234, 242, 255, 0.9)',
+                    bgcolor: 'rgba(223, 235, 253, 0.9)',
                     backdropFilter: 'blur(8px)',
                     color: piccColors.blue[800],
                     fontWeight: 800,
                     fontSize: '0.825rem',
                     px: 1.5,
                     py: 0.5,
-                    border: '1px solid rgba(57, 124, 232, 0.25)',
-                    boxShadow: '0 4px 12px rgba(57, 124, 232, 0.08)',
+                    border: '1px solid rgba(56, 130, 241, 0.25)',
+                    boxShadow: '0 4px 12px rgba(56, 130, 241, 0.08)',
                   }}
                 />
               </Box>
@@ -198,14 +198,14 @@ export const CTASection = () => {
                     fontFamily: '"Manrope", sans-serif',
                     background: gradientMesh.ptitCta,
                     color: '#FFFFFF',
-                    boxShadow: '0 8px 24px rgba(188, 38, 38, 0.35)',
+                    boxShadow: '0 8px 24px rgba(255, 31, 31, 0.35)',
                     textTransform: 'uppercase',
                     width: { xs: '100%', sm: 'auto' },
                     transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                     '&:hover': {
-                      background: 'linear-gradient(135deg, #a31c1c 0%, #821414 100%)',
+                      background: 'linear-gradient(135deg, #B81111 0%, #8F1010 100%)',
                       transform: 'translateY(-2px)',
-                      boxShadow: '0 12px 32px rgba(188, 38, 38, 0.45)',
+                      boxShadow: '0 12px 32px rgba(255, 31, 31, 0.45)',
                     },
                   }}
                 >
@@ -225,13 +225,13 @@ export const CTASection = () => {
                     py: 1.35,
                     fontWeight: 750,
                     fontSize: '0.95rem',
-                    borderColor: 'rgba(57, 124, 232, 0.35)',
+                    borderColor: 'rgba(56, 130, 241, 0.35)',
                     color: piccColors.blue[800],
                     bgcolor: 'rgba(255, 255, 255, 0.8)',
                     width: { xs: '100%', sm: 'auto' },
                     transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                     '&:hover': {
-                      bgcolor: 'rgba(234, 242, 255, 0.9)',
+                      bgcolor: 'rgba(223, 235, 253, 0.9)',
                       borderColor: piccColors.blue[500],
                       transform: 'translateY(-2px)',
                     },

@@ -18,7 +18,7 @@ export const Top6Section = ({ finalists }: Props) => {
         p: { xs: 3, sm: 4.5 },
         borderRadius: '28px',
         background:
-          'linear-gradient(135deg, rgba(240, 247, 255, 0.9) 0%, rgba(240, 253, 244, 0.9) 100%)',
+          'linear-gradient(135deg, rgba(241, 246, 254, 0.9) 0%, rgba(240, 253, 244, 0.9) 100%)',
         border: '1.5px solid rgba(16, 185, 129, 0.3)',
         boxShadow: '0 12px 36px rgba(16, 185, 129, 0.08)',
         position: 'relative',

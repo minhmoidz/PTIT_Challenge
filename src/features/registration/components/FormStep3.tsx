@@ -157,7 +157,7 @@ export const FormStep3 = ({ onEdit }: Props) => {
       </Box>
 
       {/* ── Granular Public Consent Section (Optional choices for public profile) ── */}
-      <Box sx={{ mt: 3, p: 2.5, borderRadius: 3, bgcolor: 'rgba(240, 247, 255, 0.7)', border: '1px solid rgba(36, 95, 168, 0.25)' }}>
+      <Box sx={{ mt: 3, p: 2.5, borderRadius: 3, bgcolor: 'rgba(241, 246, 254, 0.7)', border: '1px solid rgba(56, 130, 241, 0.25)' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
           <PublicRoundedIcon sx={{ color: piccColors.blue[600], fontSize: 20 }} />
           <Typography variant="body1" sx={{ fontWeight: 800, color: piccColors.ptitNavy }}>

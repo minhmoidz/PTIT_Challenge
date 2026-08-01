@@ -114,7 +114,7 @@ export const AdminLayout = () => {
               position: 'fixed',
               inset: 0,
               zIndex: 1199,
-              bgcolor: 'rgba(15, 30, 60, 0.42)',
+              bgcolor: 'rgba(15, 42, 82, 0.42)',
             }}
           />
         )}
@@ -134,7 +134,7 @@ export const AdminLayout = () => {
             zIndex: 1200,
             transition: 'width 0.22s cubic-bezier(0.4, 0, 0.2, 1), left 0.22s cubic-bezier(0.4, 0, 0.2, 1)',
             overflow: 'hidden',
-            boxShadow: '2px 0 12px rgba(15, 30, 60, 0.2)',
+            boxShadow: '2px 0 12px rgba(15, 42, 82, 0.2)',
           }}
         >
           {/* Sidebar Header */}

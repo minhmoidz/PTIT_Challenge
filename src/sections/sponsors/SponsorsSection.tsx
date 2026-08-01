@@ -117,18 +117,18 @@ export const SponsorsSection = ({ sponsors = competitionData.partners }: Props) 
               ].map((item, idx) => (
                 <Grid size={{ xs: 12, sm: 4 }} key={idx}>
                   <motion.div variants={fadeInUp}>
-                    <Tilt3DCard maxTilt={5} scale={1.01} glareColor="rgba(57,124,232,0.1)">
+                    <Tilt3DCard maxTilt={5} scale={1.01} glareColor="rgba(56, 130, 241,0.1)">
                       <Card
                         sx={{
                           p: 3,
                           borderRadius: '20px',
-                          border: '1.5px dashed rgba(57, 124, 232, 0.3)',
+                          border: '1.5px dashed rgba(56, 130, 241, 0.3)',
                           bgcolor: 'rgba(255, 255, 255, 0.85)',
                           backdropFilter: 'blur(12px)',
                           textAlign: 'center',
                           transition: 'all 0.3s ease',
                           '&:hover': {
-                            borderColor: '#397CE8',
+                            borderColor: '#3882F1',
                             bgcolor: '#FFFFFF',
                           },
                         }}
@@ -139,8 +139,8 @@ export const SponsorsSection = ({ sponsors = competitionData.partners }: Props) 
                               width: 48,
                               height: 48,
                               borderRadius: '50%',
-                              bgcolor: 'rgba(57, 124, 232, 0.08)',
-                              color: '#397CE8',
+                              bgcolor: 'rgba(56, 130, 241, 0.08)',
+                              color: '#3882F1',
                               display: 'inline-flex',
                               alignItems: 'center',
                               justifyContent: 'center',
@@ -149,15 +149,15 @@ export const SponsorsSection = ({ sponsors = competitionData.partners }: Props) 
                           >
                             <BusinessRoundedIcon sx={{ fontSize: 24 }} />
                           </Box>
-                          <Typography sx={{ fontWeight: 750, color: '#163A67', fontSize: '0.95rem', mb: 0.5 }}>
+                          <Typography sx={{ fontWeight: 750, color: '#0F2A52', fontSize: '0.95rem', mb: 0.5 }}>
                             {item.title}
                           </Typography>
                           <Chip
                             label={item.sub}
                             size="small"
                             sx={{
-                              bgcolor: '#F1F5F9',
-                              color: '#64748B',
+                              bgcolor: '#EFF3F8',
+                              color: '#67788F',
                               fontWeight: 700,
                               fontSize: '0.675rem',
                             }}

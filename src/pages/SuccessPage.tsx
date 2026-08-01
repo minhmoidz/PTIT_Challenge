@@ -34,8 +34,8 @@ export const SuccessPage = () => (
           borderRadius: '32px',
           bgcolor: 'rgba(255, 255, 255, 0.92)',
           backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(226, 232, 240, 0.9)',
-          boxShadow: '0 24px 70px rgba(23, 59, 102, 0.12)',
+          border: '1px solid rgba(223, 230, 239, 0.9)',
+          boxShadow: '0 24px 70px rgba(15, 42, 82, 0.12)',
           position: 'relative',
           overflow: 'hidden',
         }}

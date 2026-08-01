@@ -57,7 +57,7 @@ const DotGrid = ({ opacity }: { opacity: number }) => (
       position: 'absolute',
       inset: 0,
       backgroundImage:
-        'radial-gradient(circle, rgba(57,124,232,0.15) 1px, transparent 1px)',
+        'radial-gradient(circle, rgba(56, 130, 241,0.15) 1px, transparent 1px)',
       backgroundSize: '30px 30px',
       opacity,
       pointerEvents: 'none',

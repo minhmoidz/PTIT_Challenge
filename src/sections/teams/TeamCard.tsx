@@ -10,15 +10,23 @@ interface Props {
   team: PublicTeamProfile;
 }
 
-/* ── Deterministic Gradient Fallback Generator ── */
+/* ── Deterministic Avatar Gradient ──
+   Picks from a fixed brand set rather than the full hue wheel, so a wall of
+   team cards reads as one palette. Every pair clears 4.5:1 against white. */
+const AVATAR_GRADIENTS = [
+  `linear-gradient(135deg, ${piccColors.blue[600]} 0%, ${piccColors.blue[800]} 100%)`,
+  `linear-gradient(135deg, ${piccColors.pink[600]} 0%, ${piccColors.pink[800]} 100%)`,
+  `linear-gradient(135deg, ${piccColors.indigo[600]} 0%, ${piccColors.indigo[800]} 100%)`,
+  `linear-gradient(135deg, ${piccColors.sky[700]} 0%, ${piccColors.blue[800]} 100%)`,
+  `linear-gradient(135deg, ${piccColors.emerald[700]} 0%, ${piccColors.emerald[900]} 100%)`,
+];
+
 const getDeterministicGradient = (str: string): string => {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
   }
-  const color1 = `hsl(${Math.abs(hash % 360)}, 70%, 55%)`;
-  const color2 = `hsl(${Math.abs((hash * 13) % 360)}, 80%, 40%)`;
-  return `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`;
+  return AVATAR_GRADIENTS[Math.abs(hash) % AVATAR_GRADIENTS.length];
 };
 
 const getInitials = (name: string): string => {
@@ -38,35 +46,40 @@ export const TeamCard = ({ team }: Props) => {
   const getBadgeStyles = () => {
     switch (statusMeta.color) {
       case 'gold':
+        return {
+          bgcolor: piccColors.amber[50],
+          color: piccColors.amber[700],
+          border: `1px solid ${piccColors.amber[200]}`,
+        };
       case 'emerald':
         return {
-          bgcolor: 'rgba(16, 185, 129, 0.12)',
+          bgcolor: piccColors.emerald[50],
           color: piccColors.emerald[700],
-          border: '1px solid rgba(16, 185, 129, 0.3)',
+          border: `1px solid ${piccColors.emerald[200]}`,
         };
       case 'purple':
         return {
-          bgcolor: 'rgba(139, 92, 246, 0.12)',
+          bgcolor: piccColors.indigo[50],
           color: piccColors.indigo[700],
-          border: '1px solid rgba(139, 92, 246, 0.3)',
+          border: `1px solid ${piccColors.indigo[200]}`,
         };
       case 'amber':
         return {
-          bgcolor: 'rgba(245, 158, 11, 0.12)',
-          color: '#B45309',
-          border: '1px solid rgba(245, 158, 11, 0.3)',
+          bgcolor: piccColors.yellow[50],
+          color: piccColors.yellow[700],
+          border: `1px solid ${piccColors.yellow[300]}`,
         };
       case 'gray':
         return {
-          bgcolor: 'rgba(100, 116, 139, 0.12)',
+          bgcolor: piccColors.slate[50],
           color: piccColors.slate[600],
-          border: '1px solid rgba(100, 116, 139, 0.3)',
+          border: `1px solid ${piccColors.slate[200]}`,
         };
       default:
         return {
-          bgcolor: 'rgba(36, 95, 168, 0.12)',
+          bgcolor: piccColors.blue[50],
           color: piccColors.blue[800],
-          border: '1px solid rgba(36, 95, 168, 0.3)',
+          border: `1px solid ${piccColors.blue[200]}`,
         };
     }
   };
@@ -81,8 +94,8 @@ export const TeamCard = ({ team }: Props) => {
         borderRadius: '22px',
         bgcolor: 'rgba(255, 255, 255, 0.95)',
         backdropFilter: 'blur(16px)',
-        border: '1px solid rgba(226, 232, 240, 0.9)',
-        boxShadow: '0 8px 24px rgba(22, 58, 103, 0.05)',
+        border: '1px solid rgba(223, 230, 239, 0.9)',
+        boxShadow: '0 8px 24px rgba(15, 42, 82, 0.05)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -91,7 +104,7 @@ export const TeamCard = ({ team }: Props) => {
         '&:hover': {
           transform: 'translateY(-5px)',
           borderColor: piccColors.blue[400],
-          boxShadow: '0 16px 40px rgba(36, 95, 168, 0.15)',
+          boxShadow: '0 16px 40px rgba(56, 130, 241, 0.15)',
           '& .team-card-cta-icon': {
             transform: 'translateX(4px)',
           },
@@ -130,7 +143,7 @@ export const TeamCard = ({ team }: Props) => {
                 fontWeight: 850,
                 fontSize: '1.05rem',
                 letterSpacing: '0.04em',
-                boxShadow: '0 4px 12px rgba(22, 58, 103, 0.15)',
+                boxShadow: '0 4px 12px rgba(15, 42, 82, 0.15)',
               }}
             >
               {getInitials(team.teamName)}
@@ -191,11 +204,11 @@ export const TeamCard = ({ team }: Props) => {
             label={team.challengeCategoryLabel}
             size="small"
             sx={{
-              bgcolor: 'rgba(240, 247, 255, 0.8)',
+              bgcolor: 'rgba(241, 246, 254, 0.8)',
               color: piccColors.blue[800],
               fontWeight: 700,
               fontSize: '0.75rem',
-              border: '1px solid rgba(36, 95, 168, 0.2)',
+              border: '1px solid rgba(56, 130, 241, 0.2)',
             }}
           />
           <Chip
@@ -207,14 +220,14 @@ export const TeamCard = ({ team }: Props) => {
               color: piccColors.pink[700],
               fontWeight: 700,
               fontSize: '0.75rem',
-              border: '1px solid rgba(232, 91, 159, 0.2)',
+              border: '1px solid rgba(214, 88, 144, 0.2)',
             }}
           />
         </Box>
       </Box>
 
       {/* CTA Button Link */}
-      <Box sx={{ pt: 1.5, borderTop: '1px solid rgba(226, 232, 240, 0.7)' }}>
+      <Box sx={{ pt: 1.5, borderTop: '1px solid rgba(223, 230, 239, 0.7)' }}>
         <Button
           component="a"
           href={`/doi-thi/${team.slug}`}
@@ -230,7 +243,7 @@ export const TeamCard = ({ team }: Props) => {
             px: 1,
             borderRadius: 3,
             '&:hover': {
-              bgcolor: 'rgba(36, 95, 168, 0.08)',
+              bgcolor: 'rgba(56, 130, 241, 0.08)',
             },
           }}
         >

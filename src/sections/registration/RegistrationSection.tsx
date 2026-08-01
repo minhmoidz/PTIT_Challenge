@@ -35,8 +35,8 @@ export const RegistrationSection = () => {
               fontWeight: 700,
               mb: 2,
               px: 1.5,
-              border: '1px solid rgba(36, 95, 168, 0.2)',
-              boxShadow: '0 4px 12px rgba(36, 95, 168, 0.1)',
+              border: '1px solid rgba(56, 130, 241, 0.2)',
+              boxShadow: '0 4px 12px rgba(56, 130, 241, 0.1)',
             }}
           />
           <Typography

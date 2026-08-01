@@ -154,7 +154,7 @@ export const HeroArtwork = () => {
               width: '100%',
               height: '100%',
               borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(57, 124, 232, 0.22) 0%, rgba(232, 91, 159, 0.14) 45%, transparent 70%)',
+              background: 'radial-gradient(circle, rgba(56, 130, 241, 0.22) 0%, rgba(214, 88, 144, 0.14) 45%, transparent 70%)',
               filter: 'blur(35px)',
               zIndex: 0,
             }}
@@ -170,8 +170,8 @@ export const HeroArtwork = () => {
               width: 240,
               height: 240,
               borderRadius: '50%',
-              border: '1.5px stroke rgba(57, 124, 232, 0.4)',
-              boxShadow: '0 0 16px rgba(57, 124, 232, 0.25)',
+              border: '1.5px stroke rgba(56, 130, 241, 0.4)',
+              boxShadow: '0 0 16px rgba(56, 130, 241, 0.25)',
               transform: 'rotateX(65deg) rotateY(15deg)',
               zIndex: 1,
               pointerEvents: 'none',
@@ -186,8 +186,8 @@ export const HeroArtwork = () => {
                 width: 8,
                 height: 8,
                 borderRadius: '50%',
-                bgcolor: '#397CE8',
-                boxShadow: '0 0 10px #397CE8',
+                bgcolor: '#3882F1',
+                boxShadow: '0 0 10px #3882F1',
               }}
             />
           </Box>
@@ -202,7 +202,7 @@ export const HeroArtwork = () => {
               width: 260,
               height: 260,
               borderRadius: '50%',
-              border: '1.5px stroke rgba(232, 91, 159, 0.35)',
+              border: '1.5px stroke rgba(214, 88, 144, 0.35)',
               transform: 'rotateX(55deg) rotateY(-25deg)',
               zIndex: 1,
               pointerEvents: 'none',
@@ -217,8 +217,8 @@ export const HeroArtwork = () => {
                 width: 8,
                 height: 8,
                 borderRadius: '50%',
-                bgcolor: '#E85B9F',
-                boxShadow: '0 0 10px #E85B9F',
+                bgcolor: '#D65890',
+                boxShadow: '0 0 10px #D65890',
               }}
             />
           </Box>
@@ -235,9 +235,9 @@ export const HeroArtwork = () => {
               width: 22,
               height: 22,
               borderRadius: '6px',
-              background: 'linear-gradient(135deg, rgba(245, 166, 35, 0.8) 0%, rgba(232, 89, 154, 0.8) 100%)',
+              background: 'linear-gradient(135deg, rgba(231, 195, 77, 0.8) 0%, rgba(232, 89, 154, 0.8) 100%)',
               transform: 'rotate(25deg)',
-              boxShadow: '0 4px 12px rgba(245, 166, 35, 0.3)',
+              boxShadow: '0 4px 12px rgba(231, 195, 77, 0.3)',
               zIndex: 2,
             }}
           />
@@ -253,8 +253,8 @@ export const HeroArtwork = () => {
               width: 18,
               height: 18,
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, rgba(57, 124, 232, 0.8) 0%, rgba(79, 70, 229, 0.8) 100%)',
-              boxShadow: '0 4px 12px rgba(57, 124, 232, 0.3)',
+              background: 'linear-gradient(135deg, rgba(56, 130, 241, 0.8) 0%, rgba(79, 70, 229, 0.8) 100%)',
+              boxShadow: '0 4px 12px rgba(56, 130, 241, 0.3)',
               zIndex: 2,
             }}
           />
@@ -267,7 +267,7 @@ export const HeroArtwork = () => {
                 zIndex: 3,
                 width: { xs: 150, md: 180 },
                 height: 'auto',
-                filter: 'drop-shadow(0 12px 24px rgba(23, 59, 102, 0.2))',
+                filter: 'drop-shadow(0 12px 24px rgba(15, 42, 82, 0.2))',
               }}
             >
               <Box
@@ -295,8 +295,8 @@ export const HeroArtwork = () => {
             p: { xs: 2.5, sm: 3 },
             borderRadius: 6,
             background: 'rgba(255, 255, 255, 0.92)',
-            border: '1.5px solid rgba(57, 124, 232, 0.25)',
-            boxShadow: '0 16px 40px rgba(22, 58, 103, 0.12), 0 4px 12px rgba(57, 124, 232, 0.08)',
+            border: '1.5px solid rgba(56, 130, 241, 0.25)',
+            boxShadow: '0 16px 40px rgba(15, 42, 82, 0.12), 0 4px 12px rgba(56, 130, 241, 0.08)',
             backdropFilter: 'blur(20px) saturate(180%)',
             position: 'relative',
             zIndex: 4,
@@ -311,7 +311,7 @@ export const HeroArtwork = () => {
               left: 0,
               right: 0,
               height: 3,
-              background: 'linear-gradient(90deg, #397CE8 0%, #E85B9F 50%, #10B981 100%)',
+              background: 'linear-gradient(90deg, #3882F1 0%, #D65890 50%, #10B981 100%)',
             }}
           />
 
@@ -322,18 +322,18 @@ export const HeroArtwork = () => {
               label="MỐC SỰ KIỆN GẦN NHẤT"
               size="small"
               sx={{
-                bgcolor: '#EAF2FF',
+                bgcolor: '#DFEBFD',
                 color: piccColors.blue[700],
                 fontWeight: 800,
                 fontSize: '0.675rem',
                 letterSpacing: '0.06em',
                 height: 22,
                 px: 0.5,
-                border: '1px solid rgba(57, 124, 232, 0.2)',
+                border: '1px solid rgba(56, 130, 241, 0.2)',
               }}
             />
 
-            <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, color: '#65758B' }}>
+            <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, color: '#67788F' }}>
               {activeMilestone?.dateStr}
             </Typography>
           </Box>
@@ -342,7 +342,7 @@ export const HeroArtwork = () => {
             sx={{
               fontSize: { xs: '1.1rem', sm: '1.25rem' },
               fontWeight: 800,
-              color: '#163A67',
+              color: '#0F2A52',
               lineHeight: 1.25,
               mb: 2,
             }}
@@ -376,9 +376,9 @@ export const HeroArtwork = () => {
                     textAlign: 'center',
                     p: 1,
                     py: 1.25,
-                    bgcolor: '#F8FAFD',
+                    bgcolor: '#F7F9FC',
                     borderRadius: 3,
-                    border: '1px solid #DDE6F1',
+                    border: '1px solid #DFE6EF',
                     boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.02)',
                   }}
                 >
@@ -386,7 +386,7 @@ export const HeroArtwork = () => {
                     sx={{
                       fontSize: { xs: '1.35rem', sm: '1.6rem' },
                       fontWeight: 900,
-                      color: '#397CE8',
+                      color: '#3882F1',
                       lineHeight: 1.1,
                       fontVariantNumeric: 'tabular-nums',
                     }}
@@ -404,7 +404,7 @@ export const HeroArtwork = () => {
                     sx={{
                       fontSize: '0.675rem',
                       fontWeight: 700,
-                      color: '#65758B',
+                      color: '#67788F',
                       textTransform: 'uppercase',
                       letterSpacing: '0.04em',
                       mt: 0.25,
@@ -418,9 +418,9 @@ export const HeroArtwork = () => {
           )}
 
           {/* MINI MILESTONE ROADMAP */}
-          <Box sx={{ pt: 1.5, borderTop: '1px solid #DDE6F1' }}>
+          <Box sx={{ pt: 1.5, borderTop: '1px solid #DFE6EF' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.25 }}>
-              <Typography sx={{ fontSize: '0.725rem', fontWeight: 800, color: '#65758B', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <Typography sx={{ fontSize: '0.725rem', fontWeight: 800, color: '#67788F', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 Tiến trình mốc thời gian
               </Typography>
               <Link
@@ -429,11 +429,11 @@ export const HeroArtwork = () => {
                 sx={{
                   fontSize: '0.75rem',
                   fontWeight: 700,
-                  color: '#397CE8',
+                  color: '#3882F1',
                   display: 'flex',
                   alignItems: 'center',
                   gap: 0.5,
-                  '&:hover': { color: '#163A67' },
+                  '&:hover': { color: '#0F2A52' },
                 }}
               >
                 <span>Xem toàn bộ lộ trình</span>
@@ -451,7 +451,7 @@ export const HeroArtwork = () => {
                   left: 12,
                   right: 12,
                   height: 2,
-                  bgcolor: '#DDE6F1',
+                  bgcolor: '#DFE6EF',
                   transform: 'translateY(-50%)',
                   zIndex: 0,
                 }}
@@ -478,9 +478,9 @@ export const HeroArtwork = () => {
                         width: isCurrent ? 20 : 14,
                         height: isCurrent ? 20 : 14,
                         borderRadius: '50%',
-                        bgcolor: isCompleted ? '#397CE8' : isCurrent ? '#059669' : '#FFFFFF',
+                        bgcolor: isCompleted ? '#3882F1' : isCurrent ? '#059669' : '#FFFFFF',
                         border: isCompleted
-                          ? '2px solid #397CE8'
+                          ? '2px solid #3882F1'
                           : isCurrent
                             ? '3px solid #059669'
                             : '2px solid #C8CDD4',
@@ -492,14 +492,14 @@ export const HeroArtwork = () => {
                         transition: 'all 0.3s ease',
                       }}
                     >
-                      {isFinale && <StarRoundedIcon sx={{ fontSize: isCurrent ? 12 : 9, color: isCurrent ? '#FFFFFF' : '#D97706' }} />}
+                      {isFinale && <StarRoundedIcon sx={{ fontSize: isCurrent ? 12 : 9, color: isCurrent ? '#FFFFFF' : '#9E7A19' }} />}
                     </Box>
 
                     <Typography
                       sx={{
                         fontSize: '0.625rem',
                         fontWeight: isCurrent ? 800 : 600,
-                        color: isCurrent ? '#163A67' : isCompleted ? '#397CE8' : '#65758B',
+                        color: isCurrent ? '#0F2A52' : isCompleted ? '#3882F1' : '#67788F',
                         mt: 0.5,
                         whiteSpace: 'nowrap',
                         display: { xs: isCurrent || isFinale ? 'block' : 'none', sm: 'block' },

@@ -24,7 +24,7 @@ export const LoadingScreen = () => (
           position: 'absolute',
           inset: 0,
           borderRadius: '50%',
-          border: '3px solid rgba(57, 124, 232, 0.15)',
+          border: '3px solid rgba(56, 130, 241, 0.15)',
           borderTopColor: piccColors.ptitRed,
           borderRightColor: piccColors.blue[500],
         }}
@@ -39,7 +39,7 @@ export const LoadingScreen = () => (
           borderRadius: '16px',
           bgcolor: '#FFFFFF',
           border: `1px solid ${piccColors.neutral[200]}`,
-          boxShadow: '0 10px 26px rgba(22, 58, 103, 0.18)',
+          boxShadow: '0 10px 26px rgba(15, 42, 82, 0.18)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

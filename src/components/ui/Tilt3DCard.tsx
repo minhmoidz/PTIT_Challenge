@@ -31,7 +31,7 @@ export const Tilt3DCard = ({
   shimmer = true,
   depthShadow = true,
   borderGlow = true,
-  borderGlowColor = 'rgba(79, 143, 234, 0.3)',
+  borderGlowColor = 'rgba(56, 130, 241, 0.3)',
   interactive = false,
   sx,
   ...rest
@@ -136,7 +136,7 @@ export const Tilt3DCard = ({
             position: 'absolute',
             inset: 0,
             borderRadius: 'inherit',
-            background: `rgba(23, 59, 102, 0.08)`,
+            background: `rgba(15, 42, 82, 0.08)`,
             x: shadowX,
             y: shadowY,
             filter: `blur(${shadowBlur}px)`,

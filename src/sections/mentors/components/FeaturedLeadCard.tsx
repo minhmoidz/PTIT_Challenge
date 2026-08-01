@@ -14,7 +14,7 @@ export const FeaturedLeadCard = ({ member }: FeaturedLeadCardProps) => {
     <Tilt3DCard
       maxTilt={6}
       scale={1.01}
-      glareColor="rgba(57, 124, 232, 0.15)"
+      glareColor="rgba(56, 130, 241, 0.15)"
       sx={{ width: '100%', mb: 4 }}
     >
       <Card
@@ -22,14 +22,14 @@ export const FeaturedLeadCard = ({ member }: FeaturedLeadCardProps) => {
           borderRadius: '24px',
           bgcolor: 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(20px)',
-          border: '1.5px solid rgba(57, 124, 232, 0.3)',
-          boxShadow: '0 12px 40px rgba(22, 58, 103, 0.08)',
+          border: '1.5px solid rgba(56, 130, 241, 0.3)',
+          boxShadow: '0 12px 40px rgba(15, 42, 82, 0.08)',
           position: 'relative',
           overflow: 'hidden',
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           '&:hover': {
             borderColor: piccColors.blue[500],
-            boxShadow: '0 18px 48px rgba(36, 95, 168, 0.15)',
+            boxShadow: '0 18px 48px rgba(56, 130, 241, 0.15)',
           },
         }}
       >
@@ -38,7 +38,7 @@ export const FeaturedLeadCard = ({ member }: FeaturedLeadCardProps) => {
           sx={{
             height: 4,
             width: '100%',
-            background: 'linear-gradient(90deg, #173B66 0%, #397CE8 50%, #F5BE4A 100%)',
+            background: 'linear-gradient(90deg, #0F2A52 0%, #3882F1 50%, #F5BE4A 100%)',
           }}
         />
 
@@ -61,13 +61,13 @@ export const FeaturedLeadCard = ({ member }: FeaturedLeadCardProps) => {
                   <Chip
                     icon={
                       <AutoAwesomeRoundedIcon
-                        sx={{ fontSize: '14px !important', color: '#173B66 !important' }}
+                        sx={{ fontSize: '14px !important', color: '#0F2A52 !important' }}
                       />
                     }
                     label={member.competitionRole}
                     sx={{
                       bgcolor: 'rgba(245, 190, 74, 0.18)',
-                      color: '#173B66',
+                      color: '#0F2A52',
                       fontWeight: 800,
                       fontSize: '0.775rem',
                       letterSpacing: '0.04em',

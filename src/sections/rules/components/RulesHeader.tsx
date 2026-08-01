@@ -7,27 +7,28 @@ import { fadeInUp } from '@/motion/variants';
 import { piccColors } from '@/theme/palette';
 import { competitionData } from '@/data/competition';
 
+/* Blue · pink · gold — the three brand secondaries, same triad as the hero stats. */
 const STATS = [
   {
     number: '03',
     label: 'Vòng thi',
     icon: RouteRoundedIcon,
-    color: '#397CE8',
-    bg: '#EAF2FF',
+    color: piccColors.blue[600],
+    bg: piccColors.blue[50],
   },
   {
     number: `${competitionData.teamRules.min}–${competitionData.teamRules.max}`,
     label: 'Thành viên / đội',
     icon: GroupsRoundedIcon,
-    color: '#7457E8',
-    bg: '#F0EDFF',
+    color: piccColors.pink[600],
+    bg: piccColors.pink[50],
   },
   {
     number: '03',
     label: 'Thành phần hồ sơ',
     icon: FolderZipRoundedIcon,
-    color: '#1B9B72',
-    bg: '#EAFBF5',
+    color: piccColors.yellow[700],
+    bg: piccColors.yellow[50],
   },
 ];
 
@@ -44,7 +45,7 @@ export const RulesHeader = () => {
           width: { xs: 300, md: 540 },
           height: { xs: 300, md: 540 },
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(57, 124, 232, 0.08) 0%, rgba(116, 87, 232, 0.04) 50%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(56, 130, 241, 0.08) 0%, rgba(106, 115, 220, 0.05) 50%, transparent 70%)',
           pointerEvents: 'none',
           zIndex: 0,
         }}
@@ -103,8 +104,8 @@ export const RulesHeader = () => {
             p: { xs: 2, sm: 2.25 },
             bgcolor: '#FFFFFF',
             borderRadius: 4,
-            border: '1px solid #DDE6F1',
-            boxShadow: '0 4px 20px rgba(22, 58, 103, 0.05)',
+            border: '1px solid #DFE6EF',
+            boxShadow: '0 4px 20px rgba(15, 42, 82, 0.05)',
           }}
         >
           <Grid container spacing={2} alignItems="center" justifyContent="center">
@@ -141,7 +142,7 @@ export const RulesHeader = () => {
                       sx={{
                         fontSize: { xs: '1.25rem', sm: '1.6rem' },
                         fontWeight: 800,
-                        color: '#163A67',
+                        color: '#0F2A52',
                         lineHeight: 1.1,
                       }}
                     >
@@ -152,7 +153,7 @@ export const RulesHeader = () => {
                       sx={{
                         fontSize: { xs: '0.75rem', sm: '0.825rem' },
                         fontWeight: 600,
-                        color: '#66768C',
+                        color: '#67788F',
                         mt: 0.25,
                       }}
                     >

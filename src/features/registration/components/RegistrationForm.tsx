@@ -268,8 +268,8 @@ export const RegistrationForm = () => {
       sx={{
         p: { xs: 2.25, sm: 4, md: 6 },
         borderRadius: 6,
-        border: '1px solid rgba(226, 232, 240, 0.9)',
-        boxShadow: '0 20px 60px rgba(23, 59, 102, 0.12)',
+        border: '1px solid rgba(223, 230, 239, 0.9)',
+        boxShadow: '0 20px 60px rgba(15, 42, 82, 0.12)',
         bgcolor: 'rgba(255, 255, 255, 0.95)',
         backdropFilter: 'blur(20px)',
       }}
@@ -327,7 +327,7 @@ export const RegistrationForm = () => {
               gap: 2,
               mt: 6,
               pt: 4,
-              borderTop: '1px solid rgba(226,232,240,0.8)',
+              borderTop: '1px solid rgba(223, 230, 239,0.8)',
             }}
           >
             <Box sx={{ display: 'flex', gap: 1, order: { xs: 2, sm: 1 } }}>
@@ -370,9 +370,9 @@ export const RegistrationForm = () => {
                       fontWeight: 700,
                       fontSize: '0.95rem',
                       background: gradientMesh.ptitCta,
-                      boxShadow: '0 4px 14px rgba(188, 38, 38, 0.3)',
+                      boxShadow: '0 4px 14px rgba(255, 31, 31, 0.3)',
                       '&:hover': {
-                        boxShadow: '0 6px 20px rgba(188, 38, 38, 0.4)',
+                        boxShadow: '0 6px 20px rgba(255, 31, 31, 0.4)',
                       },
                     }}
                   >
@@ -391,9 +391,9 @@ export const RegistrationForm = () => {
                       fontWeight: 800,
                       fontSize: '1rem',
                       background: gradientMesh.ptitCta,
-                      boxShadow: '0 6px 20px rgba(188, 38, 38, 0.35)',
+                      boxShadow: '0 6px 20px rgba(255, 31, 31, 0.35)',
                       '&:hover': {
-                        boxShadow: '0 8px 24px rgba(188, 38, 38, 0.5)',
+                        boxShadow: '0 8px 24px rgba(255, 31, 31, 0.5)',
                       },
                     }}
                   >

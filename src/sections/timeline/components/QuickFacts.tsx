@@ -159,7 +159,7 @@ export const QuickFacts = () => {
             backdropFilter: 'blur(16px)',
             border: `1px solid ${piccColors.slate[200]}`,
             borderRadius: { xs: '20px', md: '24px' },
-            boxShadow: '0 10px 30px rgba(16, 42, 86, 0.06)',
+            boxShadow: '0 10px 30px rgba(15, 42, 82, 0.06)',
             p: { xs: 2, sm: 2.5, md: 3 },
             overflow: 'hidden',
           }}
@@ -197,7 +197,7 @@ export const QuickFacts = () => {
                     borderRadius: '16px',
                     transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                     '&:hover': {
-                      bgcolor: 'rgba(59, 122, 214, 0.04)',
+                      bgcolor: 'rgba(56, 130, 241, 0.04)',
                       transform: prefersReducedMotion ? 'none' : 'translateY(-2px)',
                       '& .quick-fact-icon-box': {
                         transform: prefersReducedMotion ? 'none' : 'scale(1.04)',
@@ -309,13 +309,13 @@ export const QuickFacts = () => {
               borderRadius: '9999px',
               bgcolor: 'rgba(255, 255, 255, 0.9)',
               border: `1px solid ${piccColors.slate[200]}`,
-              boxShadow: '0 4px 14px rgba(16, 42, 86, 0.04)',
+              boxShadow: '0 4px 14px rgba(15, 42, 82, 0.04)',
               backdropFilter: 'blur(8px)',
               transition: 'all 0.2s ease',
               '&:hover': statusInfo.href
                 ? {
-                    borderColor: 'rgba(59, 122, 214, 0.3)',
-                    boxShadow: '0 6px 18px rgba(59, 122, 214, 0.1)',
+                    borderColor: 'rgba(56, 130, 241, 0.3)',
+                    boxShadow: '0 6px 18px rgba(56, 130, 241, 0.1)',
                   }
                 : {},
             }}

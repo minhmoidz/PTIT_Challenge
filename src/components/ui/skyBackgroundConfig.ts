@@ -50,14 +50,14 @@ interface SkyVariantConfig {
 export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
   hero: {
     background:
-      'linear-gradient(180deg, #EAF5FF 0%, #F5FBFF 55%, #FFFFFF 100%)',
+      'linear-gradient(180deg, #DCEFFD 0%, #F1F8FE 52%, #FBFDFF 100%)',
     glows: [
       {
         top: '-10%',
         left: '-6%',
         w: '48%',
         h: '55%',
-        color: 'rgba(57,124,232,0.13)',
+        color: 'rgba(147,206,250,0.42)',
         blur: '70px',
       },
       {
@@ -65,7 +65,7 @@ export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
         right: '-4%',
         w: '42%',
         h: '48%',
-        color: 'rgba(232,91,159,0.09)',
+        color: 'rgba(246,191,219,0.30)',
         blur: '80px',
       },
       {
@@ -73,7 +73,7 @@ export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
         right: '18%',
         w: '38%',
         h: '38%',
-        color: 'rgba(99,102,241,0.06)',
+        color: 'rgba(253,237,167,0.26)',
         blur: '60px',
       },
     ],
@@ -90,14 +90,14 @@ export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
 
   clear: {
     background:
-      'linear-gradient(180deg, #F7FBFF 0%, #FFFFFF 70%)',
+      'linear-gradient(180deg, #F1F8FE 0%, #FBFDFF 70%)',
     glows: [
       {
         top: '-5%',
         left: '-8%',
         w: '36%',
         h: '42%',
-        color: 'rgba(57,124,232,0.07)',
+        color: 'rgba(147,206,250,0.24)',
         blur: '60px',
       },
       {
@@ -105,7 +105,7 @@ export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
         right: '-8%',
         w: '36%',
         h: '42%',
-        color: 'rgba(57,124,232,0.06)',
+        color: 'rgba(154,195,249,0.20)',
         blur: '60px',
       },
     ],
@@ -120,14 +120,14 @@ export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
 
   journey: {
     background:
-      'linear-gradient(180deg, #EFF8FF 0%, #F5FBFF 40%, #F0F8FF 100%)',
+      'linear-gradient(180deg, #EAF5FE 0%, #F6FBFF 42%, #EFF7FE 100%)',
     glows: [
       {
         top: '10%',
         left: '0%',
         w: '35%',
         h: '45%',
-        color: 'rgba(57,124,232,0.09)',
+        color: 'rgba(147,206,250,0.32)',
         blur: '65px',
       },
       {
@@ -135,7 +135,7 @@ export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
         right: '0%',
         w: '35%',
         h: '45%',
-        color: 'rgba(99,102,241,0.07)',
+        color: 'rgba(154,195,249,0.26)',
         blur: '70px',
       },
       {
@@ -143,7 +143,7 @@ export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
         left: '25%',
         w: '50%',
         h: '30%',
-        color: 'rgba(99,102,241,0.05)',
+        color: 'rgba(246,191,219,0.18)',
         blur: '60px',
       },
     ],
@@ -158,14 +158,14 @@ export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
 
   celebration: {
     background:
-      'linear-gradient(180deg, #FFFBE8 0%, #FFF8E1 40%, #FFF3C4 100%)',
+      'linear-gradient(180deg, #FFFDF0 0%, #FEF7D8 45%, #FDEDA7 100%)',
     glows: [
       {
         top: '-5%',
         left: '0%',
         w: '40%',
         h: '50%',
-        color: 'rgba(245,158,11,0.12)',
+        color: 'rgba(231,195,77,0.30)',
         blur: '70px',
       },
       {
@@ -173,7 +173,7 @@ export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
         right: '0%',
         w: '40%',
         h: '45%',
-        color: 'rgba(251,191,36,0.10)',
+        color: 'rgba(253,237,167,0.55)',
         blur: '75px',
       },
       {
@@ -181,7 +181,7 @@ export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
         left: '20%',
         w: '55%',
         h: '35%',
-        color: 'rgba(245,158,11,0.08)',
+        color: 'rgba(246,191,219,0.20)',
         blur: '65px',
       },
     ],
@@ -197,14 +197,14 @@ export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
 
   calm: {
     background:
-      'linear-gradient(180deg, #FAFCFF 0%, #FFFFFF 80%)',
+      'linear-gradient(180deg, #F6FBFF 0%, #FBFDFF 80%)',
     glows: [
       {
         top: '-3%',
         left: '-5%',
         w: '30%',
         h: '35%',
-        color: 'rgba(57,124,232,0.05)',
+        color: 'rgba(147,206,250,0.20)',
         blur: '55px',
       },
     ],
@@ -219,14 +219,14 @@ export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
 
   sunset: {
     background:
-      'linear-gradient(180deg, #1E3A5F 0%, #2D4A6B 50%, #1A2E42 100%)',
+      'linear-gradient(180deg, #16386E 0%, #123056 55%, #0C2145 100%)',
     glows: [
       {
         top: '-15%',
         left: '0%',
         w: '50%',
         h: '60%',
-        color: 'rgba(245,158,11,0.15)',
+        color: 'rgba(231,195,77,0.22)',
         blur: '80px',
       },
       {
@@ -234,7 +234,7 @@ export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
         right: '0%',
         w: '45%',
         h: '50%',
-        color: 'rgba(232,91,159,0.12)',
+        color: 'rgba(246,191,219,0.18)',
         blur: '85px',
       },
     ],

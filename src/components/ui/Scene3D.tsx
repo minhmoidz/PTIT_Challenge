@@ -207,7 +207,7 @@ export const Scene3D = ({
             position: 'absolute',
             inset: '-20%',
             borderRadius: '50%',
-            background: `radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(23, 59, 102, 0.06) 100%)`,
+            background: `radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(15, 42, 82, 0.06) 100%)`,
             opacity: fogOpacity,
             pointerEvents: 'none',
             zIndex: 20,

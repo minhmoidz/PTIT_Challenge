@@ -139,7 +139,7 @@ useEffect(() => {
               color: piccColors.blue[800],
               fontWeight: 700,
               fontSize: '0.875rem',
-              '&:hover': { bgcolor: 'rgba(36, 95, 168, 0.08)' },
+              '&:hover': { bgcolor: 'rgba(56, 130, 241, 0.08)' },
             }}
           >
             Danh sách đội thi
@@ -155,7 +155,7 @@ useEffect(() => {
                 borderRadius: 999,
                 fontWeight: 700,
                 fontSize: '0.825rem',
-                borderColor: 'rgba(36, 95, 168, 0.3)',
+                borderColor: 'rgba(56, 130, 241, 0.3)',
               }}
             >
               {copied ? 'Đã chép link' : 'Chia sẻ'}
@@ -171,8 +171,8 @@ useEffect(() => {
             borderRadius: '28px',
             bgcolor: 'rgba(255, 255, 255, 0.95)',
             backdropFilter: 'blur(20px)',
-            border: '1.5px solid rgba(36, 95, 168, 0.25)',
-            boxShadow: '0 16px 48px rgba(22, 58, 103, 0.08)',
+            border: '1.5px solid rgba(56, 130, 241, 0.25)',
+            boxShadow: '0 16px 48px rgba(15, 42, 82, 0.08)',
             mb: 5,
           }}
         >
@@ -190,7 +190,7 @@ useEffect(() => {
                 color: '#FFFFFF',
                 fontWeight: 850,
                 fontSize: '1.6rem',
-                boxShadow: '0 8px 24px rgba(36, 95, 168, 0.25)',
+                boxShadow: '0 8px 24px rgba(56, 130, 241, 0.25)',
                 flexShrink: 0,
               }}
             >
@@ -285,7 +285,7 @@ useEffect(() => {
                           width: 40,
                           height: 40,
                           borderRadius: '50%',
-                          bgcolor: 'rgba(36, 95, 168, 0.12)',
+                          bgcolor: 'rgba(56, 130, 241, 0.12)',
                           color: piccColors.blue[700],
                           display: 'flex',
                           alignItems: 'center',
@@ -320,8 +320,8 @@ useEffect(() => {
                 sx={{
                   p: 3,
                   borderRadius: 4,
-                  bgcolor: 'rgba(240, 247, 255, 0.5)',
-                  border: '1px solid rgba(36, 95, 168, 0.2)',
+                  bgcolor: 'rgba(241, 246, 254, 0.5)',
+                  border: '1px solid rgba(56, 130, 241, 0.2)',
                 }}
               >
                 {team.project.title && (

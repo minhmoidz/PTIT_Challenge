@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles';
-import { gradientMesh, piccColors } from './palette';
+import { gradientMesh, piccColors, rgbChannels } from './palette';
 
 declare module '@mui/material/styles' {
   interface Theme {
@@ -72,8 +72,8 @@ export const createPiccTheme = () =>
   createTheme({
     piccColors,
     palette: {
-      primary: { main: piccColors.ptitRed, light: '#D34A4A', dark: piccColors.ptitDarkRed },
-      secondary: { main: piccColors.blue[700], light: piccColors.blue[500], dark: piccColors.blue[900] },
+      primary: { main: piccColors.ptitRed, light: piccColors.red[400], dark: piccColors.ptitDarkRed },
+      secondary: { main: piccColors.blue[600], light: piccColors.blue[400], dark: piccColors.blue[800] },
       background: { default: piccColors.semantic.page, paper: piccColors.surface },
       text: { primary: piccColors.semantic.text, secondary: piccColors.semantic.textMuted },
       success: { main: piccColors.success },
@@ -88,11 +88,11 @@ export const createPiccTheme = () =>
     spacing: 8,
     shadows: [
       'none',
-      '0px 1px 2px rgba(23,59,102,0.05)',
-      '0px 1px 3px rgba(23,59,102,0.06), 0px 1px 2px rgba(23,59,102,0.04)',
-      '0px 4px 6px rgba(23,59,102,0.05), 0px 2px 4px rgba(23,59,102,0.04)',
-      '0 16px 40px rgba(23,59,102,0.12)',
-      '0 20px 48px rgba(23,59,102,0.18)',
+      '0px 1px 2px rgba(15,42,82,0.05)',
+      '0px 1px 3px rgba(15,42,82,0.06), 0px 1px 2px rgba(15,42,82,0.04)',
+      '0px 4px 6px rgba(15,42,82,0.05), 0px 2px 4px rgba(15,42,82,0.04)',
+      '0 16px 40px rgba(15,42,82,0.12)',
+      '0 20px 48px rgba(15,42,82,0.18)',
       '0px 0px 0px rgba(0,0,0,0)',
       '0px 0px 0px rgba(0,0,0,0)',
       '0px 0px 0px rgba(0,0,0,0)',
@@ -123,22 +123,22 @@ export const createPiccTheme = () =>
             '--site-header-height': '64px',
             '--mobile-sticky-cta-clearance': '88px',
             scrollPaddingTop: 'calc(var(--site-header-height) + 12px)',
-            scrollbarColor: `${piccColors.blue[400]} ${piccColors.sky[50]}`,
+            scrollbarColor: `${piccColors.sky[300]} ${piccColors.sky[100]}`,
             scrollbarWidth: 'thin',
             '&::-webkit-scrollbar': {
               width: 11,
               height: 11,
             },
             '&::-webkit-scrollbar-track': {
-              background: piccColors.sky[50],
+              background: piccColors.sky[100],
             },
             '&::-webkit-scrollbar-thumb': {
-              background: piccColors.blue[300],
+              background: piccColors.sky[300],
               borderRadius: 8,
-              border: `3px solid ${piccColors.sky[50]}`,
+              border: `3px solid ${piccColors.sky[100]}`,
               backgroundClip: 'padding-box',
               '&:hover': {
-                background: piccColors.blue[400],
+                background: piccColors.sky[400],
               },
             },
             '@media (min-width: 900px)': {
@@ -159,15 +159,15 @@ export const createPiccTheme = () =>
             display: 'block',
           },
           '::selection': {
-            backgroundColor: 'rgba(188, 38, 38, 0.16)',
-            color: piccColors.ptitDarkRed,
+            backgroundColor: `rgba(${rgbChannels.skyMain}, 0.45)`,
+            color: piccColors.ptitNavy,
           },
           'input::placeholder, textarea::placeholder': {
-            color: piccColors.neutral[400],
+            color: piccColors.slate[400],
             opacity: 1,
           },
           ':focus-visible': {
-            outline: '2px solid rgba(36, 95, 168, 0.55)',
+            outline: `2px solid rgba(${rgbChannels.blueAccent}, 0.65)`,
             outlineOffset: 2,
           },
           '@media (prefers-reduced-motion: reduce)': {
@@ -190,7 +190,7 @@ export const createPiccTheme = () =>
             transition:
               'background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
             '&.Mui-focusVisible': {
-              outline: `3px solid ${piccColors.ptitRed}`,
+              outline: `3px solid ${piccColors.ptitRedVivid}`,
               outlineOffset: 2,
             },
             '&:active': {
@@ -199,22 +199,24 @@ export const createPiccTheme = () =>
           },
           containedPrimary: {
             background: gradientMesh.ptitCta,
-            boxShadow: '0 4px 14px rgba(188,38,38,0.3)',
+            boxShadow: `0 4px 14px rgba(${rgbChannels.red},0.28)`,
             '&:hover': {
-              background: `linear-gradient(135deg, ${piccColors.ptitDarkRed}, #821414)`,
-              boxShadow: '0 6px 20px rgba(188,38,38,0.4)',
+              background: `linear-gradient(135deg, ${piccColors.ptitDarkRed}, ${piccColors.red[800]})`,
+              boxShadow: `0 6px 20px rgba(${rgbChannels.red},0.36)`,
             },
           },
           containedSecondary: {
-            background: `linear-gradient(135deg, ${piccColors.pink[500]}, ${piccColors.pink[400]})`,
+            background: `linear-gradient(135deg, ${piccColors.blue[600]}, ${piccColors.blue[700]})`,
             color: '#FFFFFF',
+            boxShadow: `0 4px 14px rgba(${rgbChannels.blueAccent},0.26)`,
             '&:hover': {
-              background: `linear-gradient(135deg, ${piccColors.pink[600]}, ${piccColors.pink[500]})`,
+              background: `linear-gradient(135deg, ${piccColors.blue[700]}, ${piccColors.blue[800]})`,
+              boxShadow: `0 6px 20px rgba(${rgbChannels.blueAccent},0.34)`,
             },
           },
           outlined: {
-            borderColor: piccColors.neutral[300],
-            color: piccColors.neutral[700],
+            borderColor: piccColors.slate[300],
+            color: piccColors.slate[700],
             borderWidth: '1.5px',
             '&:hover': {
               borderColor: piccColors.blue[500],
@@ -228,9 +230,9 @@ export const createPiccTheme = () =>
       MuiCard: {
         styleOverrides: {
           root: {
-            borderRadius: 24,
-            boxShadow: '0 1px 3px rgba(23,59,102,0.06), 0 1px 2px rgba(23,59,102,0.04)',
-            border: `1px solid ${piccColors.neutral[200]}`,
+            borderRadius: 20,
+            boxShadow: `0 1px 3px rgba(${rgbChannels.navy},0.06), 0 1px 2px rgba(${rgbChannels.navy},0.04)`,
+            border: `1px solid ${piccColors.slate[200]}`,
             background: piccColors.surface,
             transition: 'box-shadow 0.2s ease, border-color 0.2s ease',
           },
@@ -244,10 +246,10 @@ export const createPiccTheme = () =>
               backgroundColor: '#FFFFFF',
               transition: 'border-color 0.2s, box-shadow 0.2s',
               '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: piccColors.blue[400],
+                borderColor: piccColors.blue[300],
               },
               '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                borderColor: piccColors.blue[700],
+                borderColor: piccColors.blue[500],
                 borderWidth: '2px',
               },
             },
@@ -260,7 +262,7 @@ export const createPiccTheme = () =>
             boxShadow: 'none',
             '&:before': { display: 'none' },
             borderRadius: '16px !important',
-            border: `1px solid ${piccColors.neutral[200]}`,
+            border: `1px solid ${piccColors.slate[200]}`,
             marginBottom: 12,
             overflow: 'hidden',
             '&.Mui-expanded': {

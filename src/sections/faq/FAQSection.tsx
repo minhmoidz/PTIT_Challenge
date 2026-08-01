@@ -110,16 +110,16 @@ export const FAQSection = ({ items = competitionData.faq }: Props) => {
                     bgcolor: isExpanded ? '#FFFFFF' : 'rgba(255, 255, 255, 0.92)',
                     backdropFilter: 'blur(16px)',
                     border: isExpanded
-                      ? '1.5px solid rgba(57, 124, 232, 0.45)'
-                      : '1.5px solid rgba(226, 232, 240, 0.85)',
+                      ? '1.5px solid rgba(56, 130, 241, 0.45)'
+                      : '1.5px solid rgba(223, 230, 239, 0.85)',
                     boxShadow: isExpanded
-                      ? '0 10px 32px rgba(22, 58, 103, 0.07)'
-                      : '0 4px 18px rgba(22, 58, 103, 0.03)',
+                      ? '0 10px 32px rgba(15, 42, 82, 0.07)'
+                      : '0 4px 18px rgba(15, 42, 82, 0.03)',
                     position: 'relative',
                     overflow: 'hidden',
                     transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                     '&:hover': {
-                      borderColor: 'rgba(57, 124, 232, 0.4)',
+                      borderColor: 'rgba(56, 130, 241, 0.4)',
                       bgcolor: '#FFFFFF',
                     },
                   }}
@@ -169,7 +169,7 @@ export const FAQSection = ({ items = competitionData.faq }: Props) => {
                           fontSize: '0.825rem',
                           fontWeight: 800,
                           color: isExpanded ? piccColors.blue[700] : piccColors.slate[400],
-                          bgcolor: isExpanded ? 'rgba(57, 124, 232, 0.1)' : 'rgba(226, 232, 240, 0.5)',
+                          bgcolor: isExpanded ? 'rgba(56, 130, 241, 0.1)' : 'rgba(223, 230, 239, 0.5)',
                           px: 1.25,
                           py: 0.35,
                           borderRadius: '8px',
@@ -197,14 +197,14 @@ export const FAQSection = ({ items = competitionData.faq }: Props) => {
                         width: 34,
                         height: 34,
                         borderRadius: '50%',
-                        bgcolor: isExpanded ? piccColors.blue[600] : 'rgba(234, 242, 255, 0.8)',
+                        bgcolor: isExpanded ? piccColors.blue[600] : 'rgba(223, 235, 253, 0.8)',
                         color: isExpanded ? '#FFFFFF' : piccColors.blue[700],
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexShrink: 0,
                         transition: 'all 0.25s ease',
-                        boxShadow: isExpanded ? '0 4px 12px rgba(57, 124, 232, 0.3)' : 'none',
+                        boxShadow: isExpanded ? '0 4px 12px rgba(56, 130, 241, 0.3)' : 'none',
                       }}
                     >
                       {isExpanded ? (
@@ -234,7 +234,7 @@ export const FAQSection = ({ items = competitionData.faq }: Props) => {
                       <Box
                         sx={{
                           pt: 1.5,
-                          borderTop: '1px dashed rgba(226, 232, 240, 0.8)',
+                          borderTop: '1px dashed rgba(223, 230, 239, 0.8)',
                         }}
                       >
                         <Typography
@@ -272,8 +272,8 @@ export const FAQSection = ({ items = competitionData.faq }: Props) => {
               borderRadius: '22px',
               bgcolor: 'rgba(255, 255, 255, 0.95)',
               backdropFilter: 'blur(20px)',
-              border: '1.5px solid rgba(57, 124, 232, 0.25)',
-              boxShadow: '0 8px 30px rgba(22, 58, 103, 0.05)',
+              border: '1.5px solid rgba(56, 130, 241, 0.25)',
+              boxShadow: '0 8px 30px rgba(15, 42, 82, 0.05)',
               display: 'flex',
               flexDirection: { xs: 'column', sm: 'row' },
               alignItems: { xs: 'flex-start', sm: 'center' },
@@ -287,13 +287,13 @@ export const FAQSection = ({ items = competitionData.faq }: Props) => {
                   width: 48,
                   height: 48,
                   borderRadius: '14px',
-                  bgcolor: 'rgba(57, 124, 232, 0.1)',
+                  bgcolor: 'rgba(56, 130, 241, 0.1)',
                   color: piccColors.blue[700],
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
-                  border: '1px solid rgba(57, 124, 232, 0.2)',
+                  border: '1px solid rgba(56, 130, 241, 0.2)',
                 }}
               >
                 <HeadsetMicRoundedIcon sx={{ fontSize: 24 }} />
@@ -346,14 +346,14 @@ export const FAQSection = ({ items = competitionData.faq }: Props) => {
                   fontSize: '0.9rem',
                   bgcolor: piccColors.blue[600],
                   color: '#FFFFFF',
-                  boxShadow: '0 6px 20px rgba(57, 124, 232, 0.3)',
+                  boxShadow: '0 6px 20px rgba(56, 130, 241, 0.3)',
                   whiteSpace: 'nowrap',
                   width: { xs: '100%', sm: 'auto' },
                   transition: 'all 0.25s ease',
                   '&:hover': {
                     bgcolor: piccColors.blue[800],
                     transform: 'translateY(-2px)',
-                    boxShadow: '0 10px 28px rgba(23, 59, 102, 0.35)',
+                    boxShadow: '0 10px 28px rgba(15, 42, 82, 0.35)',
                   },
                 }}
               >
