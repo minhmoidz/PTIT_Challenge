@@ -2,46 +2,59 @@ import readline from 'readline';
 import { AuthService } from '../server/services/authService';
 import { assertDatabaseReachable, prisma } from '../server/db/prisma';
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+/**
+ * Created lazily rather than at import time: readline attaches to stdin
+ * immediately, and with piped (non-TTY) input it would reach end-of-stream and
+ * close while we are still awaiting the database check.
+ */
+let rl: readline.Interface | null = null;
+
+const getRl = (): readline.Interface => {
+  if (!rl) rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  return rl;
+};
 
 const ask = (question: string): Promise<string> =>
-  new Promise((resolve) => rl.question(question, (answer) => resolve(answer.trim())));
+  new Promise((resolve) => getRl().question(question, (answer) => resolve(answer.trim())));
 
-/** Reads a secret without echoing it to the terminal. */
+/**
+ * Reads a secret without echoing it.
+ *
+ * This suppresses readline's own echo rather than reading stdin directly:
+ * readline stays attached to stdin for the whole session, so a second raw-mode
+ * listener would race with it and the password would still be printed.
+ */
+interface MutableReadline {
+  stdoutMuted?: boolean;
+  output: NodeJS.WritableStream;
+  _writeToOutput: (str: string) => void;
+}
+
 const askHidden = (question: string): Promise<string> =>
   new Promise((resolve) => {
-    const input = process.stdin;
-    const wasRaw = input.isRaw ?? false;
-    process.stdout.write(question);
+    const iface = getRl();
+    const target = iface as unknown as MutableReadline;
 
-    let value = '';
-    const onData = (chunk: Buffer) => {
-      const char = chunk.toString('utf8');
-      if (char === '\n' || char === '\r' || char === '\u0004') {
-        input.removeListener('data', onData);
-        if (input.isTTY) input.setRawMode(wasRaw);
-        process.stdout.write('\n');
-        resolve(value.trim());
-        return;
-      }
-      if (char === '\u0003') {
-        process.stdout.write('\n');
-        process.exit(1);
-      }
-      if (char === '\u007f' || char === '\b') {
-        value = value.slice(0, -1);
-        return;
-      }
-      value += char;
+    target._writeToOutput = (str: string) => {
+      if (target.stdoutMuted) return;
+      target.output.write(str);
     };
 
-    if (input.isTTY) input.setRawMode(true);
-    input.resume();
-    input.on('data', onData);
+    // Print the prompt before muting, then swallow every echoed keystroke.
+    process.stdout.write(question);
+    target.stdoutMuted = true;
+
+    iface.question('', (answer) => {
+      target.stdoutMuted = false;
+      process.stdout.write('\n');
+      resolve(answer.trim());
+    });
   });
+
+const fail = (message: string): never => {
+  console.error(`\n❌ ${message}`);
+  process.exit(1);
+};
 
 const main = async () => {
   console.log('==================================================');
@@ -51,26 +64,23 @@ const main = async () => {
   await assertDatabaseReachable();
 
   const email = await ask('Email đăng nhập Admin (e.g. btc@ptit.edu.vn): ');
-  if (!email || !email.includes('@')) {
-    console.error('❌ Email không hợp lệ.');
-    process.exit(1);
+  if (!email.includes('@') || email.startsWith('@') || email.endsWith('@')) {
+    fail('Email không hợp lệ.');
   }
 
   const displayName = await ask('Tên hiển thị (e.g. Quản trị viên BTC): ');
 
-  const password = await askHidden('Mật khẩu quản trị viên (tối thiểu 12 ký tự, không hiển thị): ');
+  const password = await askHidden('Mật khẩu (tối thiểu 12 ký tự, sẽ không hiển thị): ');
   if (password.length < 12) {
-    console.error('❌ Mật khẩu phải có tối thiểu 12 ký tự.');
-    process.exit(1);
+    fail('Mật khẩu phải có tối thiểu 12 ký tự.');
   }
 
   const confirm = await askHidden('Nhập lại mật khẩu: ');
   if (confirm !== password) {
-    console.error('❌ Mật khẩu nhập lại không khớp.');
-    process.exit(1);
+    fail('Mật khẩu nhập lại không khớp.');
   }
 
-  const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+  const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase().trim() } });
   const admin = await AuthService.createAdminUser(
     email,
     displayName || 'Quản trị viên BTC',
@@ -78,10 +88,13 @@ const main = async () => {
     'SUPER_ADMIN',
   );
 
-  console.log(`\n✅ ${existing ? 'Cập nhật' : 'Tạo'} tài khoản SUPER_ADMIN thành công (đã lưu vào database).`);
-  console.log(`- Email: ${admin.email}`);
+  console.log(
+    `\n✅ ${existing ? 'Đã cập nhật mật khẩu cho' : 'Đã tạo'} tài khoản SUPER_ADMIN (lưu trong database).`,
+  );
+  console.log(`- Email:   ${admin.email}`);
   console.log(`- Vai trò: ${admin.role}`);
-  console.log(`- ID: ${admin.id}`);
+  console.log(`- ID:      ${admin.id}`);
+  console.log('\nĐăng nhập tại: /admin\n');
 };
 
 main()
@@ -90,6 +103,6 @@ main()
     process.exitCode = 1;
   })
   .finally(async () => {
-    rl.close();
+    rl?.close();
     await prisma.$disconnect();
   });
