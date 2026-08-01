@@ -485,7 +485,7 @@ export const TimelineSection = () => {
     if (!el) return;
     const obs = new IntersectionObserver(
       ([e]) => {
-        if (e.isIntersecting) setHasEnteredViewport(true);
+        if (e?.isIntersecting) setHasEnteredViewport(true);
       },
       { threshold: 0.1 }
     );

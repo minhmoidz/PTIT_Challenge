@@ -68,5 +68,5 @@ export const REGISTRATION_CTA_CONFIG: Record<string, CtaConfig> = {
 };
 
 export const getCtaConfig = (status: RegistrationStatus): CtaConfig => {
-  return REGISTRATION_CTA_CONFIG[status] || REGISTRATION_CTA_CONFIG.not_open;
+  return REGISTRATION_CTA_CONFIG[status] ?? REGISTRATION_CTA_CONFIG.not_open!;
 };

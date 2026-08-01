@@ -45,7 +45,7 @@ export const RegistrationDetailModal = ({ open, registration, onClose, onVerify,
   const { registrationCode, status, submittedAt, data } = registration;
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth paperProps={{ sx: { borderRadius: 4, p: 1 } }}>
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth slotProps={{ paper: { sx: { borderRadius: 4, p: 1 } } }}>
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pb: 1 }}>
         <Box>
           <Typography variant="h6" sx={{ fontWeight: 800, color: adminColors.text }}>

@@ -82,6 +82,7 @@ export const CelebrationEffects = ({ sectionRef }: CelebrationEffectsProps) => {
     const observer = new IntersectionObserver(
       (entries) => {
         const [entry] = entries;
+        if (!entry) return;
 
         if (entry.isIntersecting) {
           // First time entering viewport: run initial confetti celebration

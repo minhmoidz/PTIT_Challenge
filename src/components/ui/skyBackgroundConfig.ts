@@ -18,7 +18,7 @@ export type SkyVariant =
   | 'calm'
   | 'sunset';
 
-interface CloudConfig {
+export interface CloudConfig {
   x: number;
   y: number;
   depth: 0 | 1 | 2;
@@ -31,7 +31,7 @@ interface CloudConfig {
   desktopOnly?: boolean;
 }
 
-interface SkyVariantConfig {
+export interface SkyVariantConfig {
   background: string;
   glows: Array<{
     top?: string;

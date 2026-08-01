@@ -5,7 +5,7 @@ import {
 } from '@mui/material';
 import { FormProvider, useForm, type FieldPath } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { RegistrationFormValues } from '@/types/registration';
+import type { RegistrationFormValues, TeamMember } from '@/types/registration';
 import { useRegistrationStatus } from '@/features/registration/hooks';
 import { createRegistrationSchema } from '@/features/registration/model/schema';
 import { piccColors, gradientMesh } from '@/theme/palette';
@@ -143,10 +143,21 @@ export const RegistrationForm = () => {
       const selectedSize = typeof values.teamSize === 'number' ? values.teamSize : teamMin;
       const normalizedSize = Math.min(Math.max(selectedSize, teamMin), teamMax);
       const currentMembers = Array.isArray(values.members) ? values.members : [];
-      const members = Array.from({ length: normalizedSize }, (_, index) => ({
-        ...(currentMembers[index] ?? createMember(index === 0 ? 'leader' : 'member')),
-        role: index === 0 ? 'leader' as const : 'member' as const,
-      }));
+      // `watch()` hands back a deep-partial, so every field is merged over a
+      // fully-populated default rather than spread straight through.
+      const members: TeamMember[] = Array.from({ length: normalizedSize }, (_, index) => {
+        const role = index === 0 ? ('leader' as const) : ('member' as const);
+        const base = createMember(role);
+        const existing = currentMembers[index];
+        return {
+          role,
+          fullName: existing?.fullName ?? base.fullName,
+          studentId: existing?.studentId ?? base.studentId,
+          major: existing?.major ?? base.major,
+          email: existing?.email ?? base.email,
+          phone: existing?.phone ?? base.phone,
+        };
+      });
 
       if (selectedSize !== normalizedSize) {
         setValue('teamSize', normalizedSize, { shouldValidate: true });

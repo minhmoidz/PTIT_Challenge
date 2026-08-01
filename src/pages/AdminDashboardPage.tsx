@@ -181,7 +181,7 @@ const teamBadgeColors: Record<string, { bg: string; text: string; border: string
 
 const TeamStatusBadge = ({ status, label }: { status: string; label: string }) => {
   const color = TEAM_STATUS_MAP[status as keyof typeof TEAM_STATUS_MAP]?.color || 'gray';
-  const cfg = teamBadgeColors[color];
+  const cfg = teamBadgeColors[color] ?? teamBadgeColors.gray!;
   return (
     <Box
       component="span"
@@ -232,6 +232,8 @@ export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSe
   const [configSaving, setConfigSaving] = useState(false);
   const [configSuccess, setConfigSuccess] = useState(false);
   const [configError, setConfigError] = useState('');
+  const [reviewingId, setReviewingId] = useState<string | null>(null);
+  const [reviewError, setReviewError] = useState('');
 
   const fetchData = useCallback(async () => {
     setLoadingStats(true);
@@ -243,7 +245,7 @@ export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSe
         fetch(`${env.apiBaseUrl}/v1/admin/dashboard/summary`, { headers: authHeaders }),
         fetch(`${env.apiBaseUrl}/v1/admin/registrations`, { headers: authHeaders }),
         fetch(`${env.apiBaseUrl}/v1/admin/competition/config`, { headers: authHeaders }),
-        fetch(`${env.apiBaseUrl}/v1/public/teams`, { headers: authHeaders }),
+        fetch(`${env.apiBaseUrl}/v1/admin/teams`, { headers: authHeaders }),
       ]);
 
       if (sumRes.status === 401 || regRes.status === 401 || cfgRes.status === 401) {
@@ -300,13 +302,49 @@ export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSe
     }
   };
 
+  const reviewRegistration = useCallback(
+    async (id: string, status: 'VERIFIED' | 'REJECTED', rejectionReason?: string) => {
+      setReviewingId(id);
+      setReviewError('');
+      try {
+        const res = await fetch(`${env.apiBaseUrl}/v1/admin/registrations/${id}/status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+          body: JSON.stringify({ status, rejectionReason }),
+        });
+
+        if (res.status === 401) {
+          localStorage.removeItem('picc_admin_token');
+          localStorage.removeItem('picc_admin_user');
+          navigate('/admin', { replace: true });
+          return;
+        }
+
+        const body = await res.json();
+        if (!res.ok || !body.success) {
+          setReviewError(body?.error?.message ?? 'Không thể cập nhật trạng thái hồ sơ.');
+          return;
+        }
+
+        // Re-read from the server so the row and the KPI counts cannot drift.
+        await fetchData();
+      } catch {
+        setReviewError('Không thể kết nối máy chủ. Vui lòng thử lại.');
+      } finally {
+        setReviewingId(null);
+      }
+    },
+    [fetchData, navigate],
+  );
+
   const handleVerify = (id: string) => {
-    setRegistrations((prev) => prev.map((r) => r.id === id ? { ...r, status: 'VERIFIED' } : r));
-    setStats((prev) => ({ ...prev, submittedCount: Math.max(0, prev.submittedCount - 1), verifiedCount: prev.verifiedCount + 1 }));
+    void reviewRegistration(id, 'VERIFIED');
   };
 
   const handleReject = (id: string) => {
-    setRegistrations((prev) => prev.map((r) => r.id === id ? { ...r, status: 'REJECTED' } : r));
+    const reason = window.prompt('Lý do từ chối hồ sơ (bắt buộc):')?.trim();
+    if (!reason) return;
+    void reviewRegistration(id, 'REJECTED', reason);
   };
 
   const handleSaveConfig = async (e: React.FormEvent) => {
@@ -444,6 +482,12 @@ export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSe
             </Typography>
           </Box>
 
+          {reviewError && (
+            <Alert severity="error" onClose={() => setReviewError('')} sx={{ borderRadius: 0 }}>
+              {reviewError}
+            </Alert>
+          )}
+
           {loadingRegs ? (
             <Box sx={{ p: 3 }}>
               {[...Array(3)].map((_, i) => (
@@ -506,14 +550,28 @@ export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSe
                           {reg.status === 'SUBMITTED' && (
                             <>
                               <Tooltip title="Xác minh">
-                                <IconButton size="small" onClick={() => handleVerify(reg.id)} sx={{ color: adminColors.success, '&:hover': { bgcolor: adminColors.successBg }, borderRadius: '6px' }}>
-                                  <CheckCircleRoundedIcon sx={{ fontSize: 16 }} />
-                                </IconButton>
+                                <span>
+                                  <IconButton
+                                    size="small"
+                                    disabled={reviewingId === reg.id}
+                                    onClick={() => handleVerify(reg.id)}
+                                    sx={{ color: adminColors.success, '&:hover': { bgcolor: adminColors.successBg }, borderRadius: '6px' }}
+                                  >
+                                    <CheckCircleRoundedIcon sx={{ fontSize: 16 }} />
+                                  </IconButton>
+                                </span>
                               </Tooltip>
                               <Tooltip title="Từ chối">
-                                <IconButton size="small" onClick={() => handleReject(reg.id)} sx={{ color: adminColors.danger, '&:hover': { bgcolor: adminColors.dangerBg }, borderRadius: '6px' }}>
-                                  <CancelRoundedIcon sx={{ fontSize: 16 }} />
-                                </IconButton>
+                                <span>
+                                  <IconButton
+                                    size="small"
+                                    disabled={reviewingId === reg.id}
+                                    onClick={() => handleReject(reg.id)}
+                                    sx={{ color: adminColors.danger, '&:hover': { bgcolor: adminColors.dangerBg }, borderRadius: '6px' }}
+                                  >
+                                    <CancelRoundedIcon sx={{ fontSize: 16 }} />
+                                  </IconButton>
+                                </span>
                               </Tooltip>
                             </>
                           )}

@@ -48,7 +48,7 @@ const generateParticles = (count: number, colors: string[]): Particle[] =>
       y: Math.random() * 100,
       size: baseSize + sizeVariation,
       depth,
-      color: colors[i % colors.length] ?? DEFAULT_COLORS[0],
+      color: colors[i % colors.length] ?? DEFAULT_COLORS[0]!,
       opacity: depth === 0 ? 0.15 + Math.random() * 0.2 : depth === 1 ? 0.2 + Math.random() * 0.3 : 0.3 + Math.random() * 0.4,
       blur: depth === 0 ? 1.5 : depth === 1 ? 0.5 : 0,
       driftX: (Math.random() - 0.5) * 4,

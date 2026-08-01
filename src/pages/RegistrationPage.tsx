@@ -116,7 +116,7 @@ const RegistrationCountdownDashboard = () => {
     return () => clearInterval(intervalId);
   }, [targetDate, clockOffset]);
 
-  if (status === 'closed' || status === 'completed') {
+  if (status === 'closed') {
     return (
       <Alert
         severity="error"

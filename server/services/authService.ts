@@ -1,139 +1,235 @@
 import crypto from 'crypto';
+import type { UserRoleCode } from '@prisma/client';
+import { serverEnv } from '../config/env';
+import { prisma } from '../db/prisma';
 import { dbStore } from '../db/store';
 
 export interface AdminUser {
   id: string;
   email: string;
   displayName: string;
-  role: 'SUPER_ADMIN' | 'ORGANIZER' | 'REVIEWER' | 'CONTENT_EDITOR' | 'VIEWER';
+  role: UserRoleCode;
   permissions: string[];
 }
 
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 
+/**
+ * scrypt params — N=2^15 is the current OWASP baseline for interactive logins.
+ * `maxmem` must exceed 128 * N * r (~33 MB here); Node defaults to 32 MB and
+ * would otherwise reject these parameters outright.
+ */
+const SCRYPT = { N: 32768, r: 8, p: 1, keylen: 64, maxmem: 64 * 1024 * 1024 } as const;
+
+const scryptAsync = (password: string, salt: crypto.BinaryLike, keylen: number): Promise<Buffer> =>
+  new Promise((resolve, reject) => {
+    crypto.scrypt(password, salt, keylen, SCRYPT, (err, derived) =>
+      err ? reject(err) : resolve(derived),
+    );
+  });
+
+const ROLE_PERMISSIONS: Record<UserRoleCode, string[]> = {
+  SUPER_ADMIN: [
+    'registration.read',
+    'registration.review',
+    'registration.update',
+    'registration.export',
+    'publicTeam.read',
+    'publicTeam.edit',
+    'publicTeam.publish',
+    'content.read',
+    'content.edit',
+    'content.publish',
+    'user.manage',
+    'audit.read',
+  ],
+  ORGANIZER: [
+    'registration.read',
+    'registration.review',
+    'registration.export',
+    'publicTeam.read',
+    'publicTeam.edit',
+    'content.read',
+  ],
+  REVIEWER: ['registration.read', 'registration.review', 'publicTeam.read'],
+  CONTENT_EDITOR: ['content.read', 'content.edit', 'publicTeam.read'],
+  VIEWER: ['registration.read', 'publicTeam.read', 'content.read'],
+};
+
+interface TokenPayload {
+  sub: string;
+  email: string;
+  name: string;
+  role: UserRoleCode;
+  exp: number;
+}
+
+const b64url = (buf: Buffer | string) =>
+  Buffer.from(buf).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+const fromB64url = (value: string) => Buffer.from(value.replace(/-/g, '+').replace(/_/g, '/'), 'base64');
+
 export class AuthService {
-  private static adminUsers: Map<string, { user: AdminUser; passwordHash: string }> = new Map();
-  private static sessions: Map<string, { user: AdminUser; expiresAt: number }> = new Map();
+  /* ── Password hashing ────────────────────────────────────────── */
 
-  static {
-    const superAdminUser: AdminUser = {
-      id: 'user-admin-iec-01',
-      email: 'iec@ptit.edu.vn',
-      displayName: 'Trung Tâm IEC PTIT',
-      role: 'SUPER_ADMIN',
-      permissions: [
-        'registration.read',
-        'registration.review',
-        'registration.update',
-        'registration.export',
-        'publicTeam.read',
-        'publicTeam.edit',
-        'publicTeam.publish',
-        'content.read',
-        'content.edit',
-        'content.publish',
-        'user.manage',
-        'audit.read',
-      ],
-    };
-
-    const salt = 'picc2026-salt';
-    const hashUpper = crypto.pbkdf2Sync('IEC@12345', salt, 1000, 64, 'sha512').toString('hex');
-
-    AuthService.adminUsers.set('iec@ptit.edu.vn', {
-      user: superAdminUser,
-      passwordHash: hashUpper,
-    });
-
-    AuthService.adminUsers.set('admin@ptit.edu.vn', {
-      user: { ...superAdminUser, email: 'admin@ptit.edu.vn' },
-      passwordHash: hashUpper,
-    });
+  /** Returns `scrypt$<salt-hex>$<hash-hex>` — the salt is unique per user. */
+  public static async hashPassword(password: string): Promise<string> {
+    const salt = crypto.randomBytes(16);
+    const hash = await scryptAsync(password, salt, SCRYPT.keylen);
+    return `scrypt$${salt.toString('hex')}$${hash.toString('hex')}`;
   }
+
+  private static async verifyPassword(password: string, stored: string): Promise<boolean> {
+    const [scheme, saltHex, hashHex] = stored.split('$');
+    if (scheme !== 'scrypt' || !saltHex || !hashHex) return false;
+
+    const expected = Buffer.from(hashHex, 'hex');
+    const actual = await scryptAsync(password, Buffer.from(saltHex, 'hex'), expected.length);
+    return expected.length === actual.length && crypto.timingSafeEqual(expected, actual);
+  }
+
+  /* ── Login ───────────────────────────────────────────────────── */
 
   public static async login(email: string, password: string): Promise<{ token: string; user: AdminUser } | null> {
-    const cleanEmail = email.toLowerCase().trim();
-    const cleanPassword = password.trim();
+    const cleanEmail = String(email).toLowerCase().trim();
 
-    let record = AuthService.adminUsers.get(cleanEmail);
+    const record = await prisma.user.findUnique({
+      where: { email: cleanEmail },
+      include: { userRoles: { include: { role: true } } },
+    });
 
-    // Fallback registration for default IEC admin if missing
-    if (!record && (cleanEmail === 'iec@ptit.edu.vn' || cleanEmail === 'admin@ptit.edu.vn')) {
-      const superAdminUser: AdminUser = {
-        id: 'user-admin-iec-01',
-        email: cleanEmail,
-        displayName: 'Trung Tâm IEC PTIT',
-        role: 'SUPER_ADMIN',
-        permissions: ['registration.read', 'publicTeam.read', 'content.read', 'user.manage'],
-      };
-      const salt = 'picc2026-salt';
-      const hash = crypto.pbkdf2Sync('IEC@12345', salt, 1000, 64, 'sha512').toString('hex');
-      record = { user: superAdminUser, passwordHash: hash };
-      AuthService.adminUsers.set(cleanEmail, record);
+    if (!record || record.status !== 'ACTIVE') {
+      // Spend comparable time on unknown users so the response time does not
+      // reveal whether an account exists.
+      await scryptAsync(String(password), 'timing-equaliser', SCRYPT.keylen);
+      return null;
     }
 
-    if (!record) return null;
+    if (!(await AuthService.verifyPassword(String(password), record.passwordHash))) {
+      await dbStore.addAuditLog('ADMIN_LOGIN_FAILED', 'User', record.id, { actorUserId: record.id });
+      return null;
+    }
 
-    const salt = 'picc2026-salt';
-    const hashInput = crypto.pbkdf2Sync(cleanPassword, salt, 1000, 64, 'sha512').toString('hex');
+    const role = (record.userRoles[0]?.role.code ?? 'VIEWER') as UserRoleCode;
+    const user: AdminUser = {
+      id: record.id,
+      email: record.email,
+      displayName: record.displayName,
+      role,
+      permissions: ROLE_PERMISSIONS[role],
+    };
 
-    // Flexible verification for IEC@12345 or iec@12345 or Picc2026AdminSecret!
-    const isPasswordValid =
-      hashInput === record.passwordHash ||
-      cleanPassword.toUpperCase() === 'IEC@12345' ||
-      cleanPassword.toLowerCase() === 'iec@12345' ||
-      cleanPassword === 'Picc2026AdminSecret!';
+    await prisma.user.update({ where: { id: record.id }, data: { lastLoginAt: new Date() } });
+    await dbStore.addAuditLog('ADMIN_LOGIN', 'User', record.id, { actorUserId: record.id });
 
-    if (!isPasswordValid) return null;
-
-    dbStore.addAuditLog('ADMIN_LOGIN', 'User', record.user.id);
-
-    return { token: AuthService.createSession(record.user), user: record.user };
+    return { token: AuthService.createSession(user), user };
   }
 
+  /* ── Stateless sessions ──────────────────────────────────────── */
+
+  /**
+   * Tokens are HMAC-signed rather than held in a Map, so a restart or a second
+   * instance does not silently log every admin out.
+   */
   public static createSession(user: AdminUser): string {
-    const token = crypto.randomBytes(32).toString('hex');
-    AuthService.sessions.set(token, { user, expiresAt: Date.now() + SESSION_TTL_MS });
-    return token;
+    const payload: TokenPayload = {
+      sub: user.id,
+      email: user.email,
+      name: user.displayName,
+      role: user.role,
+      exp: Date.now() + SESSION_TTL_MS,
+    };
+    const body = b64url(JSON.stringify(payload));
+    const signature = crypto.createHmac('sha256', serverEnv.JWT_SECRET).update(body).digest();
+    return `${body}.${b64url(signature)}`;
   }
 
   public static verifyToken(token: string | undefined | null): AdminUser | null {
     if (!token) return null;
-    const session = AuthService.sessions.get(token);
-    if (!session) return null;
-    if (Date.now() > session.expiresAt) {
-      AuthService.sessions.delete(token);
+
+    const [body, signature] = token.split('.');
+    if (!body || !signature) return null;
+
+    const expected = crypto.createHmac('sha256', serverEnv.JWT_SECRET).update(body).digest();
+    const provided = fromB64url(signature);
+    if (provided.length !== expected.length || !crypto.timingSafeEqual(provided, expected)) return null;
+
+    try {
+      const payload = JSON.parse(fromB64url(body).toString('utf8')) as TokenPayload;
+      if (typeof payload.exp !== 'number' || Date.now() > payload.exp) return null;
+
+      return {
+        id: payload.sub,
+        email: payload.email,
+        displayName: payload.name,
+        role: payload.role,
+        permissions: ROLE_PERMISSIONS[payload.role] ?? [],
+      };
+    } catch {
       return null;
     }
-    return session.user;
   }
+
+  /* ── User management ─────────────────────────────────────────── */
 
   public static async createAdminUser(
     email: string,
     displayName: string,
     password: string,
-    role: 'SUPER_ADMIN' | 'ORGANIZER' | 'REVIEWER' | 'CONTENT_EDITOR' | 'VIEWER' = 'ORGANIZER',
+    role: UserRoleCode = 'ORGANIZER',
   ): Promise<AdminUser> {
-    const salt = 'picc2026-salt';
-    const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
-    const id = `user-${Date.now()}`;
+    const cleanEmail = email.toLowerCase().trim();
+    const roleRow = await prisma.role.upsert({
+      where: { code: role },
+      update: {},
+      create: { code: role, name: role.replace(/_/g, ' ').toLowerCase() },
+    });
 
-    const user: AdminUser = {
-      id,
-      email: email.toLowerCase().trim(),
-      displayName,
+    const passwordHash = await AuthService.hashPassword(password);
+    const user = await prisma.user.upsert({
+      where: { email: cleanEmail },
+      update: { displayName, passwordHash, status: 'ACTIVE' },
+      create: { email: cleanEmail, displayName, passwordHash },
+    });
+
+    await prisma.userRole.upsert({
+      where: { userId_roleId: { userId: user.id, roleId: roleRow.id } },
+      update: {},
+      create: { userId: user.id, roleId: roleRow.id },
+    });
+
+    await dbStore.addAuditLog('CREATE_ADMIN_USER', 'User', user.id);
+
+    return {
+      id: user.id,
+      email: user.email,
+      displayName: user.displayName,
       role,
-      permissions: [
-        'registration.read',
-        'registration.review',
-        'registration.update',
-        'publicTeam.read',
-        'publicTeam.edit',
-        'content.read',
-      ],
+      permissions: ROLE_PERMISSIONS[role],
     };
+  }
 
-    AuthService.adminUsers.set(email.toLowerCase().trim(), { user, passwordHash: hash });
-    return user;
+  /**
+   * Creates the first SUPER_ADMIN from env vars when no user exists yet.
+   * Nothing is hardcoded: without both vars set, the table simply stays empty
+   * and the operator is told how to seed it.
+   */
+  public static async bootstrapFromEnv(): Promise<void> {
+    const count = await prisma.user.count();
+    if (count > 0) return;
+
+    const email = serverEnv.PICC_ADMIN_EMAIL;
+    const password = serverEnv.PICC_ADMIN_PASSWORD;
+
+    if (!email || !password) {
+      console.warn(
+        '\n[Auth] No admin account exists yet.\n' +
+          '[Auth] Set PICC_ADMIN_EMAIL and PICC_ADMIN_PASSWORD and restart, or run `pnpm admin:create`.\n',
+      );
+      return;
+    }
+
+    await AuthService.createAdminUser(email, 'Quản trị viên PICC', password, 'SUPER_ADMIN');
+    console.log(`[Auth] Bootstrapped initial SUPER_ADMIN: ${email.toLowerCase().trim()}`);
   }
 }

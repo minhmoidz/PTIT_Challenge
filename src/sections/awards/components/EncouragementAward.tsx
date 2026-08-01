@@ -11,6 +11,8 @@ import { competitionData } from '@/data/competition';
 export const EncouragementAward = () => {
   const p4 = competitionData.prizes.find((p) => p.rank === 4) || competitionData.prizes[3];
 
+  if (!p4) return null;
+
   return (
     <motion.div variants={fadeInUp}>
       <Tilt3DCard maxTilt={4} scale={1.01} glareColor="rgba(56, 130, 241, 0.2)">

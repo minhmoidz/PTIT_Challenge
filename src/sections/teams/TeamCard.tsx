@@ -26,13 +26,13 @@ const getDeterministicGradient = (str: string): string => {
   for (let i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
   }
-  return AVATAR_GRADIENTS[Math.abs(hash) % AVATAR_GRADIENTS.length];
+  return AVATAR_GRADIENTS[Math.abs(hash) % AVATAR_GRADIENTS.length]!;
 };
 
 const getInitials = (name: string): string => {
-  const parts = name.trim().split(/\s+/);
+  const parts = name.trim().split(/\s+/).filter(Boolean);
   if (parts.length >= 2) {
-    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    return ((parts[0]?.[0] ?? '') + (parts[parts.length - 1]?.[0] ?? '')).toUpperCase();
   }
   return name.slice(0, 2).toUpperCase();
 };
@@ -231,7 +231,6 @@ export const TeamCard = ({ team }: Props) => {
         <Button
           component="a"
           href={`/doi-thi/${team.slug}`}
-          underline="none"
           fullWidth
           endIcon={<ArrowForwardRoundedIcon className="team-card-cta-icon" sx={{ transition: 'transform 0.2s ease' }} />}
           sx={{

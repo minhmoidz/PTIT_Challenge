@@ -3,8 +3,9 @@ import cors from 'cors';
 import { serverEnv } from './config/env';
 import { CompetitionStatusService } from './services/competitionStatus';
 import { RegistrationService } from './services/registrationService';
-import { AuthService } from './services/authService';
+import { AuthService, type AdminUser } from './services/authService';
 import { dbStore } from './db/store';
+import { assertDatabaseReachable } from './db/prisma';
 import { competitionData } from '../src/data/competition';
 import type { RegistrationFormValues } from '../src/types/registration';
 
@@ -70,6 +71,15 @@ const rateLimit = (windowMs: number, max: number) => (req: express.Request, res:
 };
 
 /* ── Admin auth guard ── */
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Express {
+    interface Request {
+      adminUser?: AdminUser;
+    }
+  }
+}
+
 const requireAdminAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
   const header = req.headers.authorization;
   const token = header?.startsWith('Bearer ') ? header.slice('Bearer '.length) : undefined;
@@ -80,7 +90,7 @@ const requireAdminAuth = (req: express.Request, res: express.Response, next: exp
       error: { code: 'UNAUTHORIZED', message: 'Phiên đăng nhập không hợp lệ hoặc đã hết hạn.' },
     });
   }
-  (req as express.Request & { adminUser: typeof user }).adminUser = user;
+  req.adminUser = user;
   next();
 };
 
@@ -451,20 +461,7 @@ app.post('/api/v1/admin/auth/login', rateLimit(60_000, 10), async (req, res) => 
     });
   }
 
-  let result = await AuthService.login(email, password);
-
-  // Robust fallback for BTC admin users
-  const cleanEmail = String(email).toLowerCase().trim();
-  if (!result && (cleanEmail.includes('iec') || cleanEmail.includes('admin') || cleanEmail.endsWith('@ptit.edu.vn'))) {
-    const fallbackUser = {
-      id: 'user-admin-iec-01',
-      email: 'iec@ptit.edu.vn',
-      displayName: 'Trung Tâm IEC PTIT',
-      role: 'SUPER_ADMIN' as const,
-      permissions: ['*'],
-    };
-    result = { token: AuthService.createSession(fallbackUser), user: fallbackUser };
-  }
+  const result = await AuthService.login(email, password);
 
   if (!result) {
     return res.status(401).json({
@@ -479,7 +476,6 @@ app.post('/api/v1/admin/auth/login', rateLimit(60_000, 10), async (req, res) => 
 // 4.2 Admin Dashboard Summary Metrics
 app.get('/api/v1/admin/dashboard/summary', requireAdminAuth, async (_req, res) => {
   const registrations = await dbStore.getRegistrations();
-  const publicTeams = await dbStore.getPublicTeams();
 
   res.json({
     success: true,
@@ -487,8 +483,8 @@ app.get('/api/v1/admin/dashboard/summary', requireAdminAuth, async (_req, res) =
       totalRegistrations: registrations.length,
       submittedCount: registrations.filter((r) => r.status === 'SUBMITTED').length,
       verifiedCount: registrations.filter((r) => r.status === 'VERIFIED').length,
-      publicProfilesCount: publicTeams.length,
-      publishedTeamsCount: publicTeams.filter((t) => t.publication?.status === 'published').length,
+      publicProfilesCount: await dbStore.countTeamProfiles(),
+      publishedTeamsCount: await dbStore.countPublishedTeams(),
     },
   });
 });
@@ -499,6 +495,60 @@ app.get('/api/v1/admin/registrations', requireAdminAuth, async (_req, res) => {
   res.json({ success: true, data: list });
 });
 
+// 4.3b Admin Review a Registration (verify / reject / request changes)
+const REVIEWABLE_STATUSES = [
+  'SUBMITTED',
+  'UNDER_REVIEW',
+  'NEEDS_REVISION',
+  'VERIFIED',
+  'REJECTED',
+  'WITHDRAWN',
+] as const;
+
+app.patch('/api/v1/admin/registrations/:id/status', requireAdminAuth, async (req, res) => {
+  const { status, rejectionReason } = req.body ?? {};
+
+  if (!REVIEWABLE_STATUSES.includes(status)) {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: `Trạng thái không hợp lệ. Cho phép: ${REVIEWABLE_STATUSES.join(', ')}.`,
+      },
+    });
+  }
+
+  if (status === 'REJECTED' && !String(rejectionReason ?? '').trim()) {
+    return res.status(400).json({
+      success: false,
+      error: { code: 'VALIDATION_ERROR', message: 'Vui lòng nhập lý do từ chối hồ sơ.' },
+    });
+  }
+
+  const registrationId = String(req.params.id);
+  const updated = await dbStore.updateRegistrationStatus(
+    registrationId,
+    status,
+    req.adminUser!.id,
+    rejectionReason,
+  );
+
+  if (!updated) {
+    return res.status(404).json({
+      success: false,
+      error: { code: 'NOT_FOUND', message: 'Không tìm thấy hồ sơ đăng ký.' },
+    });
+  }
+
+  res.json({ success: true, data: updated });
+});
+
+// 4.3c Admin Team Profiles — every profile, not just the published ones
+app.get('/api/v1/admin/teams', requireAdminAuth, async (_req, res) => {
+  const teams = await dbStore.getAllTeamProfiles();
+  res.json({ success: true, data: { teams, total: teams.length } });
+});
+
 // 4.4 Admin Get Competition Time & Override Configuration
 app.get('/api/v1/admin/competition/config', requireAdminAuth, (_req, res) => {
   const status = CompetitionStatusService.getStatus();
@@ -506,13 +556,25 @@ app.get('/api/v1/admin/competition/config', requireAdminAuth, (_req, res) => {
 });
 
 // 4.5 Admin Update Competition Time & Override Configuration
-app.patch('/api/v1/admin/competition/config', requireAdminAuth, (req, res) => {
-  const { openAt, closeAt, statusOverride } = req.body;
-  CompetitionStatusService.updateConfig({ openAt, closeAt, statusOverride });
-  dbStore.addAuditLog('UPDATE_COMPETITION_CONFIG', 'Competition', 'picc-2026');
+app.patch('/api/v1/admin/competition/config', requireAdminAuth, async (req, res) => {
+  const { openAt, closeAt, statusOverride } = req.body ?? {};
 
-  const updatedStatus = CompetitionStatusService.getStatus();
-  res.json({ success: true, data: updatedStatus });
+  try {
+    await CompetitionStatusService.updateConfig({ openAt, closeAt, statusOverride });
+  } catch (err: unknown) {
+    const e = err as { status?: number; code?: string; message?: string };
+    return res.status(e.status ?? 400).json({
+      success: false,
+      error: { code: e.code ?? 'VALIDATION_ERROR', message: e.message ?? 'Cấu hình không hợp lệ.' },
+    });
+  }
+
+  await dbStore.addAuditLog('UPDATE_COMPETITION_CONFIG', 'Competition', 'picc-2026', {
+    actorUserId: req.adminUser!.id,
+    afterData: { openAt, closeAt, statusOverride },
+  });
+
+  res.json({ success: true, data: CompetitionStatusService.getStatus() });
 });
 
 // 4.6 Helper function to sanitize CSV values against formula injection
@@ -590,12 +652,25 @@ app.get('/api/v1/admin/registrations/export', requireAdminAuth, async (_req, res
 });
 
 /* ── 5. Start Express API Server ── */
-app.listen(PORT, () => {
-  console.log(`\n==================================================`);
-  console.log(`🚀 PICC 2026 Production API Backend`);
-  console.log(`- Running at: http://localhost:${PORT}`);
-  console.log(`- Public Status API: http://localhost:${PORT}/api/v1/public/competition/status`);
-  console.log(`- Public Teams API:  http://localhost:${PORT}/api/v1/public/teams`);
-  console.log(`- Registration API:  http://localhost:${PORT}/api/v1/public/registrations`);
-  console.log(`==================================================\n`);
+const start = async () => {
+  // Refuse to serve if the database is unreachable: a booting server that
+  // accepts registrations it cannot store is worse than one that fails.
+  await assertDatabaseReachable();
+  await CompetitionStatusService.hydrate();
+  await AuthService.bootstrapFromEnv();
+
+  app.listen(PORT, () => {
+    console.log(`\n==================================================`);
+    console.log(`🚀 PICC 2026 Production API Backend`);
+    console.log(`- Running at: http://localhost:${PORT}`);
+    console.log(`- Public Status API: http://localhost:${PORT}/api/v1/public/competition/status`);
+    console.log(`- Public Teams API:  http://localhost:${PORT}/api/v1/public/teams`);
+    console.log(`- Registration API:  http://localhost:${PORT}/api/v1/public/registrations`);
+    console.log(`==================================================\n`);
+  });
+};
+
+start().catch((err) => {
+  console.error('[Startup] Failed to start API server:', err instanceof Error ? err.message : err);
+  process.exit(1);
 });

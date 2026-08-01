@@ -60,7 +60,7 @@ export const Scene3D = ({
   maxTilt = 8,
   scale = 1.0,
   fog = true,
-  _depthIntensity = 12,
+  depthIntensity: _depthIntensity = 12,
   sx,
   ...rest
 }: Scene3DProps) => {

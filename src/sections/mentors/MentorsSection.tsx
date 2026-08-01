@@ -8,12 +8,14 @@ import { getSkyBackground } from '@/components/ui/skyBackgroundConfig';
 import { Tilt3DCard } from '@/components/ui/Tilt3DCard';
 import { competitionData } from '@/data/competition';
 
+/** Mirrors the shape of `competitionData.mentors`, which is the only source. */
 export interface Mentor {
-  id: string;
   name: string;
-  professionalTitle: string;
-  organization: string;
-  competitionRole: string;
+  title?: string;
+  organization?: string;
+  expertise?: string[];
+  photo?: string;
+  bio?: string;
 }
 
 interface Props {
@@ -84,10 +86,12 @@ export const MentorsSection = ({ mentors = competitionData.mentors }: Props) => 
           <Box sx={{ maxWidth: 1080, mx: 'auto' }}>
             <Grid container spacing={3}>
               {mentors.map((m) => (
-                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={m.id}>
+                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={m.name}>
                   <Card sx={{ p: 3, textAlign: 'center' }}>
                     <Typography variant="h6">{m.name}</Typography>
-                    <Typography variant="body2">{m.professionalTitle}</Typography>
+                    <Typography variant="body2">
+                      {[m.title, m.organization].filter(Boolean).join(' · ')}
+                    </Typography>
                   </Card>
                 </Grid>
               ))}

@@ -63,7 +63,10 @@ const formatDateStr = (iso: string): string => {
 };
 
 /** Build the milestone list with the registration window dates overridden by the live server config. */
-export const buildEffectiveMilestones = (registration?: { openAt?: string; closeAt?: string }): EventMilestone[] => {
+export const buildEffectiveMilestones = (registration?: {
+  openAt?: string | null;
+  closeAt?: string | null;
+}): EventMilestone[] => {
   if (!registration) return EVENT_MILESTONES;
 
   const openAt = registration.openAt ? new Date(registration.openAt) : null;
@@ -92,11 +95,12 @@ export const getNextEventMilestone = (
 
   for (let i = 0; i < milestones.length; i++) {
     const ms = milestones[i];
+    if (!ms) continue;
     const msTime = new Date(ms.dateIso).getTime();
 
     if (msTime > nowMs) {
       return {
-        currentMilestone: i > 0 ? milestones[i - 1] : null,
+        currentMilestone: i > 0 ? (milestones[i - 1] ?? null) : null,
         nextMilestone: ms,
         isAllCompleted: false,
         targetDate: new Date(ms.dateIso),
@@ -106,7 +110,7 @@ export const getNextEventMilestone = (
   }
 
   return {
-    currentMilestone: milestones[milestones.length - 1],
+    currentMilestone: milestones[milestones.length - 1] ?? null,
     nextMilestone: null,
     isAllCompleted: true,
     targetDate: null,

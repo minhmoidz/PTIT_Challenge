@@ -1,4 +1,6 @@
+import crypto from 'crypto';
 import { dbStore } from '../db/store';
+import { serverEnv } from '../config/env';
 import { CompetitionStatusService } from './competitionStatus';
 import type { RegistrationFormValues } from '../../src/types/registration';
 import { competitionData } from '../../src/data/competition';
@@ -15,7 +17,7 @@ export interface RegistrationSubmissionResult {
 export class RegistrationService {
   public static async processRegistration(
     payload: RegistrationFormValues,
-    _clientIp: string,
+    clientIp: string,
   ): Promise<RegistrationSubmissionResult> {
     const statusInfo = CompetitionStatusService.getStatus();
 
@@ -105,7 +107,13 @@ export class RegistrationService {
     }
 
     // 9. Process Submission & Save Transactionally
-    const result = await dbStore.saveRegistration(payload);
+    // The raw IP is never stored — only a salted digest, for abuse tracing.
+    const ipHash = crypto
+      .createHmac('sha256', serverEnv.JWT_SECRET)
+      .update(clientIp)
+      .digest('hex')
+      .slice(0, 32);
+    const result = await dbStore.saveRegistration(payload, ipHash);
 
     return {
       success: true,

@@ -164,12 +164,15 @@ const AnimatedCloud = ({ cfg }: { cfg: CloudConfig }) => {
 ═══════════════════════════════════════════════════════════════ */
 
 interface SkyBackgroundProps {
+  /**
+   * Which atmosphere to render. The section itself paints the base gradient via
+   * `getSkyBackground(variant)`; this component draws the glows, clouds and grid
+   * on top of it.
+   */
   variant: SkyVariant;
-  /** Override the CSS background string */
-  _customBackground?: string;
 }
 
-export const SkyBackground = ({ variant, _customBackground }: SkyBackgroundProps) => {
+export const SkyBackground = ({ variant }: SkyBackgroundProps) => {
   const cfg = VARIANTS[variant];
 
   // Memoize cloud list to prevent re-render thrash

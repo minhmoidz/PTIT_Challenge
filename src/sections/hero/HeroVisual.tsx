@@ -117,7 +117,11 @@ const DigitBlock = ({
 );
 
 /* ─── Main Time Portal Hero Visual Component ─── */
-export const HeroVisual = ({ registrationTimes }: { registrationTimes?: { openAt?: string; closeAt?: string } }) => {
+export const HeroVisual = ({
+  registrationTimes,
+}: {
+  registrationTimes?: { openAt?: string | null; closeAt?: string | null };
+}) => {
   const logoSrc = assetManifest.heroAvatar?.src ?? '';
   const cardRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();

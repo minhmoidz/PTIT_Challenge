@@ -10,6 +10,6 @@ describe('sanitizeAndFilterPublicTeams', () => {
     const sanitized = sanitizeAndFilterPublicTeams(legacyTeam ? [legacyTeam] : []);
 
     expect(sanitized).toHaveLength(1);
-    expect(sanitized[0].teamSize).toBe(5);
+    expect(sanitized[0]?.teamSize).toBe(5);
   });
 });
