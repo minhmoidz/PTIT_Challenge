@@ -217,61 +217,34 @@ export const HeroVisual = ({
           flexShrink: 0,
         }}
       >
-        {/* Soft Radial Ambient Aura Glow */}
+        {/* Navy plate behind the logo.
+            Two jobs: the logo artwork sets "RISE BEYOND LIMITS" in white, which
+            disappeared against the white hero, and its pastel blue/pink read as
+            accidental on a red-and-navy page. On a deep navy field the white
+            line is legible and the pastels read as a deliberate accent. */}
         <Box
           aria-hidden="true"
           sx={{
             position: 'absolute',
-            inset: '-15%',
-            borderRadius: '50%',
-            background:
-              'radial-gradient(circle, rgba(225, 20, 20,0.16) 0%, rgba(15, 42, 82,0.14) 42%, rgba(231, 195, 77,0.12) 68%, transparent 80%)',
-            filter: 'blur(32px)',
+            inset: { xs: '8%', md: '6%' },
+            borderRadius: '32px',
+            background: `linear-gradient(155deg, ${piccColors.blue[800]} 0%, ${piccColors.ptitNavy} 58%, #0A1E3C 100%)`,
+            boxShadow: '0 28px 60px rgba(15, 42, 82, 0.28)',
             zIndex: 0,
           }}
         />
 
-        {/* Outer Orbit Ring 1 (Indigo/Blue 3D Tilt) */}
+        {/* A single quiet orbit, on the plate rather than floating over the page. */}
         <OrbitalRing
-          size={350}
-          color="rgba(15, 42, 82, 0.26)"
-          tiltX={64}
-          tiltY={10}
-          duration={26}
-          nodeColor="#E11414"
+          size={250}
+          color="rgba(255, 255, 255, 0.18)"
+          tiltX={62}
+          tiltY={8}
+          duration={30}
+          nodeColor={piccColors.amber[300]}
           nodeTop
           zIndex={1}
           prefersReducedMotion={prefersReducedMotion}
-        />
-
-        {/* Secondary campaign orbit */}
-        <OrbitalRing
-          size={300}
-          color="rgba(231, 195, 77, 0.24)"
-          tiltX={52}
-          tiltY={-20}
-          duration={34}
-          reverse
-          zIndex={1}
-          prefersReducedMotion={prefersReducedMotion}
-        />
-
-        {/* Specular Platform Shadow under Logo */}
-        <Box
-          aria-hidden="true"
-          sx={{
-            position: 'absolute',
-            bottom: '14%',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '48%',
-            height: 12,
-            background:
-              'linear-gradient(180deg, rgba(225, 20, 20,0.18) 0%, rgba(225, 20, 20,0.02) 100%)',
-            borderRadius: '50%',
-            filter: 'blur(5px)',
-            zIndex: 2,
-          }}
         />
 
         {/* PICC 2026 Brand Logo Centerpiece */}
@@ -287,7 +260,7 @@ export const HeroVisual = ({
             position: 'relative',
             zIndex: 4,
             width: { xs: 150, sm: 180, md: 200 },
-            filter: 'drop-shadow(0 16px 36px rgba(15, 42, 82,0.24))',
+            filter: 'drop-shadow(0 12px 24px rgba(0, 0, 0, 0.32))',
           }}
         >
           {logoSrc ? (
@@ -302,7 +275,7 @@ export const HeroVisual = ({
           )}
         </Box>
 
-        <FloatingGem size={12} top="15%" right="12%" color1="#E7C34D" color2="#E11414" duration={5} delay={0} shape="circle" prefersReducedMotion={prefersReducedMotion} />
+        <FloatingGem size={10} top="12%" right="10%" color1={piccColors.amber[300]} color2={piccColors.amber[500]} duration={5} delay={0} shape="circle" prefersReducedMotion={prefersReducedMotion} />
       </Box>
 
       {/* ══ 2. STACKED COUNTDOWN CARD (Overlapping Unified Composition) ══ */}
