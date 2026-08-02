@@ -10,7 +10,6 @@ import { fadeInUp, staggerContainer } from '@/motion/variants';
 import { piccColors } from '@/theme/palette';
 import { Tilt3DCard } from '@/components/ui/Tilt3DCard';
 import { SkyBackground } from '@/components/ui/SkyBackground';
-import { ParticleField } from '@/components/ui/ParticleField';
 import { getSkyBackground } from '@/components/ui/skyBackgroundConfig';
 
 const iconMap: Record<string, React.ElementType> = {
@@ -46,12 +45,14 @@ const cardAccents = [
     stepColor: '#7F5D1B',
   },
   {
-    color: piccColors.emerald[600],
-    bg: 'linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%)',
-    border: 'rgba(16, 185, 129, 0.3)',
-    shadow: 'rgba(16, 185, 129, 0.16)',
-    tagBg: 'rgba(16, 185, 129, 0.1)',
-    stepColor: '#047857',
+    // Closes the set on a quiet neutral rather than a fifth hue — red, navy and
+    // gold are the brand; anything else here reads as decoration.
+    color: piccColors.slate[600],
+    bg: 'linear-gradient(135deg, #F0F3F7 0%, #DFE6EF 100%)',
+    border: 'rgba(75, 92, 114, 0.28)',
+    shadow: 'rgba(75, 92, 114, 0.14)',
+    tagBg: 'rgba(75, 92, 114, 0.1)',
+    stepColor: '#34465E',
   },
 ];
 
@@ -71,59 +72,6 @@ export const IntroductionSection = () => {
   >
     {/* Sky World Background — clear variant */}
     <SkyBackground variant="clear" />
-
-    {/* Ambient gradient orbs + particle field */}
-    <Box sx={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
-      <Box
-        component={motion.div}
-        aria-hidden
-        animate={prefersReducedMotion ? undefined : { x: [0, 34, 0], y: [0, -22, 0] }}
-        transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
-        sx={{
-          position: 'absolute',
-          top: '4%',
-          left: '-8%',
-          width: 440,
-          height: 440,
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(201, 154, 57, 0.18), transparent 70%)',
-          filter: 'blur(44px)',
-        }}
-      />
-      <Box
-        component={motion.div}
-        aria-hidden
-        animate={prefersReducedMotion ? undefined : { x: [0, -44, 0], y: [0, 34, 0] }}
-        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-        sx={{
-          position: 'absolute',
-          bottom: '6%',
-          right: '-7%',
-          width: 480,
-          height: 480,
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(15, 42, 82, 0.14), transparent 70%)',
-          filter: 'blur(48px)',
-        }}
-      />
-      <Box
-        component={motion.div}
-        aria-hidden
-        animate={prefersReducedMotion ? undefined : { x: [0, 20, 0], y: [0, -34, 0] }}
-        transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
-        sx={{
-          position: 'absolute',
-          top: '42%',
-          left: '38%',
-          width: 320,
-          height: 320,
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(214, 88, 144, 0.12), transparent 70%)',
-          filter: 'blur(40px)',
-        }}
-      />
-      <ParticleField count={22} />
-    </Box>
 
     <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
       {/* Section Header */}

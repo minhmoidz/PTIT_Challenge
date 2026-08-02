@@ -1,25 +1,76 @@
-import { Container, Typography, Grid, Box, Link, Chip } from '@mui/material';
-import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
-import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
+import { Box, Container, Grid, Link, Typography } from '@mui/material';
 import FacebookRoundedIcon from '@mui/icons-material/Facebook';
 import LanguageRoundedIcon from '@mui/icons-material/LanguageRounded';
-import PhoneRoundedIcon from '@mui/icons-material/PhoneRounded';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { piccColors } from '@/theme/palette';
-import { SkyBackground } from '@/components/ui/SkyBackground';
-import { competitionData } from '@/data/competition';
-import { appHash, assetPath } from '@/config/paths';
+import { footer } from '@/content/vi/footer';
+import { appHash, appPath, assetPath } from '@/config/paths';
+
+/* ── Shared type scale ─────────────────────────────────────────
+   Labels sit at 72% white and values at full white. On the crimson
+   background that keeps every pair above 4.5:1. */
+const labelSx = {
+  fontSize: '0.8125rem',
+  fontWeight: 500,
+  color: 'rgba(255, 255, 255, 0.72)',
+  mb: 0.5,
+  lineHeight: 1.4,
+} as const;
+
+const valueSx = {
+  fontSize: '0.9375rem',
+  fontWeight: 500,
+  color: '#FFFFFF',
+  lineHeight: 1.55,
+} as const;
+
+const dividerSx = {
+  height: '1px',
+  bgcolor: 'rgba(255, 255, 255, 0.16)',
+  border: 0,
+} as const;
+
+const SocialButton = ({ label, href, icon }: { label: string; href: string; icon: 'facebook' | 'web' }) => (
+  <Link
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label={label}
+    sx={{
+      width: 44,
+      height: 44,
+      borderRadius: '50%',
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      bgcolor: 'rgba(255, 255, 255, 0.14)',
+      color: '#FFFFFF',
+      transition: 'background-color 0.2s ease, transform 0.2s ease',
+      '&:hover': {
+        bgcolor: 'rgba(255, 255, 255, 0.26)',
+        transform: 'translateY(-2px)',
+      },
+    }}
+  >
+    {icon === 'facebook' ? (
+      <FacebookRoundedIcon sx={{ fontSize: 21 }} />
+    ) : (
+      <LanguageRoundedIcon sx={{ fontSize: 21 }} />
+    )}
+  </Link>
+);
 
 export const FooterSection = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleSmoothNav = (e: React.MouseEvent, href: string) => {
+  /** In-page anchors scroll smoothly; from another route, navigate home first. */
+  const handleAnchor = (e: React.MouseEvent, href: string) => {
     if (!href.startsWith('#')) return;
     e.preventDefault();
-    const targetId = href.replace('#', '');
+    const targetId = href.slice(1);
 
-    if (location.pathname !== '/') {
+    if (location.pathname !== appPath('/')) {
       navigate(appHash(targetId));
       return;
     }
@@ -27,10 +78,9 @@ export const FooterSection = () => {
     const el = document.getElementById(targetId);
     if (el) {
       el.scrollIntoView({ block: 'start', behavior: 'smooth' });
-      window.history.pushState(null, '', href);
+      window.history.pushState(null, '', `#${targetId}`);
     } else if (targetId === 'hero') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      window.history.pushState(null, '', '#hero');
     }
   };
 
@@ -39,348 +89,181 @@ export const FooterSection = () => {
       component="footer"
       id="footer"
       sx={{
-        background: 'linear-gradient(180deg, #17355E 0%, #102949 50%, #0C2145 100%)',
-        borderTop: `4px solid ${piccColors.ptitRed}`,
-        color: '#FFFFFF',
-        pt: { xs: 8, md: 10 },
-        pb: { xs: 5, md: 7 },
         position: 'relative',
         overflow: 'hidden',
+        color: '#FFFFFF',
         fontFamily: '"Manrope", sans-serif',
+        background: `linear-gradient(180deg, ${piccColors.ptitRed} 0%, ${piccColors.ptitDarkRed} 62%, ${piccColors.red[800]} 100%)`,
       }}
     >
-      {/* Sky World Background — sunset/deep-sky variant */}
-      <SkyBackground variant="sunset" />
-      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-        <Grid container spacing={5} sx={{ mb: 7 }}>
-          {/* Col 1: Brand & Contact Info */}
-          <Grid size={{ xs: 12, md: 5 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2.5 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pr: 1.5, borderRight: '1px solid rgba(255,255,255,0.2)' }}>
-                <Box component="img" src={assetPath('assets/branding/ptit-logo.png')} alt="Học viện Công nghệ Bưu chính Viễn thông" sx={{ width: 32, height: 40, objectFit: 'contain' }} />
-                <Box component="img" src={assetPath('assets/branding/ptit-iec-logo-2026.png')} alt="PTIT Innovation & Entrepreneurship Center" sx={{ width: 85, height: 30, objectFit: 'contain', bgcolor: '#FFFFFF', borderRadius: 1, px: 0.5 }} />
-              </Box>
-              <Box>
-                <Typography
-                  sx={{
-                    fontSize: '0.72rem',
-                    fontWeight: 700,
-                    color: piccColors.yellow[300],
-                    lineHeight: 1.2,
-                    fontFamily: '"Manrope", sans-serif',
-                  }}
-                >
-                  Học viện Công nghệ Bưu chính Viễn thông
-                </Typography>
-                <Typography
-                  sx={{
-                    fontWeight: 800,
-                    color: '#FFFFFF',
-                    fontSize: '1.05rem',
-                    letterSpacing: '0.01em',
-                    lineHeight: 1.2,
-                    fontFamily: '"Manrope", sans-serif',
-                  }}
-                >
-                  PTIT IEC · <Box component="span" sx={{ color: piccColors.amber[300] }}>PICC 2026</Box>
-                </Typography>
-              </Box>
-            </Box>
+      {/* Oversized brand mark, barely visible — the same trick the official PTIT
+          portals use to stop a large flat red panel from reading as empty. */}
+      <Box
+        aria-hidden="true"
+        component="img"
+        src={assetPath('assets/branding/ptit-logo.png')}
+        alt=""
+        sx={{
+          position: 'absolute',
+          right: { xs: '-18%', md: '4%' },
+          top: '50%',
+          transform: 'translateY(-50%)',
+          width: { xs: 420, md: 560 },
+          opacity: 0.05,
+          pointerEvents: 'none',
+          userSelect: 'none',
+        }}
+      />
 
-            <Typography sx={{ color: piccColors.yellow[200], fontSize: '0.78rem', fontWeight: 800, letterSpacing: '0.04em', textTransform: 'uppercase', mb: 1, fontFamily: '"Manrope", sans-serif' }}>
-              Đơn vị tổ chức · Trung tâm Đổi mới Sáng tạo và Khởi nghiệp PTIT
-            </Typography>
-            <Typography
-              sx={{
-                color: 'rgba(255,255,255,0.8)',
-                mb: 3,
-                maxWidth: 420,
-                lineHeight: 1.7,
-                fontSize: '0.925rem',
-                fontFamily: '"Manrope", sans-serif',
-              }}
-            >
-              {competitionData.meta.fullDescription}
-            </Typography>
-
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.25 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, color: piccColors.neutral[300] }}>
-                <LocationOnRoundedIcon sx={{ fontSize: 18, color: piccColors.yellow[300] }} />
-                <Typography sx={{ fontSize: '0.875rem' }}>Km10, Đường Nguyễn Trãi, Hà Đông, Hà Nội</Typography>
-              </Box>
-
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, color: piccColors.neutral[300] }}>
-                <EmailRoundedIcon sx={{ fontSize: 18, color: piccColors.red[300] }} />
-                <Link
-                  href={`mailto:${competitionData.contact.email}`}
-                  underline="hover"
-                  sx={{ color: '#FFFFFF', fontSize: '0.875rem', fontWeight: 600 }}
-                >
-                  {competitionData.contact.email}
-                </Link>
-              </Box>
-
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, color: piccColors.neutral[300] }}>
-                <PhoneRoundedIcon sx={{ fontSize: 18, color: piccColors.yellow[300] }} />
-                <Typography sx={{ fontSize: '0.875rem' }}>Hotline: {competitionData.contact.phone}</Typography>
-              </Box>
-            </Box>
-          </Grid>
-
-          {/* Col 2: Quick Navigation */}
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Typography sx={{ fontWeight: 800, color: '#FFFFFF', mb: 2.5, fontSize: '1rem', letterSpacing: '0.02em' }}>
-              ĐIỀU HƯỚNG NHANH
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.25 }}>
-              {[
-                ['Về PICC 2026', '#gioi-thieu'],
-                ['Lộ trình 04 giai đoạn', '#lo-trinh'],
-                ['Thể lệ & Quy định', '#the-le'],
-                ['Cơ cấu giải thưởng', '#giai-thuong'],
-                ['Cổng đăng ký', '#dang-ky'],
-              ].map(([label, href]) => (
-                <Link
-                  key={label as string}
-                  href={appHash((href as string).replace('#', ''))}
-                  onClick={(e) => handleSmoothNav(e, href as string)}
-                  color={piccColors.neutral[400]}
-                  underline="none"
-                  sx={{
-                    fontSize: '0.9rem',
-                    fontWeight: 500,
-                    transition: 'all 0.2s ease',
-                    cursor: 'pointer',
-                    '&:hover': { color: piccColors.yellow[200], transform: 'translateX(4px)' },
-                  }}
-                >
-                  {label as string}
-                </Link>
-              ))}
-            </Box>
-          </Grid>
-
-          {/* Col 3: Official Portals & Social Media Links */}
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Typography sx={{ fontWeight: 800, color: '#FFFFFF', mb: 2.5, fontSize: '1rem', letterSpacing: '0.02em' }}>
-              KÊNH CHÍNH THỨC &amp; TRUYỀN THÔNG
-            </Typography>
-
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mb: 3 }}>
-              <Link
-                href={competitionData.contact.facebookIec}
-                target="_blank"
-                rel="noopener noreferrer"
-                underline="none"
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1.25,
-                  color: '#FFFFFF',
-                  bgcolor: 'transparent',
-                  p: 0,
-                  borderRadius: 0,
-                  border: 'none',
-                  transition: 'color 0.2s ease',
-                  '&:hover': { color: piccColors.yellow[200] },
-                }}
-              >
-                <FacebookRoundedIcon sx={{ color: '#1877F2', fontSize: 20 }} />
-                <Box>
-                  <Typography sx={{ fontSize: '0.85rem', fontWeight: 700, lineHeight: 1.2 }}>
-                    Fanpage PTIT IEC
-                  </Typography>
-                  <Typography sx={{ fontSize: '0.725rem', color: piccColors.neutral[400] }}>
-                    facebook.com/PTITIEC
-                  </Typography>
-                </Box>
-              </Link>
-
-              <Link
-                href={competitionData.contact.facebookPtit}
-                target="_blank"
-                rel="noopener noreferrer"
-                underline="none"
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1.25,
-                  color: '#FFFFFF',
-                  bgcolor: 'transparent',
-                  p: 0,
-                  borderRadius: 0,
-                  border: 'none',
-                  transition: 'color 0.2s ease',
-                  '&:hover': { color: piccColors.yellow[200] },
-                }}
-              >
-                <FacebookRoundedIcon sx={{ color: '#1877F2', fontSize: 20 }} />
-                <Box>
-                  <Typography sx={{ fontSize: '0.85rem', fontWeight: 700, lineHeight: 1.2 }}>
-                    Fanpage Học viện PTIT
-                  </Typography>
-                  <Typography sx={{ fontSize: '0.725rem', color: piccColors.neutral[400] }}>
-                    facebook.com/HocvienPTIT
-                  </Typography>
-                </Box>
-              </Link>
-
-              <Link
-                href={competitionData.contact.websiteIec}
-                target="_blank"
-                rel="noopener noreferrer"
-                underline="none"
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1.25,
-                  color: '#FFFFFF',
-                  bgcolor: 'transparent',
-                  p: 0,
-                  borderRadius: 0,
-                  border: 'none',
-                  transition: 'all 0.25s ease',
-                  '&:hover': {
-                    bgcolor: 'rgba(225, 20, 20, 0.14)',
-                    borderColor: piccColors.yellow[300],
-                    transform: 'translateY(-2px)',
-                  },
-                }}
-              >
-                <LanguageRoundedIcon sx={{ color: piccColors.yellow[300], fontSize: 20 }} />
-                <Box>
-                  <Typography sx={{ fontSize: '0.85rem', fontWeight: 700, lineHeight: 1.2 }}>
-                    Website PTIT IEC
-                  </Typography>
-                  <Typography sx={{ fontSize: '0.725rem', color: piccColors.neutral[400] }}>
-                    iec.ptit.edu.vn
-                  </Typography>
-                </Box>
-              </Link>
-
-              <Link
-                href={competitionData.contact.websitePtit}
-                target="_blank"
-                rel="noopener noreferrer"
-                underline="none"
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1.25,
-                  color: '#FFFFFF',
-                  bgcolor: 'transparent',
-                  p: 0,
-                  borderRadius: 0,
-                  border: 'none',
-                  transition: 'all 0.25s ease',
-                  '&:hover': {
-                    bgcolor: 'rgba(225, 20, 20, 0.14)',
-                    borderColor: piccColors.yellow[300],
-                    transform: 'translateY(-2px)',
-                  },
-                }}
-              >
-                <LanguageRoundedIcon sx={{ color: piccColors.yellow[300], fontSize: 20 }} />
-                <Box>
-                  <Typography sx={{ fontSize: '0.85rem', fontWeight: 700, lineHeight: 1.2 }}>
-                    Cổng thông tin Học viện PTIT
-                  </Typography>
-                  <Typography sx={{ fontSize: '0.725rem', color: piccColors.neutral[400] }}>
-                    ptit.edu.vn
-                  </Typography>
-                </Box>
-              </Link>
-            </Box>
-          </Grid>
-        </Grid>
-
+      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1, px: { xs: 3, sm: 4 } }}>
+        {/* ── Masthead: institution lockup + socials ── */}
         <Box
           sx={{
-            borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-            pt: 4,
             display: 'flex',
             flexDirection: { xs: 'column', md: 'row' },
+            alignItems: { xs: 'flex-start', md: 'center' },
             justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: 2,
+            gap: 3,
+            pt: { xs: 6, md: 7 },
+            pb: { xs: 4, md: 5 },
           }}
         >
-          <Typography sx={{ color: piccColors.neutral[300], fontSize: '0.825rem' }}>
-            &copy; {new Date().getFullYear()} PTIT Innovation Catalyst Challenge (PICC 2026). Tất cả quyền được bảo lưu.
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box
+              component="img"
+              src={assetPath('assets/branding/ptit-logo.png')}
+              alt={footer.institution}
+              sx={{ width: { xs: 52, md: 62 }, height: 'auto', objectFit: 'contain', flexShrink: 0 }}
+            />
+            <Box>
+              <Typography
+                sx={{
+                  fontSize: { xs: '0.875rem', md: '1rem' },
+                  fontWeight: 600,
+                  color: 'rgba(255, 255, 255, 0.86)',
+                  lineHeight: 1.35,
+                }}
+              >
+                {footer.institution}
+              </Typography>
+              <Typography
+                component="p"
+                sx={{
+                  fontSize: { xs: '1.15rem', sm: '1.4rem', md: '1.6rem' },
+                  fontWeight: 800,
+                  letterSpacing: '0.01em',
+                  textTransform: 'uppercase',
+                  lineHeight: 1.2,
+                  mt: 0.25,
+                }}
+              >
+                {footer.portalName}
+              </Typography>
+            </Box>
+          </Box>
 
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, justifyContent: 'center' }}>
-            <Chip
-              component="a"
-              href={competitionData.contact.facebookIec}
-              target="_blank"
-              rel="noopener noreferrer"
-              clickable
-              icon={<FacebookRoundedIcon sx={{ fontSize: '15px !important', color: '#1877F2 !important' }} />}
-              label="FB PTIT IEC"
-              size="small"
-              sx={{
-                bgcolor: 'rgba(255,255,255,0.08)',
-                color: piccColors.neutral[200],
-                fontWeight: 600,
-                fontSize: '0.75rem',
-                '&:hover': { bgcolor: 'rgba(225, 20, 20, 0.18)', color: '#FFFFFF' },
-              }}
-            />
-            <Chip
-              component="a"
-              href={competitionData.contact.facebookPtit}
-              target="_blank"
-              rel="noopener noreferrer"
-              clickable
-              icon={<FacebookRoundedIcon sx={{ fontSize: '15px !important', color: '#1877F2 !important' }} />}
-              label="FB Học viện PTIT"
-              size="small"
-              sx={{
-                bgcolor: 'rgba(255,255,255,0.08)',
-                color: piccColors.neutral[200],
-                fontWeight: 600,
-                fontSize: '0.75rem',
-                '&:hover': { bgcolor: 'rgba(225, 20, 20, 0.18)', color: '#FFFFFF' },
-              }}
-            />
-            <Chip
-              component="a"
-              href={competitionData.contact.websiteIec}
-              target="_blank"
-              rel="noopener noreferrer"
-              clickable
-              icon={<LanguageRoundedIcon sx={{ fontSize: '15px !important', color: `${piccColors.yellow[300]} !important` }} />}
-              label="iec.ptit.edu.vn"
-              size="small"
-              sx={{
-                bgcolor: 'rgba(255,255,255,0.08)',
-                color: piccColors.neutral[200],
-                fontWeight: 600,
-                fontSize: '0.75rem',
-                '&:hover': { bgcolor: 'rgba(225, 20, 20, 0.18)', color: '#FFFFFF' },
-              }}
-            />
-            <Chip
-              component="a"
-              href={competitionData.contact.websitePtit}
-              target="_blank"
-              rel="noopener noreferrer"
-              clickable
-              icon={<LanguageRoundedIcon sx={{ fontSize: '15px !important', color: `${piccColors.yellow[300]} !important` }} />}
-              label="ptit.edu.vn"
-              size="small"
-              sx={{
-                bgcolor: 'rgba(255,255,255,0.08)',
-                color: piccColors.neutral[200],
-                fontWeight: 600,
-                fontSize: '0.75rem',
-                '&:hover': { bgcolor: 'rgba(225, 20, 20, 0.18)', color: '#FFFFFF' },
-              }}
-            />
+          <Box sx={{ display: 'flex', gap: 1.5, flexShrink: 0 }}>
+            {footer.socials.map((s) => (
+              <SocialButton key={s.label} {...s} />
+            ))}
           </Box>
         </Box>
+
+        <Box component="hr" sx={dividerSx} />
+
+        {/* ── Campus & contact grid ── */}
+        <Grid container spacing={{ xs: 3, md: 4 }} sx={{ py: { xs: 4.5, md: 6 } }}>
+          {footer.contacts.map((item) => (
+            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.label}>
+              <Typography sx={labelSx}>{item.label}</Typography>
+              {item.href ? (
+                <Link
+                  href={item.href}
+                  sx={{
+                    ...valueSx,
+                    textDecoration: 'none',
+                    '&:hover': { textDecoration: 'underline' },
+                  }}
+                >
+                  {item.value}
+                </Link>
+              ) : (
+                <Typography sx={valueSx}>{item.value}</Typography>
+              )}
+            </Grid>
+          ))}
+        </Grid>
+
+        <Box component="hr" sx={dividerSx} />
+
+        {/* ── Link directory ── */}
+        <Box sx={{ py: { xs: 4.5, md: 6 } }}>
+          <Typography
+            component="h2"
+            sx={{
+              fontSize: '0.9375rem',
+              fontWeight: 600,
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: 'rgba(255, 255, 255, 0.72)',
+              mb: { xs: 2.5, md: 3.5 },
+            }}
+          >
+            {footer.linksHeading}
+          </Typography>
+
+          <Grid container spacing={{ xs: 1.5, md: 4 }}>
+            {footer.linkColumns.map((column, index) => (
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
+                <Box component="ul" sx={{ listStyle: 'none', m: 0, p: 0 }}>
+                  {column.map((link) => {
+                    const isAnchor = link.href.startsWith('#');
+                    const external = 'external' in link && link.external;
+
+                    return (
+                      <Box component="li" key={link.label} sx={{ mb: 1.75 }}>
+                        <Link
+                          href={
+                            external ? link.href : isAnchor ? appHash(link.href.slice(1)) : appPath(link.href)
+                          }
+                          {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                          onClick={isAnchor ? (e) => handleAnchor(e, link.href) : undefined}
+                          sx={{
+                            ...valueSx,
+                            display: 'inline-block',
+                            textDecoration: 'none',
+                            transition: 'opacity 0.2s ease, transform 0.2s ease',
+                            '&:hover': { opacity: 0.78, transform: 'translateX(3px)' },
+                          }}
+                        >
+                          {link.label}
+                        </Link>
+                      </Box>
+                    );
+                  })}
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
       </Container>
+
+      {/* ── Copyright bar ── */}
+      <Box sx={{ position: 'relative', zIndex: 1, bgcolor: 'rgba(0, 0, 0, 0.16)' }}>
+        <Container maxWidth="lg" sx={{ px: { xs: 3, sm: 4 } }}>
+          <Typography
+            sx={{
+              py: 2.5,
+              textAlign: 'center',
+              fontSize: { xs: '0.8125rem', md: '0.875rem' },
+              color: 'rgba(255, 255, 255, 0.82)',
+              lineHeight: 1.6,
+            }}
+          >
+            &copy; {new Date().getFullYear()} {footer.organiser} — {footer.copyright}
+          </Typography>
+        </Container>
+      </Box>
     </Box>
   );
 };

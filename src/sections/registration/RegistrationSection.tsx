@@ -3,7 +3,6 @@ import AppRegistrationRoundedIcon from '@mui/icons-material/AppRegistrationRound
 import { useRegistrationStatus } from '@/features/registration/hooks';
 import { RegistrationForm } from '@/features/registration/components/RegistrationForm';
 import { piccColors } from '@/theme/palette';
-import { Cloud3DSection } from '@/components/ui/Cloud3DSection';
 
 export const RegistrationSection = () => {
   const { status } = useRegistrationStatus();
@@ -21,9 +20,6 @@ export const RegistrationSection = () => {
         overflow: 'hidden',
       }}
     >
-      {/* Floating 3D Cloud Background */}
-      <Cloud3DSection density="dense" colorTheme="sky" opacityMultiplier={0.9} />
-
       <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
         <Box sx={{ textAlign: 'center', mb: { xs: 5, md: 8 } }}>
           <Chip

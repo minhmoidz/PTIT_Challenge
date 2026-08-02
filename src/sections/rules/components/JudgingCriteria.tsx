@@ -4,8 +4,15 @@ import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import { motion } from 'motion/react';
 import { fadeInUp } from '@/motion/variants';
 import { competitionData } from '@/data/competition';
+import { piccColors } from '@/theme/palette';
 
-const COLORS = ['#3882F1', '#6A73DC', '#059669', '#D65890'];
+/* Brand set: red · navy · gold · neutral. */
+const COLORS = [
+  piccColors.ptitRed,
+  piccColors.blue[700],
+  piccColors.yellow[700],
+  piccColors.slate[600],
+];
 
 export const JudgingCriteria = () => {
   return (

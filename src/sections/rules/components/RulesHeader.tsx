@@ -12,22 +12,22 @@ const STATS = [
     number: '04',
     label: 'Giai đoạn thi',
     icon: RouteRoundedIcon,
-    color: piccColors.blue[600],
-    bg: piccColors.blue[100],
+    color: piccColors.ptitRed,
+    bg: piccColors.red[50],
   },
   {
     number: '3–4',
     label: 'Thành viên / đội',
     icon: GroupsRoundedIcon,
-    color: piccColors.indigo[600],
-    bg: piccColors.indigo[100],
+    color: piccColors.blue[700],
+    bg: piccColors.blue[100],
   },
   {
     number: '03',
     label: 'Thành phần hồ sơ',
     icon: FolderZipRoundedIcon,
-    color: piccColors.emerald[500],
-    bg: piccColors.emerald[100],
+    color: piccColors.yellow[700],
+    bg: piccColors.yellow[100],
   },
 ];
 

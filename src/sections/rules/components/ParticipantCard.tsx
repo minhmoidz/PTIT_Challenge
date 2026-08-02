@@ -4,6 +4,7 @@ import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import { motion } from 'motion/react';
 import { fadeInUp } from '@/motion/variants';
 import { competitionData } from '@/data/competition';
+import { piccColors } from '@/theme/palette';
 
 const CONDITIONS = [
   competitionData.eligibility.target,
@@ -92,10 +93,10 @@ export const ParticipantCard = () => {
             {/* Abstract SVG Avatars */}
             <Box sx={{ display: 'flex', alignItems: 'center', ml: -1 }}>
               {[
-                { bg: '#3882F1', opacity: 0.95 },
-                { bg: '#6A73DC', opacity: 0.85 },
-                { bg: '#059669', opacity: 0.75 },
-                { bg: '#D65890', opacity: 0.65 },
+                { bg: piccColors.ptitRed, opacity: 0.95 },
+                { bg: piccColors.blue[700], opacity: 0.85 },
+                { bg: piccColors.yellow[600], opacity: 0.8 },
+                { bg: piccColors.slate[500], opacity: 0.7 },
               ].map((av, idx) => (
                 <Box
                   key={idx}
@@ -118,7 +119,7 @@ export const ParticipantCard = () => {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             {CONDITIONS.map((item, i) => (
               <Box key={i} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.25 }}>
-                <CheckCircleRoundedIcon sx={{ fontSize: 16, color: '#059669', flexShrink: 0, mt: '2px' }} />
+                <CheckCircleRoundedIcon sx={{ fontSize: 16, color: piccColors.ptitRed, flexShrink: 0, mt: '2px' }} />
                 <Typography sx={{ fontSize: '0.8125rem', color: '#67788F', lineHeight: 1.4, fontWeight: 600 }}>
                   {item}
                 </Typography>

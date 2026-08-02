@@ -16,7 +16,6 @@ import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import { piccColors } from '@/theme/palette';
 import { SkyBackground } from '@/components/ui/SkyBackground';
 import { getSkyBackground } from '@/components/ui/skyBackgroundConfig';
-import { ForestDecor } from './components/ForestDecor';
 
 /* ── Stage Data Definition ─────────────────────────── */
 
@@ -507,7 +506,6 @@ export const TimelineSection = () => {
     >
       {/* Sky World Atmospheric Design System Background */}
       <SkyBackground variant="journey" />
-      <ForestDecor />
 
       <Container
         maxWidth="lg"

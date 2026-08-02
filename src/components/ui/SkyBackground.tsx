@@ -172,26 +172,30 @@ interface SkyBackgroundProps {
   variant: SkyVariant;
 }
 
+/**
+ * Decorative overlay for a section surface.
+ *
+ * The section itself paints the base colour via `getSkyBackground(variant)`;
+ * this draws whatever sits on top of it. Every variant is currently a flat
+ * surface with no overlay, so this renders nothing — the layers are kept so a
+ * single accent can be reintroduced for one section without replumbing markup.
+ */
 export const SkyBackground = ({ variant }: SkyBackgroundProps) => {
   const cfg = VARIANTS[variant];
-
-  // Memoize cloud list to prevent re-render thrash
   const clouds = useMemo(() => cfg.clouds, [cfg.clouds]);
+
+  if (cfg.gridOpacity === 0 && cfg.glows.length === 0 && clouds.length === 0) {
+    return null;
+  }
 
   return (
     <>
-      {/* Layer 1 — sky gradient (applied to parent via prop, not here) */}
-      {/* The gradient is returned as a CSS value the parent should apply */}
-
-      {/* Layer 2 — dot grid */}
       {cfg.gridOpacity > 0 && <DotGrid opacity={cfg.gridOpacity} />}
 
-      {/* Layer 3 — atmospheric glows */}
       {cfg.glows.map((g, i) => (
         <AtmosphericGlow key={i} glow={g} />
       ))}
 
-      {/* Layer 4 — cloud clusters */}
       {clouds.map((c, i) => (
         <AnimatedCloud key={i} cfg={c} />
       ))}
