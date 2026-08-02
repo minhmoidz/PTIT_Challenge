@@ -24,7 +24,11 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   DATABASE_URL: z.string().min(1, 'DATABASE_URL is required — registrations are stored in Postgres.'),
   DIRECT_URL: z.string().optional(),
-  CORS_ORIGIN: z.string().default('http://localhost:5173'),
+  /**
+   * Extra allowed origins, comma-separated. Normally unnecessary: nginx serves
+   * the SPA and the API from one origin, so requests are same-origin.
+   */
+  CORS_ORIGIN: z.string().optional(),
   /** Signs admin session tokens. Rotating it invalidates every active session. */
   JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters.'),
   /** Optional: seeds the first SUPER_ADMIN when the users table is empty. */
@@ -36,6 +40,12 @@ const envSchema = z.object({
   PICC_REGISTRATION_OPEN_AT: z.string().default('2026-08-01T00:00:00+07:00'),
   PICC_REGISTRATION_CLOSE_AT: z.string().default('2026-08-15T23:59:59+07:00'),
   PICC_REGISTRATION_ENABLED: z.string().default('true'),
+  /** Optional SMTP — confirmation emails are disabled when SMTP_HOST is unset. */
+  SMTP_HOST: z.string().optional(),
+  SMTP_PORT: z.coerce.number().optional(),
+  SMTP_USER: z.string().optional(),
+  SMTP_PASSWORD: z.string().optional(),
+  MAIL_FROM: z.string().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);

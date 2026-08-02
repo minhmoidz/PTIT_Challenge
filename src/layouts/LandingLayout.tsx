@@ -20,25 +20,35 @@ export const LandingLayout = () => {
       (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined);
     const isReload = navEntry?.type === 'reload';
 
-    if (isReload && pathname === '/') {
+    if (pathname !== '/') {
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-      if (window.location.hash) {
-        window.history.replaceState(null, '', window.location.pathname);
+      return;
+    }
+
+    if (!hash) {
+      if (isReload) {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       }
       return;
     }
 
-    if (hash && !isReload) {
-      const targetId = hash.replace('#', '');
-      setTimeout(() => {
-        const element = document.getElementById(targetId);
-        if (element) {
-          element.scrollIntoView({ block: 'start', behavior: 'smooth' });
-        }
-      }, 100);
-    } else {
-      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    }
+    const targetId = hash.replace('#', '');
+    let attempts = 0;
+
+    const tryScroll = () => {
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ block: 'start', behavior: isReload ? 'instant' : 'smooth' });
+        return;
+      }
+
+      if (attempts < 10) {
+        attempts += 1;
+        window.requestAnimationFrame(tryScroll);
+      }
+    };
+
+    window.requestAnimationFrame(tryScroll);
   }, [pathname, hash]);
 
   return (

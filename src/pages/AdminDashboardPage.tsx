@@ -20,6 +20,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { adminColors, adminRadius, adminShadow } from '@/theme/adminTokens';
 import { RegistrationDetailModal } from '@/components/admin/RegistrationDetailModal';
 import { env } from '@/config/env';
+import { useAdminUser } from '@/layouts/AdminContext';
 import type { PublicTeamProfile } from '@/types/publicTeam';
 import { TEAM_STATUS_MAP } from '@/types/publicTeam';
 
@@ -141,10 +142,12 @@ const PageHeader = ({
   </Box>
 );
 
-const getAuthHeaders = (): Record<string, string> => {
-  const token = localStorage.getItem('picc_admin_token');
-  return token ? { Authorization: `Bearer ${token}` } : {};
-};
+/**
+ * Admin API fetcher — the httpOnly session cookie is attached automatically via
+ * `credentials: 'include'`; the token itself never touches JavaScript.
+ */
+const authFetch = (path: string, init?: RequestInit) =>
+  fetch(path, { ...init, credentials: 'include' });
 
 /* ── Admin Section Routing ── */
 export type AdminSection = 'overview' | 'registrations' | 'teams' | 'settings';
@@ -208,6 +211,7 @@ const TeamStatusBadge = ({ status, label }: { status: string; label: string }) =
 export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSection } = {}) => {
   const navigate = useNavigate();
   const contentSection: 'registrations' | 'teams' | 'settings' = section === 'overview' ? 'registrations' : section;
+  const { user } = useAdminUser();
   const [stats, setStats] = useState({ totalRegistrations: 0, submittedCount: 0, verifiedCount: 0, publicProfilesCount: 0, publishedTeamsCount: 0 });
   const [registrations, setRegistrations] = useState<RegistrationItem[]>([]);
   const [teams, setTeams] = useState<PublicTeamProfile[]>([]);
@@ -218,16 +222,6 @@ export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSe
   const [modalOpen, setModalOpen] = useState(false);
   const [openAt, setOpenAt] = useState('2026-08-01T00:00');
   const [closeAt, setCloseAt] = useState('2026-08-15T23:59');
-
-  const formatToLocalDatetime = (iso: string): string => {
-    try {
-      const d = new Date(iso);
-      const pad = (n: number) => String(n).padStart(2, '0');
-      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-    } catch {
-      return iso.slice(0, 16);
-    }
-  };
   const [statusOverride, setStatusOverride] = useState<'auto' | 'open' | 'paused' | 'closed' | 'live' | 'completed'>('auto');
   const [configSaving, setConfigSaving] = useState(false);
   const [configSuccess, setConfigSuccess] = useState(false);
@@ -235,40 +229,55 @@ export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSe
   const [reviewingId, setReviewingId] = useState<string | null>(null);
   const [reviewError, setReviewError] = useState('');
 
+  const hasPermission = useCallback((permission: string) => Boolean(user?.permissions?.includes(permission)), [user]);
+  const formatToLocalDatetime = useCallback((iso: string): string => {
+    try {
+      const d = new Date(iso);
+      const pad = (n: number) => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    } catch {
+      return iso.slice(0, 16);
+    }
+  }, []);
+
   const fetchData = useCallback(async () => {
     setLoadingStats(true);
     setLoadingRegs(true);
     setLoadingTeams(true);
     try {
-      const authHeaders = getAuthHeaders();
-      const [sumRes, regRes, cfgRes, teamsRes] = await Promise.all([
-        fetch(`${env.apiBaseUrl}/v1/admin/dashboard/summary`, { headers: authHeaders }),
-        fetch(`${env.apiBaseUrl}/v1/admin/registrations`, { headers: authHeaders }),
-        fetch(`${env.apiBaseUrl}/v1/admin/competition/config`, { headers: authHeaders }),
-        fetch(`${env.apiBaseUrl}/v1/admin/teams`, { headers: authHeaders }),
-      ]);
+      const requests = [
+        authFetch(`${env.apiBaseUrl}/v1/admin/dashboard/summary`),
+        authFetch(`${env.apiBaseUrl}/v1/admin/registrations`),
+        hasPermission('competition.read')
+          ? authFetch(`${env.apiBaseUrl}/v1/admin/competition/config`)
+          : Promise.resolve(null),
+        authFetch(`${env.apiBaseUrl}/v1/admin/teams`),
+      ] as const;
 
-      if (sumRes.status === 401 || regRes.status === 401 || cfgRes.status === 401) {
-        localStorage.removeItem('picc_admin_token');
+      const [sumRes, regRes, cfgRes, teamsRes] = await Promise.all(requests);
+
+      if (sumRes?.status === 401 || regRes?.status === 401 || cfgRes?.status === 401 || teamsRes?.status === 401) {
         localStorage.removeItem('picc_admin_user');
         navigate('/admin', { replace: true });
         return;
       }
 
-      const sumData = await sumRes.json();
+      const sumData = await sumRes!.json();
       if (sumData.success) setStats(sumData.data);
 
-      const regData = await regRes.json();
+      const regData = await regRes!.json();
       if (regData.success) setRegistrations(regData.data);
 
-      const cfgData = await cfgRes.json();
-      if (cfgData.success && cfgData.data) {
-        if (cfgData.data.openAt) setOpenAt(formatToLocalDatetime(cfgData.data.openAt));
-        if (cfgData.data.closeAt) setCloseAt(formatToLocalDatetime(cfgData.data.closeAt));
-        setStatusOverride(cfgData.data.statusOverride || 'auto');
+      if (cfgRes) {
+        const cfgData = await cfgRes.json();
+        if (cfgData.success && cfgData.data) {
+          if (cfgData.data.openAt) setOpenAt(formatToLocalDatetime(cfgData.data.openAt));
+          if (cfgData.data.closeAt) setCloseAt(formatToLocalDatetime(cfgData.data.closeAt));
+          setStatusOverride(cfgData.data.statusOverride || 'auto');
+        }
       }
 
-      const teamsData = await teamsRes.json();
+      const teamsData = await teamsRes!.json();
       if (teamsData.success && Array.isArray(teamsData.data?.teams)) setTeams(teamsData.data.teams);
     } catch (err) {
       console.error('Fetch error:', err);
@@ -277,7 +286,7 @@ export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSe
       setLoadingRegs(false);
       setLoadingTeams(false);
     }
-  }, [navigate]);
+  }, [hasPermission, navigate, formatToLocalDatetime]);
 
   useEffect(() => {
     Promise.resolve().then(() => { fetchData(); });
@@ -286,7 +295,11 @@ export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSe
   const handleExport = async () => {
     if (registrations.length === 0) return;
     try {
-      const res = await fetch(`${env.apiBaseUrl}/v1/admin/registrations/export`, { headers: getAuthHeaders() });
+      const res = await authFetch(`${env.apiBaseUrl}/v1/admin/registrations/export`);
+      if (res.status === 403) {
+        setReviewError('Tài khoản không có quyền xuất dữ liệu.');
+        return;
+      }
       if (!res.ok) return;
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
@@ -307,16 +320,20 @@ export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSe
       setReviewingId(id);
       setReviewError('');
       try {
-        const res = await fetch(`${env.apiBaseUrl}/v1/admin/registrations/${id}/status`, {
+        const res = await authFetch(`${env.apiBaseUrl}/v1/admin/registrations/${id}/status`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status, rejectionReason }),
         });
 
         if (res.status === 401) {
-          localStorage.removeItem('picc_admin_token');
           localStorage.removeItem('picc_admin_user');
           navigate('/admin', { replace: true });
+          return;
+        }
+
+        if (res.status === 403) {
+          setReviewError('Tài khoản không có quyền xét duyệt hồ sơ.');
           return;
         }
 
@@ -358,15 +375,19 @@ export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSe
 
     setConfigSaving(true);
     try {
-      const res = await fetch(`${env.apiBaseUrl}/v1/admin/competition/config`, {
+      const res = await authFetch(`${env.apiBaseUrl}/v1/admin/competition/config`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           openAt: openAt + ':00+07:00',
           closeAt: closeAt + ':00+07:00',
           statusOverride: statusOverride === 'auto' ? null : statusOverride,
         }),
       });
+      if (res.status === 403) {
+        setConfigError('Tài khoản không có quyền chỉnh sửa cấu hình cuộc thi.');
+        return;
+      }
       const data = await res.json();
       if (data.success) {
         setConfigSuccess(true);
@@ -380,6 +401,7 @@ export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSe
       setConfigSaving(false);
     }
   };
+
 
   const formatDate = (iso: string) => {
     try {
@@ -416,7 +438,7 @@ export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSe
             >
               Làm mới
             </Button>
-            {contentSection === 'registrations' && (
+            {contentSection === 'registrations' && hasPermission('registration.export') && (
               <Tooltip title={registrations.length === 0 ? 'Không có dữ liệu để xuất' : 'Xuất danh sách Excel'}>
                 <span>
                   <Button
@@ -455,7 +477,7 @@ export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSe
 
       {/* ── Section Tabs ── */}
       <Box sx={{ display: 'flex', gap: 1, mb: 2.5, flexWrap: 'wrap' }}>
-        {SECTION_TABS.map((tab) => (
+        {SECTION_TABS.filter((tab) => tab.key === 'overview' || tab.key === section || hasPermission(tab.key === 'settings' ? 'competition.read' : tab.key === 'teams' ? 'publicTeam.read' : 'registration.read')).map((tab) => (
           <Button key={tab.key} sx={sectionBtnSx(section === tab.key)} onClick={() => navigate(SECTION_ROUTES[tab.key])}>
             {tab.label}
           </Button>
@@ -547,7 +569,7 @@ export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSe
                               <VisibilityRoundedIcon sx={{ fontSize: 16 }} />
                             </IconButton>
                           </Tooltip>
-                          {reg.status === 'SUBMITTED' && (
+                          {hasPermission('registration.review') && reg.status === 'SUBMITTED' && (
                             <>
                               <Tooltip title="Xác minh">
                                 <span>
@@ -666,7 +688,7 @@ export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSe
       )}
 
       {/* ═══ COMPETITION SETTINGS ═══ */}
-      {contentSection === 'settings' && (
+      {contentSection === 'settings' && hasPermission('competition.read') && (
         <Box
           sx={{
             bgcolor: adminColors.surface,
@@ -794,6 +816,12 @@ export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSe
             </Box>
           </Box>
         </Box>
+      )}
+
+      {contentSection === 'settings' && !hasPermission('competition.read') && (
+        <Alert severity="warning" sx={{ mb: 2 }}>
+          Tài khoản hiện tại không có quyền xem cấu hình cuộc thi.
+        </Alert>
       )}
 
       {/* Detail Modal */}

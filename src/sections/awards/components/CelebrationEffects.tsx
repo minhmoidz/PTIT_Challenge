@@ -15,7 +15,7 @@ export const CelebrationEffects = ({ sectionRef }: CelebrationEffectsProps) => {
     }
 
     const isMobile = window.innerWidth < 768;
-    const colors = ['#E7C34D', '#0F2A52', '#3882F1', '#93A3B8', '#9E7A19', '#FFFFFF', '#9AC3F9'];
+    const colors = ['#E7C34D', '#0F2A52', '#E11414', '#FF8D8D', '#9E7A19', '#FFFFFF', '#FFD4D4'];
 
     // Stage 1: Left & Right bursts towards Champion card center
     confetti({

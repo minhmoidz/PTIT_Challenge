@@ -9,4 +9,6 @@ dist
 coverage
 test-results
 playwright-report
+backups
+scripts/_t
 PICC_2026_FINAL_AGENT_PACK

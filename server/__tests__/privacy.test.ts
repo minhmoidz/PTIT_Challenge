@@ -75,10 +75,27 @@ describe('PICC 2026 Production Backend Security & Business Rules', () => {
         { role: 'member', fullName: 'Member 1', studentId: 'B20DCCN002', major: 'IT', email: 'm1@ptit.edu.vn', phone: '0912345679' },
         { role: 'member', fullName: 'Member 2', studentId: 'B20DCCN003', major: 'IT', email: 'm2@ptit.edu.vn', phone: '0912345680' },
       ],
-      commitments: { truthfulInformation: true, mediaConsent: false, rulesAccepted: true },
+      commitments: { truthfulInformation: true, mediaConsent: false, rulesAccepted: true, privacyAcknowledged: true },
     };
 
     await expect(RegistrationService.processRegistration(missingConsentPayload, '127.0.0.1')).rejects.toMatchObject({
+      code: 'CONSENT_REQUIRED',
+    });
+  });
+
+  it('6. Should reject registration missing privacy acknowledgement', async () => {
+    const missingPrivacyPayload: any = {
+      teamName: 'No Privacy Team',
+      teamSize: 3,
+      members: [
+        { role: 'leader', fullName: 'Leader', studentId: 'B20DCCN011', major: 'IT', email: 'leader11@ptit.edu.vn', phone: '0912345678' },
+        { role: 'member', fullName: 'Member 1', studentId: 'B20DCCN012', major: 'IT', email: 'member12@ptit.edu.vn', phone: '0912345679' },
+        { role: 'member', fullName: 'Member 2', studentId: 'B20DCCN013', major: 'IT', email: 'member13@ptit.edu.vn', phone: '0912345680' },
+      ],
+      commitments: { truthfulInformation: true, mediaConsent: true, rulesAccepted: true, privacyAcknowledged: false },
+    };
+
+    await expect(RegistrationService.processRegistration(missingPrivacyPayload, '127.0.0.1')).rejects.toMatchObject({
       code: 'CONSENT_REQUIRED',
     });
   });

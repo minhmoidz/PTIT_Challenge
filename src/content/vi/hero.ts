@@ -3,7 +3,7 @@ export const hero = {
   h1: 'PTIT Innovation Catalyst Challenge 2026',
   theme: 'Rise Beyond Limits',
   description:
-    'Sân chơi giải Case Study cấp Học viện, nơi các đội thi liên ngành cùng doanh nghiệp nghiên cứu, xây dựng và thử nghiệm những giải pháp tạo ra giá trị thực tế.',
+    'PICC 2026 — sân chơi Case Study cấp Học viện dành cho sinh viên PTIT, nơi tư duy liên ngành gặp gỡ những bài toán thực tế từ doanh nghiệp.',
   cta: {
     open: 'Đăng ký ngay',
     secondary: 'Xem thể lệ',

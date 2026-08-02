@@ -22,3 +22,4 @@ data/*.tmp
 # Local scratch scripts — keep credentials and one-off probes out of the repo
 tmp-*.mjs
 tmp-*.ts
+backups/

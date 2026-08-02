@@ -16,7 +16,6 @@ import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import { piccColors } from '@/theme/palette';
 import { SkyBackground } from '@/components/ui/SkyBackground';
 import { getSkyBackground } from '@/components/ui/skyBackgroundConfig';
-import { QuickFacts } from './components/QuickFacts';
 import { ForestDecor } from './components/ForestDecor';
 
 /* ── Stage Data Definition ─────────────────────────── */
@@ -62,7 +61,7 @@ const STAGES: StageData[] = [
     statusType: 'completed',
     accentColor: piccColors.blue[600],
     lightBg: piccColors.blue[50],
-    borderColor: 'rgba(56, 130, 241, 0.2)',
+    borderColor: 'rgba(53, 84, 126, 0.22)',
     icon: AssignmentRoundedIcon,
     description: 'Các đội giải một đề bài chung do Ban Tổ chức công bố.',
     bullets: [
@@ -518,9 +517,6 @@ export const TimelineSection = () => {
           px: { xs: 2, sm: 2.5, md: 3 },
         }}
       >
-        {/* Khối Thông tin nhanh cuộc thi */}
-        <QuickFacts />
-
         {/* Header Lộ trình cuộc thi */}
         <Box
           sx={{

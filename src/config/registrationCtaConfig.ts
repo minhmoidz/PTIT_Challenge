@@ -17,7 +17,7 @@ export const REGISTRATION_CTA_CONFIG: Record<string, CtaConfig> = {
     mobileLabel: 'Đăng ký tham gia PICC 2026',
     href: '/dang-ky',
     helperText: 'Cổng đăng ký mở đến 15/08/2026.',
-    dotColor: '#10B981', // emerald green pulse
+    dotColor: '#10B981',
     showMobileSticky: true,
   },
   not_open: {
@@ -26,7 +26,7 @@ export const REGISTRATION_CTA_CONFIG: Record<string, CtaConfig> = {
     mobileLabel: 'Xem trước biểu mẫu',
     href: '/dang-ky',
     helperText: 'Mở đăng ký từ 01/08/2026.',
-    dotColor: '#3B82F6', // blue
+    dotColor: '#0F2A52',
     showMobileSticky: true,
   },
   manually_disabled: {
@@ -35,7 +35,7 @@ export const REGISTRATION_CTA_CONFIG: Record<string, CtaConfig> = {
     mobileLabel: 'Xem thông báo đăng ký',
     href: '/dang-ky',
     helperText: 'Cổng đăng ký đang tạm dừng.',
-    dotColor: '#F59E0B', // amber
+    dotColor: '#E7C34D',
     showMobileSticky: true,
   },
   closed: {
@@ -44,7 +44,7 @@ export const REGISTRATION_CTA_CONFIG: Record<string, CtaConfig> = {
     mobileLabel: 'Theo dõi hành trình',
     href: '/#lo-trinh',
     helperText: 'Đăng ký đã đóng vào 15/08/2026.',
-    dotColor: '#67788F', // slate
+    dotColor: '#67788F',
     showMobileSticky: false,
   },
   live: {
@@ -53,16 +53,16 @@ export const REGISTRATION_CTA_CONFIG: Record<string, CtaConfig> = {
     mobileLabel: 'Theo dõi cuộc thi',
     href: '/#lo-trinh',
     helperText: 'Cuộc thi đang diễn ra.',
-    dotColor: '#8B5CF6', // purple
+    dotColor: '#E11414',
     showMobileSticky: false,
   },
   completed: {
     heroLabel: 'Xem kết quả',
     navbarLabel: 'Xem kết quả',
     mobileLabel: 'Xem kết quả',
-    href: '/#lo-trinh', // fallback anchor as /ket-qua route doesn't exist
+    href: '/#lo-trinh',
     helperText: 'Cuộc thi PICC 2026 đã khép lại thành công.',
-    dotColor: '#0EA5E9', // sky blue
+    dotColor: '#C99A39',
     showMobileSticky: false,
   },
 };

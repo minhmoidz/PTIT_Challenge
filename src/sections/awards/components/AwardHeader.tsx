@@ -96,7 +96,7 @@ export const AwardHeader = () => {
               sx={{
                 fontSize: '0.775rem',
                 fontWeight: 800,
-                color: '#67788F',
+                color: piccColors.slate[500],
                 textTransform: 'uppercase',
                 letterSpacing: '0.06em',
                 mb: 0.25,
@@ -108,7 +108,7 @@ export const AwardHeader = () => {
               sx={{
                 fontSize: { xs: '1.2rem', sm: '1.4rem' },
                 fontWeight: 800,
-                color: '#0F2A52',
+                color: piccColors.ptitNavy,
                 lineHeight: 1.25,
                 letterSpacing: '-0.01em',
               }}
@@ -118,7 +118,7 @@ export const AwardHeader = () => {
             <Typography
               sx={{
                 fontSize: '0.775rem',
-                color: '#9E7A19',
+                color: piccColors.amber[700],
                 fontWeight: 650,
                 mt: 0.3,
               }}

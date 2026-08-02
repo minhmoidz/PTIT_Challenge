@@ -1,126 +1,118 @@
 /**
- * PICC 2026 — Color System
+ * PICC 2026 — Public Color System
  *
- * Built on the brand palette spec:
- *   Main        #93CEFA (sky)      · #FBFDFF (page)
- *   Secondary   #9AC3F9 (blue)     · #F6BFDB (pink)   · #FDEDA7 (sun)
- *   Accent      #3882F1 (blue)     · #FF1F1F (red)    · #E7C34D (gold)  · #B8B8B8 (gray)
- *
- * The spec colors are pastels — they carry the brand as *surfaces, tints and
- * atmosphere*. Text and solid actions use the deepened steps of the same ramps
- * so every foreground pair clears WCAG AA (4.5:1) on white. Each spec color is
- * marked `← spec` at the step where it sits naturally in its ramp.
+ * Unified around:
+ * - PTIT red as the primary brand/action color
+ * - PTIT navy as the reading/supporting color
+ * - warm homeland yellow as a restrained accent
+ * - soft neutral/sky-tinted surfaces for calm section transitions
  */
 
 export const piccColors = {
-  /* Main — the sky that the whole site sits in */
+  /* Light atmospheric support — only for soft surfaces/backgrounds */
   sky: {
-    50: '#FBFDFF', // ← spec (page background)
-    100: '#F1F8FE',
-    200: '#DCEFFD',
-    300: '#93CEFA', // ← spec (main)
-    400: '#6FBBF3',
-    500: '#4BA5E6',
-    600: '#3389CB',
-    700: '#256B9F',
+    50: '#FBFCFE',
+    100: '#F4F7FB',
+    200: '#E6EDF6',
+    300: '#D2DDED',
+    400: '#B4C4DB',
+    500: '#8EA4C3',
+    600: '#6D87A7',
+    700: '#516987',
   },
 
-  /* Structural blue — navigation, links, informational surfaces */
+  /* Structural blue is now a navy-led support ramp, not a competing hero hue */
   blue: {
-    50: '#F1F6FE',
-    100: '#DFEBFD',
-    200: '#C2DBFB',
-    300: '#9AC3F9', // ← spec (secondary)
-    400: '#6BA4F5',
-    500: '#3882F1', // ← spec (accent)
-    600: '#2569D2',
-    700: '#1C52A6',
-    800: '#173F7E',
-    900: '#0F2A52',
+    50: '#F3F6FB',
+    100: '#E7EDF6',
+    200: '#D4DFED',
+    300: '#B4C6DE',
+    400: '#8EA9C8',
+    500: '#5E7FA9',
+    600: '#35547E',
+    700: '#1F3C63',
+    800: '#163150',
+    900: '#0F2742',
   },
 
-  /* Pink — warmth, community, "people" surfaces */
+  /* Keep the API/key name for compatibility, but tune it toward soft PTIT rose-red */
   pink: {
-    50: '#FEF6FA',
-    100: '#FCE9F2',
-    200: '#F6BFDB', // ← spec (secondary)
-    300: '#EE9DC3',
-    400: '#E479AA',
-    500: '#D65890',
-    600: '#BE4077',
-    700: '#9A2F5E',
-    800: '#78244A',
+    50: '#FFF5F5',
+    100: '#FFE9E9',
+    200: '#FFD4D4',
+    300: '#FFB8B8',
+    400: '#FF8D8D',
+    500: '#F26666',
+    600: '#D94343',
+    700: '#B72A2A',
+    800: '#8F1D1D',
   },
 
-  /* Sun — highlights, "in progress", soft emphasis */
+  /* Warm homeland yellow */
   yellow: {
-    50: '#FFFDF0',
-    100: '#FEF7D8',
-    200: '#FDEDA7', // ← spec (secondary)
-    300: '#F6DC7C',
-    400: '#E7C34D', // ← spec (gold)
-    500: '#D0A831',
-    600: '#AE8922',
-    700: '#8A6B1A',
+    50: '#FFF9EC',
+    100: '#FFF1CF',
+    200: '#F8DF97',
+    300: '#EFCB63',
+    400: '#E1B44C',
+    500: '#C99A39',
+    600: '#A67B27',
+    700: '#7F5D1B',
   },
 
-  /* Gold — awards and celebration; the warm sibling of `yellow` */
   amber: {
-    50: '#FFFBEC',
-    100: '#FDF3CF',
-    200: '#FAE6A4',
-    300: '#E7C34D', // ← spec (gold)
-    400: '#D6AE33',
-    500: '#BD9522',
-    600: '#9E7A19',
-    700: '#7F6114',
-    800: '#63490F',
-    900: '#48350A',
+    50: '#FFF8E8',
+    100: '#FCEFC8',
+    200: '#F3DA8A',
+    300: '#E7C34D',
+    400: '#D5AC3D',
+    500: '#BC912D',
+    600: '#996F1F',
+    700: '#745216',
+    800: '#583D10',
+    900: '#3E2B0A',
   },
 
-  /* True neutral gray — dividers, disabled states, muted chrome */
   neutral: {
-    50: '#FAFAFB',
-    100: '#F3F4F5',
-    200: '#E6E7E8',
-    300: '#D2D3D4',
-    400: '#B8B8B8', // ← spec (gray)
-    500: '#8C8D90',
-    600: '#6B6C70',
-    700: '#4D4E53',
-    800: '#313236',
-    900: '#1B1C20',
+    50: '#FCFCFD',
+    100: '#F5F6F8',
+    200: '#E8EAEE',
+    300: '#D6D9DE',
+    400: '#B8BCC4',
+    500: '#8A909A',
+    600: '#666C76',
+    700: '#4A5059',
+    800: '#2F333A',
+    900: '#171A1F',
   },
 
-  /* Blue-tinted neutrals — body copy, borders, quiet surfaces */
   slate: {
-    50: '#F7F9FC',
-    100: '#EFF3F8',
+    50: '#F8F9FB',
+    100: '#F0F3F7',
     200: '#DFE6EF',
-    300: '#C6D1E0',
-    400: '#93A3B8',
-    500: '#67788F',
-    600: '#4C5D75',
-    700: '#374961',
-    800: '#25344A',
-    900: '#132033',
+    300: '#C7D0DB',
+    400: '#97A4B3',
+    500: '#687689',
+    600: '#4B5C72',
+    700: '#34465E',
+    800: '#223449',
+    900: '#132338',
   },
 
-  /* Violet-blue — a third categorical hue, pulled toward the brand periwinkle */
+  /* Keep compatibility for existing imports, but make it a muted navy bridge */
   indigo: {
-    50: '#F2F4FE',
-    100: '#E5E9FC',
-    200: '#CBD3F8',
-    300: '#A9B6F2',
-    400: '#8794E8',
-    500: '#6A73DC',
-    600: '#535AC4',
-    700: '#42479E',
-    800: '#35397C',
-    900: '#272A5C',
+    50: '#F4F6FB',
+    100: '#E9EDF7',
+    200: '#D5DCEF',
+    300: '#B8C3E0',
+    400: '#92A4C9',
+    500: '#6E84B1',
+    600: '#4A638F',
+    700: '#32486C',
+    800: '#223554',
+    900: '#16243B',
   },
 
-  /* Success green — kept outside the brand ramp so "verified" reads unambiguously */
   emerald: {
     50: '#ECFDF5',
     100: '#D1FAE5',
@@ -134,71 +126,68 @@ export const piccColors = {
     900: '#064E3B',
   },
 
-  /* Brand red — #FF1F1F is the decorative accent; solids/text use the deeper
-     steps so white-on-red stays readable. */
   red: {
     50: '#FFF1F1',
-    100: '#FFDEDE',
-    200: '#FFC0C0',
-    300: '#FF9494',
-    400: '#FF5C5C',
-    500: '#FF1F1F', // ← spec (accent)
-    600: '#E00E0E',
-    700: '#B81111',
-    800: '#8F1010',
+    100: '#FFE0E0',
+    200: '#FFC2C2',
+    300: '#FF9B9B',
+    400: '#FF6B6B',
+    500: '#FF1F1F',
+    600: '#E11414',
+    700: '#B91212',
+    800: '#8E1010',
   },
 
   green: '#10B981',
   success: '#177245',
-  danger: '#B81111',
-  warning: '#8A6B1A',
+  danger: '#B91212',
+  warning: '#7F5D1B',
 
-  /** Vivid brand red — decoration, glows, active accents. Not for small text. */
   ptitRedVivid: '#FF1F1F',
-  /** Solid brand red for buttons and text (white-on-red = 5.0:1). */
-  ptitRed: '#E00E0E',
-  ptitDarkRed: '#B81111',
+  ptitRed: '#E11414',
+  ptitDarkRed: '#B91212',
   ptitNavy: '#0F2A52',
   ink: '#0F2A52',
   surface: '#FFFFFF',
 
   semantic: {
-    page: '#FBFDFF',
+    page: '#FBFCFE',
+    pageWarm: '#FCFAF7',
     surface: '#FFFFFF',
-    surfaceSubtle: '#F5FAFF',
-    surfaceGlass: 'rgba(255,255,255,0.88)',
+    surfaceSubtle: '#F7F9FC',
+    surfaceWarm: '#FFF9F1',
+    surfaceGlass: 'rgba(255,255,255,0.9)',
     text: '#0F2A52',
-    textMuted: '#4C5D75',
+    textMuted: '#4B5C72',
     border: '#DFE6EF',
-    borderStrong: '#C2DBFB',
-    focus: '#3882F1',
-    action: '#E00E0E',
-    actionHover: '#B81111',
-    award: '#7F6114',
+    borderStrong: '#C7D0DB',
+    focus: '#E11414',
+    action: '#E11414',
+    actionHover: '#B91212',
+    award: '#7F5D1B',
+    footer: '#0C2145',
+    footerSoft: '#15325F',
   },
 };
 
-/** Channel values for the spec colors, for use inside rgba() tints. */
 export const rgbChannels = {
-  skyMain: '147, 206, 250', // #93CEFA
-  blueAccent: '56, 130, 241', // #3882F1
-  bluePeri: '154, 195, 249', // #9AC3F9
-  pink: '246, 191, 219', // #F6BFDB
-  sun: '253, 237, 167', // #FDEDA7
-  gold: '231, 195, 77', // #E7C34D
-  red: '255, 31, 31', // #FF1F1F
-  navy: '15, 42, 82', // #0F2A52
+  skyMain: '210, 221, 237',
+  blueAccent: '53, 84, 126',
+  bluePeri: '180, 198, 222',
+  pink: '242, 102, 102',
+  sun: '239, 203, 99',
+  gold: '231, 195, 77',
+  red: '255, 31, 31',
+  navy: '15, 42, 82',
 };
 
 export const gradientMesh = {
-  hero: `radial-gradient(ellipse 78% 58% at 50% -18%, rgba(${rgbChannels.skyMain},0.30), transparent), radial-gradient(ellipse 58% 48% at 82% 38%, rgba(${rgbChannels.pink},0.22), transparent)`,
-  cta: `linear-gradient(135deg, #0F2A52 0%, #1C52A6 55%, #3882F1 100%)`,
-  /** Primary action gradient. Both stops clear AA against white text. */
-  ptitCta: 'linear-gradient(135deg, #EE1616 0%, #B81111 100%)',
-  accent: `linear-gradient(135deg, #FF1F1F 0%, #FF5C5C 100%)`,
-  /** Soft brand wash for decorative panels — sky → pink → sun. */
-  brandWash: `linear-gradient(120deg, rgba(${rgbChannels.skyMain},0.42) 0%, rgba(${rgbChannels.pink},0.30) 52%, rgba(${rgbChannels.sun},0.34) 100%)`,
-  sunrise: `linear-gradient(135deg, #FDEDA7 0%, #E7C34D 100%)`,
-  heroSimple: 'linear-gradient(180deg, #FBFDFF 0%, #FFFFFF 100%)',
-  heroGlow: `radial-gradient(circle at 50% 0%, rgba(${rgbChannels.skyMain},0.28), transparent 62%)`,
+  hero: `radial-gradient(ellipse 80% 58% at 50% -18%, rgba(${rgbChannels.skyMain},0.36), transparent), radial-gradient(ellipse 48% 42% at 84% 22%, rgba(${rgbChannels.red},0.10), transparent), radial-gradient(ellipse 42% 36% at 16% 76%, rgba(${rgbChannels.sun},0.12), transparent)`,
+  cta: `linear-gradient(135deg, ${piccColors.ptitNavy} 0%, ${piccColors.blue[700]} 55%, ${piccColors.blue[500]} 100%)`,
+  ptitCta: `linear-gradient(135deg, ${piccColors.ptitRed} 0%, ${piccColors.ptitDarkRed} 100%)`,
+  accent: `linear-gradient(135deg, ${piccColors.red[500]} 0%, ${piccColors.red[700]} 100%)`,
+  brandWash: `linear-gradient(120deg, rgba(${rgbChannels.navy},0.05) 0%, rgba(${rgbChannels.red},0.08) 48%, rgba(${rgbChannels.sun},0.18) 100%)`,
+  sunrise: `linear-gradient(135deg, ${piccColors.yellow[100]} 0%, ${piccColors.amber[300]} 100%)`,
+  heroSimple: `linear-gradient(180deg, ${piccColors.semantic.page} 0%, ${piccColors.surface} 100%)`,
+  heroGlow: `radial-gradient(circle at 50% 0%, rgba(${rgbChannels.red},0.14), transparent 58%)`,
 };

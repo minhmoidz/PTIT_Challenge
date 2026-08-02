@@ -21,9 +21,11 @@ const EXPERIENCE_OPTIONS = [
 interface FormStep1Props {
   teamMin: number;
   teamMax: number;
+  challengeMode?: 'single' | 'multiple' | null;
+  maxSelections?: number;
 }
 
-export const FormStep1 = ({ teamMin, teamMax }: FormStep1Props) => {
+export const FormStep1 = ({ teamMin, teamMax, challengeMode = 'multiple', maxSelections }: FormStep1Props) => {
   const {
     register,
     formState: { errors },
@@ -103,12 +105,24 @@ export const FormStep1 = ({ teamMin, teamMax }: FormStep1Props) => {
                 select
                 label="Nhóm bài toán muốn tham gia *"
                 error={!!errors.challengeCategories}
-                helperText={errors.challengeCategories?.message || 'Chọn nhóm bài toán đội quan tâm'}
+                helperText={
+                  errors.challengeCategories?.message ||
+                  (challengeMode === 'single'
+                    ? 'Chọn 01 nhóm bài toán theo cấu hình hiện tại'
+                    : typeof maxSelections === 'number'
+                      ? `Chọn tối đa ${maxSelections} nhóm bài toán đội quan tâm`
+                      : 'Chọn nhóm bài toán đội quan tâm')
+                }
                 SelectProps={{
-                  multiple: true,
+                  multiple: challengeMode !== 'single',
                   value: Array.isArray(field.value) ? field.value : [],
                   onChange: (e) => {
                     const val = e.target.value;
+                    if (challengeMode === 'single') {
+                      const nextValue = typeof val === 'string' ? [val] : Array.isArray(val) ? val.slice(-1) : [];
+                      field.onChange(nextValue);
+                      return;
+                    }
                     field.onChange(typeof val === 'string' ? val.split(',') : val);
                   },
                 }}

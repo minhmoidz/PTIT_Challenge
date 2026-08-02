@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Container, Typography, Chip, Alert, Button, Link, Paper } from '@mui/material';
 import AppRegistrationRoundedIcon from '@mui/icons-material/AppRegistrationRounded';
 import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
@@ -7,13 +7,12 @@ import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import MenuBookRoundedIcon from '@mui/icons-material/MenuBookRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 import { useRegistrationStatus } from '@/features/registration/hooks';
 import { RegistrationForm } from '@/features/registration/components/RegistrationForm';
 import { piccColors } from '@/theme/palette';
 import { SkyBackground } from '@/components/ui/SkyBackground';
 import { getSkyBackground } from '@/components/ui/skyBackgroundConfig';
-import { competitionData } from '@/data/competition';
 import { appHash } from '@/config/paths';
 
 /* ─── Real-Time Countdown Computation ─── */
@@ -24,10 +23,9 @@ interface TimeDiff {
   seconds: number;
 }
 
-const getTimeDiff = (targetDate: Date | null, clockOffsetMs = 0): TimeDiff => {
+const getTimeDiff = (targetDate: Date | null): TimeDiff => {
   if (!targetDate) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
-  const now = Date.now() + clockOffsetMs;
-  const diffMs = targetDate.getTime() - now;
+  const diffMs = targetDate.getTime() - Date.now();
   if (diffMs <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
   return {
     days: Math.floor(diffMs / 86_400_000),
@@ -37,19 +35,16 @@ const getTimeDiff = (targetDate: Date | null, clockOffsetMs = 0): TimeDiff => {
   };
 };
 
-const CountdownCell = ({ value, label }: { value: number; label: string }) => {
-  const prefersReducedMotion = useReducedMotion();
-
-  return (
+const CountdownCell = ({ value, label }: { value: number; label: string }) => (
   <Box
     sx={{
       textAlign: 'center',
-      minWidth: { xs: 0, sm: 72 },
+      minWidth: { xs: 58, sm: 72 },
       py: 1.25,
-      px: { xs: 0.5, sm: 1 },
+      px: 1,
       bgcolor: '#FFFFFF',
       borderRadius: '16px',
-      border: '1px solid rgba(56, 130, 241, 0.25)',
+      border: '1px solid rgba(15, 42, 82, 0.16)',
       boxShadow: '0 4px 14px rgba(15, 42, 82, 0.05)',
     }}
   >
@@ -65,9 +60,9 @@ const CountdownCell = ({ value, label }: { value: number; label: string }) => {
     >
       <motion.span
         key={value}
-        initial={prefersReducedMotion ? false : { opacity: 0, y: -4 }}
+        initial={{ opacity: 0, y: -4 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.18 }}
+        transition={{ duration: 0.18 }}
       >
         {String(value).padStart(2, '0')}
       </motion.span>
@@ -85,36 +80,28 @@ const CountdownCell = ({ value, label }: { value: number; label: string }) => {
       {label}
     </Typography>
   </Box>
-  );
-};
+);
 
 /* ─── Registration Countdown Dashboard ─── */
 const RegistrationCountdownDashboard = () => {
   const { config, status } = useRegistrationStatus();
-  const prefersReducedMotion = useReducedMotion();
   const openDate = config.registration.openAt ? new Date(config.registration.openAt) : null;
   const closeDate = config.registration.closeAt ? new Date(config.registration.closeAt) : null;
-
-  const [clientStartedAt] = useState(() => Date.now());
-  const clockOffset = useMemo(
-    () => (config.serverTime ? new Date(config.serverTime).getTime() - clientStartedAt : 0),
-    [config.serverTime, clientStartedAt]
-  );
 
   const isBeforeOpen = status === 'not_open';
   const isOpen = status === 'open';
   const targetDate = isBeforeOpen ? openDate : isOpen ? closeDate : null;
 
-  const [timeDiff, setTimeDiff] = useState<TimeDiff>(() => getTimeDiff(targetDate, clockOffset));
+  const [timeDiff, setTimeDiff] = useState<TimeDiff>(() => getTimeDiff(targetDate));
 
   useEffect(() => {
     if (!targetDate) return;
     const intervalId = setInterval(() => {
-      setTimeDiff(getTimeDiff(targetDate, clockOffset));
+      setTimeDiff(getTimeDiff(targetDate));
     }, 1000);
 
     return () => clearInterval(intervalId);
-  }, [targetDate, clockOffset]);
+  }, [targetDate]);
 
   if (status === 'closed') {
     return (
@@ -134,7 +121,7 @@ const RegistrationCountdownDashboard = () => {
           alignItems: 'center',
         }}
       >
-        ⛔ <strong>Cổng đăng ký đã chính thức đóng vào {competitionData.meta.registrationCloseDate}.</strong> Theo dõi các vòng thi tiếp theo trên trang chủ.
+        ⛔ <strong>Cổng đăng ký đã chính thức đóng vào 15/08/2026.</strong> Theo dõi các vòng thi tiếp theo trên trang chủ.
       </Alert>
     );
   }
@@ -146,7 +133,7 @@ const RegistrationCountdownDashboard = () => {
         sx={{
           borderRadius: 4,
           bgcolor: 'rgba(254, 243, 199, 0.95)',
-          border: '1.5px solid rgba(231, 195, 77, 0.4)',
+          border: '1.5px solid rgba(245, 158, 11, 0.4)',
           fontWeight: 650,
           fontSize: '0.925rem',
           alignItems: 'center',
@@ -161,9 +148,9 @@ const RegistrationCountdownDashboard = () => {
     ? 'ĐẾM NGƯỢC MỞ CỔNG ĐĂNG KÝ'
     : 'THỜI GIAN CÒN LẠI NỘP HỒ SƠ';
   const headingText = isBeforeOpen
-    ? `Cổng đăng ký chính thức mở từ ${competitionData.meta.registrationOpenDate}`
-    : `Hạn cuối nộp hồ sơ: ${competitionData.meta.registrationCloseDate} · 23:59`;
-  const dotColor = isBeforeOpen ? piccColors.blue[600] : piccColors.emerald[500];
+    ? 'Cổng đăng ký chính thức mở từ 01/08/2026'
+    : 'Hạn cuối nộp hồ sơ: 15/08/2026 · 23:59';
+  const dotColor = isBeforeOpen ? piccColors.ptitNavy : piccColors.emerald[500];
 
   return (
     <Paper
@@ -171,9 +158,9 @@ const RegistrationCountdownDashboard = () => {
       sx={{
         p: { xs: 2.5, sm: 3.25 },
         borderRadius: '24px',
-        background: `linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, ${piccColors.blue[50]}cc 100%)`,
+        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 249, 241, 0.95) 100%)',
         backdropFilter: 'blur(16px)',
-        border: '1.5px solid rgba(56, 130, 241, 0.28)',
+        border: '1.5px solid rgba(225, 20, 20, 0.14)',
         boxShadow: '0 12px 36px rgba(15, 42, 82, 0.08)',
         textAlign: 'center',
       }}
@@ -190,7 +177,7 @@ const RegistrationCountdownDashboard = () => {
                 bgcolor: dotColor,
                 ml: '6px !important',
                 boxShadow: `0 0 8px ${dotColor}`,
-                animation: isOpen && !prefersReducedMotion ? 'pulseDot 2s ease-in-out infinite' : 'none',
+                animation: isOpen ? 'pulseDot 2s ease-in-out infinite' : 'none',
                 '@keyframes pulseDot': {
                   '0%, 100%': { opacity: 1, transform: 'scale(1)' },
                   '50%': { opacity: 0.4, transform: 'scale(0.85)' },
@@ -201,12 +188,12 @@ const RegistrationCountdownDashboard = () => {
           label={badgeLabel}
           size="small"
           sx={{
-            bgcolor: 'rgba(56, 130, 241, 0.1)',
-            color: piccColors.blue[800],
+            bgcolor: 'rgba(255, 241, 241, 0.9)',
+            color: piccColors.ptitRed,
             fontWeight: 800,
             fontSize: '0.675rem',
             letterSpacing: '0.08em',
-            border: '1px solid rgba(56, 130, 241, 0.2)',
+            border: '1px solid rgba(225, 20, 20, 0.2)',
           }}
         />
       </Box>
@@ -215,7 +202,7 @@ const RegistrationCountdownDashboard = () => {
         sx={{
           fontSize: { xs: '1.05rem', sm: '1.25rem' },
           fontWeight: 800,
-          color: piccColors.ptitNavy,
+          color: '#163A67',
           mb: 2,
           display: 'flex',
           alignItems: 'center',
@@ -223,29 +210,27 @@ const RegistrationCountdownDashboard = () => {
           gap: 1,
         }}
       >
-        <AccessTimeRoundedIcon sx={{ fontSize: 20, color: piccColors.blue[600] }} />
+        <AccessTimeRoundedIcon sx={{ fontSize: 20, color: piccColors.ptitRed }} />
         {headingText}
       </Typography>
 
       {/* Real-time Countdown Digits */}
       <Box
         sx={{
-          display: 'grid',
-          gridTemplateColumns: { xs: 'repeat(4, minmax(0, 1fr))', sm: 'repeat(7, minmax(0, max-content))' },
+          display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: { xs: 0.5, sm: 1.25 },
-          '& > :nth-of-type(even)': { display: { xs: 'none', sm: 'block' } },
+          gap: { xs: 0.75, sm: 1.25 },
         }}
         role="timer"
         aria-label={`Đếm ngược: ${timeDiff.days} ngày ${timeDiff.hours} giờ ${timeDiff.minutes} phút ${timeDiff.seconds} giây`}
       >
         <CountdownCell value={timeDiff.days} label="Ngày" />
-        <Typography sx={{ color: 'rgba(56, 130, 241, 0.4)', fontWeight: 800, fontSize: '1.25rem' }}>:</Typography>
+        <Typography sx={{ color: 'rgba(15, 42, 82, 0.3)', fontWeight: 800, fontSize: '1.25rem' }}>:</Typography>
         <CountdownCell value={timeDiff.hours} label="Giờ" />
-        <Typography sx={{ color: 'rgba(56, 130, 241, 0.4)', fontWeight: 800, fontSize: '1.25rem' }}>:</Typography>
+        <Typography sx={{ color: 'rgba(15, 42, 82, 0.3)', fontWeight: 800, fontSize: '1.25rem' }}>:</Typography>
         <CountdownCell value={timeDiff.minutes} label="Phút" />
-        <Typography sx={{ color: 'rgba(56, 130, 241, 0.4)', fontWeight: 800, fontSize: '1.25rem' }}>:</Typography>
+        <Typography sx={{ color: 'rgba(15, 42, 82, 0.3)', fontWeight: 800, fontSize: '1.25rem' }}>:</Typography>
         <CountdownCell value={timeDiff.seconds} label="Giây" />
       </Box>
 
@@ -264,7 +249,7 @@ export const RegistrationPage = () => {
       component="main"
       id="registration-page"
       sx={{
-        py: { xs: 8, sm: 9, md: 12 },
+        py: { xs: 10, md: 14 },
         background: getSkyBackground('hero'),
         position: 'relative',
         minHeight: '100vh',
@@ -281,10 +266,10 @@ export const RegistrationPage = () => {
             href={appHash('hero')}
             startIcon={<ArrowBackRoundedIcon />}
             sx={{
-              color: piccColors.blue[800],
+              color: piccColors.ptitNavy,
               fontWeight: 700,
               fontSize: '0.875rem',
-              '&:hover': { bgcolor: 'rgba(56, 130, 241, 0.08)' },
+              '&:hover': { bgcolor: 'rgba(225, 20, 20, 0.08)' },
             }}
           >
             Quay lại trang chủ
@@ -294,18 +279,18 @@ export const RegistrationPage = () => {
         {/* ── Header Launchpad Section ── */}
         <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
           <Chip
-            icon={<AppRegistrationRoundedIcon sx={{ fontSize: 16, color: `${piccColors.blue[700]} !important` }} />}
+            icon={<AppRegistrationRoundedIcon sx={{ fontSize: 16, color: `${piccColors.ptitRed} !important` }} />}
             label="Đăng ký PICC 2026"
             sx={{
-              bgcolor: piccColors.blue[50],
-              color: piccColors.blue[700],
+              bgcolor: 'rgba(255, 241, 241, 0.9)',
+              color: piccColors.ptitRed,
               fontWeight: 800,
               fontSize: '0.825rem',
               mb: 2,
               px: 1.5,
               py: 0.5,
-              border: '1px solid rgba(56, 130, 241, 0.25)',
-              boxShadow: '0 4px 12px rgba(56, 130, 241, 0.08)',
+              border: '1px solid rgba(225, 20, 20, 0.18)',
+              boxShadow: '0 4px 12px rgba(225, 20, 20, 0.08)',
             }}
           />
 
@@ -350,22 +335,22 @@ export const RegistrationPage = () => {
             }}
           >
             <Chip
-              icon={<SchoolRoundedIcon sx={{ fontSize: '15px !important', color: `${piccColors.blue[600]} !important` }} />}
+              icon={<SchoolRoundedIcon sx={{ fontSize: '15px !important', color: `${piccColors.ptitRed} !important` }} />}
               label="Sinh viên PTIT"
               size="small"
-              sx={{ bgcolor: '#FFFFFF', fontWeight: 700, fontSize: '0.775rem', border: '1px solid #DFE6EF' }}
+              sx={{ bgcolor: '#FFFFFF', fontWeight: 700, fontSize: '0.775rem', border: '1px solid #E2E8F0' }}
             />
             <Chip
-              icon={<GroupsRoundedIcon sx={{ fontSize: '15px !important', color: `${piccColors.pink[500]} !important` }} />}
+              icon={<GroupsRoundedIcon sx={{ fontSize: '15px !important', color: `${piccColors.blue[600]} !important` }} />}
               label="Đội 03–04 thành viên"
               size="small"
-              sx={{ bgcolor: '#FFFFFF', fontWeight: 700, fontSize: '0.775rem', border: '1px solid #DFE6EF' }}
+              sx={{ bgcolor: '#FFFFFF', fontWeight: 700, fontSize: '0.775rem', border: '1px solid #E2E8F0' }}
             />
             <Chip
               icon={<CalendarMonthRoundedIcon sx={{ fontSize: '15px !important', color: `${piccColors.emerald[600]} !important` }} />}
               label="Đăng ký 01/08 – 15/08/2026"
               size="small"
-              sx={{ bgcolor: '#FFFFFF', fontWeight: 700, fontSize: '0.775rem', border: '1px solid #DFE6EF' }}
+              sx={{ bgcolor: '#FFFFFF', fontWeight: 700, fontSize: '0.775rem', border: '1px solid #E2E8F0' }}
             />
           </Box>
 
@@ -376,7 +361,7 @@ export const RegistrationPage = () => {
               sx={{
                 fontSize: '0.85rem',
                 fontWeight: 700,
-                color: piccColors.blue[700],
+                color: piccColors.ptitRed,
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: 0.5,

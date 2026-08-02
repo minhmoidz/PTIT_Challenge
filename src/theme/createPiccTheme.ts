@@ -118,11 +118,24 @@ export const createPiccTheme = () =>
     components: {
       MuiCssBaseline: {
         styleOverrides: {
+          ':root': {
+            '--picc-color-primary': piccColors.ptitRed,
+            '--picc-color-primary-dark': piccColors.ptitDarkRed,
+            '--picc-color-navy': piccColors.ptitNavy,
+            '--picc-color-accent-warm': piccColors.amber[300],
+            '--picc-color-page': piccColors.semantic.page,
+            '--picc-color-surface': piccColors.surface,
+            '--picc-color-surface-subtle': piccColors.semantic.surfaceSubtle,
+            '--picc-color-surface-warm': piccColors.semantic.surfaceWarm,
+            '--picc-color-border': piccColors.semantic.border,
+            '--picc-color-shadow': `rgba(${rgbChannels.navy},0.12)`,
+            '--site-header-height': '64px',
+            '--site-anchor-offset': 'calc(var(--site-header-height) + 12px)',
+          },
           html: {
             scrollBehavior: 'smooth',
-            '--site-header-height': '64px',
             '--mobile-sticky-cta-clearance': '88px',
-            scrollPaddingTop: 'calc(var(--site-header-height) + 12px)',
+            scrollPaddingTop: 'var(--site-anchor-offset)',
             scrollbarColor: `${piccColors.sky[300]} ${piccColors.sky[100]}`,
             scrollbarWidth: 'thin',
             '&::-webkit-scrollbar': {
@@ -143,6 +156,7 @@ export const createPiccTheme = () =>
             },
             '@media (min-width: 900px)': {
               '--site-header-height': '98px',
+              '--site-anchor-offset': 'calc(var(--site-header-height) + 12px)',
             },
           },
           body: {
@@ -152,7 +166,7 @@ export const createPiccTheme = () =>
             MozOsxFontSmoothing: 'grayscale',
           },
           'section[id], div[id]': {
-            scrollMarginTop: 'calc(var(--site-header-height) + 12px)',
+            scrollMarginTop: 'var(--site-anchor-offset)',
           },
           img: {
             maxWidth: '100%',
@@ -206,22 +220,22 @@ export const createPiccTheme = () =>
             },
           },
           containedSecondary: {
-            background: `linear-gradient(135deg, ${piccColors.blue[600]}, ${piccColors.blue[700]})`,
+            background: `linear-gradient(135deg, ${piccColors.ptitNavy}, ${piccColors.blue[700]})`,
             color: '#FFFFFF',
-            boxShadow: `0 4px 14px rgba(${rgbChannels.blueAccent},0.26)`,
+            boxShadow: `0 4px 14px rgba(${rgbChannels.navy},0.24)`,
             '&:hover': {
-              background: `linear-gradient(135deg, ${piccColors.blue[700]}, ${piccColors.blue[800]})`,
-              boxShadow: `0 6px 20px rgba(${rgbChannels.blueAccent},0.34)`,
+              background: `linear-gradient(135deg, ${piccColors.blue[800]}, ${piccColors.blue[900]})`,
+              boxShadow: `0 6px 20px rgba(${rgbChannels.navy},0.32)`,
             },
           },
           outlined: {
             borderColor: piccColors.slate[300],
-            color: piccColors.slate[700],
+            color: piccColors.ptitNavy,
             borderWidth: '1.5px',
             '&:hover': {
-              borderColor: piccColors.blue[500],
-              color: piccColors.blue[700],
-              background: piccColors.blue[50],
+              borderColor: piccColors.ptitRed,
+              color: piccColors.ptitRed,
+              background: piccColors.red[50],
               borderWidth: '1.5px',
             },
           },
@@ -267,7 +281,7 @@ export const createPiccTheme = () =>
             overflow: 'hidden',
             '&.Mui-expanded': {
               margin: '0 0 12px',
-              borderColor: piccColors.blue[300],
+              borderColor: piccColors.red[200],
             },
           },
         },
@@ -278,7 +292,7 @@ export const createPiccTheme = () =>
             padding: '8px 20px',
             fontWeight: 600,
             '&.Mui-expanded': {
-              backgroundColor: piccColors.blue[50],
+              backgroundColor: piccColors.red[50],
             },
           },
         },
@@ -288,6 +302,7 @@ export const createPiccTheme = () =>
           root: {
             borderRadius: 8,
             fontWeight: 600,
+            color: piccColors.ptitNavy,
           },
         },
       },

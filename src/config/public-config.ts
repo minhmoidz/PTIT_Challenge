@@ -39,7 +39,6 @@ export const computeRegistrationStatus = (config?: PublicPiccConfig | null): Reg
   if (!config || !config.registration) return 'not_configured';
   const { registration } = config;
 
-  if (registration.explicitlyDisabled) return 'manually_disabled';
   if (!registration.openAt || !registration.closeAt) return 'not_configured';
 
   const now = new Date(config.serverTime || Date.now());
@@ -47,6 +46,7 @@ export const computeRegistrationStatus = (config?: PublicPiccConfig | null): Reg
   const closeAt = new Date(registration.closeAt);
 
   if (isNaN(openAt.getTime()) || isNaN(closeAt.getTime()) || openAt >= closeAt) return 'not_configured';
+  if (registration.explicitlyDisabled) return 'manually_disabled';
   if (!registration.allowSubmissions) return 'manually_disabled';
   if (now < openAt) return 'not_open';
   if (now >= openAt && now < closeAt) return 'open';

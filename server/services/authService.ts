@@ -30,6 +30,7 @@ const scryptAsync = (password: string, salt: crypto.BinaryLike, keylen: number):
 
 const ROLE_PERMISSIONS: Record<UserRoleCode, string[]> = {
   SUPER_ADMIN: [
+    'dashboard.read',
     'registration.read',
     'registration.review',
     'registration.update',
@@ -37,6 +38,8 @@ const ROLE_PERMISSIONS: Record<UserRoleCode, string[]> = {
     'publicTeam.read',
     'publicTeam.edit',
     'publicTeam.publish',
+    'competition.read',
+    'competition.update',
     'content.read',
     'content.edit',
     'content.publish',
@@ -44,16 +47,19 @@ const ROLE_PERMISSIONS: Record<UserRoleCode, string[]> = {
     'audit.read',
   ],
   ORGANIZER: [
+    'dashboard.read',
     'registration.read',
     'registration.review',
     'registration.export',
     'publicTeam.read',
     'publicTeam.edit',
+    'competition.read',
+    'competition.update',
     'content.read',
   ],
-  REVIEWER: ['registration.read', 'registration.review', 'publicTeam.read'],
-  CONTENT_EDITOR: ['content.read', 'content.edit', 'publicTeam.read'],
-  VIEWER: ['registration.read', 'publicTeam.read', 'content.read'],
+  REVIEWER: ['dashboard.read', 'registration.read', 'registration.review', 'publicTeam.read'],
+  CONTENT_EDITOR: ['dashboard.read', 'content.read', 'content.edit', 'publicTeam.read'],
+  VIEWER: ['dashboard.read', 'registration.read', 'publicTeam.read', 'content.read'],
 };
 
 interface TokenPayload {
@@ -64,10 +70,30 @@ interface TokenPayload {
   exp: number;
 }
 
+type AdminRecord = {
+  id: string;
+  email: string;
+  displayName: string;
+  status: string;
+  userRoles: Array<{ role: { code: UserRoleCode } }>;
+};
+
 const b64url = (buf: Buffer | string) =>
   Buffer.from(buf).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 
 const fromB64url = (value: string) => Buffer.from(value.replace(/-/g, '+').replace(/_/g, '/'), 'base64');
+
+const toAdminUser = (record: AdminRecord): AdminUser => {
+  const role = (record.userRoles[0]?.role.code ?? 'VIEWER') as UserRoleCode;
+
+  return {
+    id: record.id,
+    email: record.email,
+    displayName: record.displayName,
+    role,
+    permissions: ROLE_PERMISSIONS[role] ?? [],
+  };
+};
 
 export class AuthService {
   /* ── Password hashing ────────────────────────────────────────── */
@@ -86,6 +112,35 @@ export class AuthService {
     const expected = Buffer.from(hashHex, 'hex');
     const actual = await scryptAsync(password, Buffer.from(saltHex, 'hex'), expected.length);
     return expected.length === actual.length && crypto.timingSafeEqual(expected, actual);
+  }
+
+  private static parseToken(token: string | undefined | null): TokenPayload | null {
+    if (!token) return null;
+
+    const [body, signature] = token.split('.');
+    if (!body || !signature) return null;
+
+    const expected = crypto.createHmac('sha256', serverEnv.JWT_SECRET).update(body).digest();
+    const provided = fromB64url(signature);
+    if (provided.length !== expected.length || !crypto.timingSafeEqual(provided, expected)) return null;
+
+    try {
+      const payload = JSON.parse(fromB64url(body).toString('utf8')) as TokenPayload;
+      if (typeof payload.exp !== 'number' || Date.now() > payload.exp) return null;
+      return payload;
+    } catch {
+      return null;
+    }
+  }
+
+  private static async loadAdminUserById(id: string): Promise<AdminUser | null> {
+    const record = await prisma.user.findUnique({
+      where: { id },
+      include: { userRoles: { include: { role: true } } },
+    });
+
+    if (!record || record.status !== 'ACTIVE') return null;
+    return toAdminUser(record);
   }
 
   /* ── Login ───────────────────────────────────────────────────── */
@@ -110,14 +165,7 @@ export class AuthService {
       return null;
     }
 
-    const role = (record.userRoles[0]?.role.code ?? 'VIEWER') as UserRoleCode;
-    const user: AdminUser = {
-      id: record.id,
-      email: record.email,
-      displayName: record.displayName,
-      role,
-      permissions: ROLE_PERMISSIONS[role],
-    };
+    const user = toAdminUser(record);
 
     await prisma.user.update({ where: { id: record.id }, data: { lastLoginAt: new Date() } });
     await dbStore.addAuditLog('ADMIN_LOGIN', 'User', record.id, { actorUserId: record.id });
@@ -144,30 +192,18 @@ export class AuthService {
     return `${body}.${b64url(signature)}`;
   }
 
-  public static verifyToken(token: string | undefined | null): AdminUser | null {
-    if (!token) return null;
+  public static async verifyToken(token: string | undefined | null): Promise<AdminUser | null> {
+    const payload = AuthService.parseToken(token);
+    if (!payload) return null;
+    return AuthService.loadAdminUserById(payload.sub);
+  }
 
-    const [body, signature] = token.split('.');
-    if (!body || !signature) return null;
+  public static hasPermission(user: AdminUser, permission: string): boolean {
+    return user.permissions.includes(permission);
+  }
 
-    const expected = crypto.createHmac('sha256', serverEnv.JWT_SECRET).update(body).digest();
-    const provided = fromB64url(signature);
-    if (provided.length !== expected.length || !crypto.timingSafeEqual(provided, expected)) return null;
-
-    try {
-      const payload = JSON.parse(fromB64url(body).toString('utf8')) as TokenPayload;
-      if (typeof payload.exp !== 'number' || Date.now() > payload.exp) return null;
-
-      return {
-        id: payload.sub,
-        email: payload.email,
-        displayName: payload.name,
-        role: payload.role,
-        permissions: ROLE_PERMISSIONS[payload.role] ?? [],
-      };
-    } catch {
-      return null;
-    }
+  public static hasAnyPermission(user: AdminUser, permissions: string[]): boolean {
+    return permissions.some((permission) => AuthService.hasPermission(user, permission));
   }
 
   /* ── User management ─────────────────────────────────────────── */

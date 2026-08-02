@@ -4,14 +4,11 @@ RUN npm install -g pnpm@11
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 COPY . .
-ARG VITE_BASE_PATH=/
-ARG VITE_PUBLIC_API_BASE_URL
-ARG VITE_PUBLIC_SITE_URL
+# The mount path is NOT baked in here. Production builds emit relative asset
+# URLs and read the path from the <base href> that docker-entrypoint.sh injects
+# at container start, so this image works at any prefix without a rebuild.
 ARG VITE_APP_ENV=production
-ENV VITE_BASE_PATH=${VITE_BASE_PATH} \
-    VITE_PUBLIC_API_BASE_URL=${VITE_PUBLIC_API_BASE_URL} \
-    VITE_PUBLIC_SITE_URL=${VITE_PUBLIC_SITE_URL} \
-    VITE_APP_ENV=${VITE_APP_ENV}
+ENV VITE_APP_ENV=${VITE_APP_ENV}
 RUN pnpm build
 
 FROM nginx:stable-alpine AS runner

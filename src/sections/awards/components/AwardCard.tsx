@@ -76,7 +76,7 @@ const variantStyles = {
 };
 
 const getPerkIcon = (type?: string, color?: string) => {
-  const iconProps = { sx: { fontSize: 18, color: color ?? '#3882F1', flexShrink: 0, mt: 0.1 } };
+  const iconProps = { sx: { fontSize: 18, color: color ?? '#E11414', flexShrink: 0, mt: 0.1 } };
   switch (type) {
     case 'school':
       return <SchoolRoundedIcon {...iconProps} />;

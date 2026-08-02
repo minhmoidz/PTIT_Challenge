@@ -2,12 +2,12 @@
  * SkyBackground — Sky World Design System Config
  *
  * Variants:
- *   hero        — rich multi-layer sky for Hero section
- *   clear       — bright open sky for Introduction / Rules
- *   journey     — atmospheric journey sky for Timeline / Roadmap
- *   celebration — golden celebration sky for Awards
- *   calm        — near-white quiet sky for FAQ
- *   sunset      — deep-sky / dusk tone for Footer
+ *   hero        — bright brand intro sky with restrained PTIT warmth
+ *   clear       — soft light surface for neutral sections
+ *   journey     — slightly warmer guided transition for timeline/rules
+ *   celebration — warm yellow celebration without neon saturation
+ *   calm        — quiet near-white sky for FAQ and reading-heavy sections
+ *   sunset      — deep PTIT navy footer atmosphere
  */
 
 export type SkyVariant =
@@ -50,31 +50,31 @@ export interface SkyVariantConfig {
 export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
   hero: {
     background:
-      'linear-gradient(180deg, #DCEFFD 0%, #F1F8FE 52%, #FBFDFF 100%)',
+      'linear-gradient(180deg, #F7F9FC 0%, #FBFCFE 48%, #FFFFFF 100%)',
     glows: [
       {
         top: '-10%',
         left: '-6%',
-        w: '48%',
-        h: '55%',
-        color: 'rgba(147,206,250,0.42)',
+        w: '46%',
+        h: '52%',
+        color: 'rgba(210,221,237,0.42)',
         blur: '70px',
       },
       {
-        top: '0%',
-        right: '-4%',
-        w: '42%',
-        h: '48%',
-        color: 'rgba(246,191,219,0.30)',
-        blur: '80px',
+        top: '-4%',
+        right: '-2%',
+        w: '34%',
+        h: '40%',
+        color: 'rgba(255,31,31,0.10)',
+        blur: '78px',
       },
       {
-        bottom: '-8%',
+        bottom: '-10%',
         right: '18%',
-        w: '38%',
-        h: '38%',
-        color: 'rgba(253,237,167,0.26)',
-        blur: '60px',
+        w: '40%',
+        h: '34%',
+        color: 'rgba(239,203,99,0.18)',
+        blur: '64px',
       },
     ],
     clouds: [
@@ -85,28 +85,28 @@ export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
       { x: 60, y: 88, depth: 2, baseW: 240, travel: 30, dur: 44, delay: 4, opacity: 0.13 },
       { x: 88, y: 80, depth: 2, baseW: 200, travel: -28, dur: 40, delay: 18, opacity: 0.11, flipX: true },
     ],
-    gridOpacity: 0.45,
+    gridOpacity: 0.34,
   },
 
   clear: {
     background:
-      'linear-gradient(180deg, #F1F8FE 0%, #FBFDFF 70%)',
+      'linear-gradient(180deg, #FAFBFD 0%, #FFFFFF 72%)',
     glows: [
       {
         top: '-5%',
         left: '-8%',
-        w: '36%',
-        h: '42%',
-        color: 'rgba(147,206,250,0.24)',
+        w: '34%',
+        h: '40%',
+        color: 'rgba(210,221,237,0.24)',
         blur: '60px',
       },
       {
-        top: '-5%',
+        bottom: '8%',
         right: '-8%',
-        w: '36%',
-        h: '42%',
-        color: 'rgba(154,195,249,0.20)',
-        blur: '60px',
+        w: '34%',
+        h: '36%',
+        color: 'rgba(239,203,99,0.10)',
+        blur: '62px',
       },
     ],
     clouds: [
@@ -115,36 +115,36 @@ export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
       { x: -4, y: 65, depth: 1, baseW: 260, travel: 38, dur: 60, delay: 10, opacity: 0.12, desktopOnly: true },
       { x: 88, y: 10, depth: 1, baseW: 240, travel: -36, dur: 65, delay: 30, opacity: 0.11, desktopOnly: true, flipX: true },
     ],
-    gridOpacity: 0.25,
+    gridOpacity: 0.18,
   },
 
   journey: {
     background:
-      'linear-gradient(180deg, #EAF5FE 0%, #F6FBFF 42%, #EFF7FE 100%)',
+      'linear-gradient(180deg, #F8FAFD 0%, #FBFCFE 44%, #F8F5F0 100%)',
     glows: [
       {
         top: '10%',
         left: '0%',
         w: '35%',
-        h: '45%',
-        color: 'rgba(147,206,250,0.32)',
+        h: '42%',
+        color: 'rgba(210,221,237,0.28)',
         blur: '65px',
       },
       {
-        top: '45%',
+        top: '46%',
         right: '0%',
-        w: '35%',
-        h: '45%',
-        color: 'rgba(154,195,249,0.26)',
+        w: '34%',
+        h: '40%',
+        color: 'rgba(255,31,31,0.08)',
         blur: '70px',
       },
       {
-        bottom: '5%',
-        left: '25%',
-        w: '50%',
-        h: '30%',
-        color: 'rgba(246,191,219,0.18)',
-        blur: '60px',
+        bottom: '3%',
+        left: '24%',
+        w: '48%',
+        h: '26%',
+        color: 'rgba(239,203,99,0.16)',
+        blur: '58px',
       },
     ],
     clouds: [
@@ -153,36 +153,36 @@ export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
       { x: 20, y: 70, depth: 1, baseW: 280, travel: 40, dur: 62, delay: 8, opacity: 0.14, desktopOnly: true },
       { x: 80, y: 20, depth: 1, baseW: 240, travel: -35, dur: 68, delay: 25, opacity: 0.12, desktopOnly: true, flipX: true },
     ],
-    gridOpacity: 0.35,
+    gridOpacity: 0.24,
   },
 
   celebration: {
     background:
-      'linear-gradient(180deg, #FFFDF0 0%, #FEF7D8 45%, #FDEDA7 100%)',
+      'linear-gradient(180deg, #FFFBEF 0%, #FFF5D8 46%, #FFF0C9 100%)',
     glows: [
       {
         top: '-5%',
         left: '0%',
         w: '40%',
         h: '50%',
-        color: 'rgba(231,195,77,0.30)',
-        blur: '70px',
+        color: 'rgba(231,195,77,0.24)',
+        blur: '72px',
       },
       {
-        top: '35%',
+        top: '36%',
         right: '0%',
-        w: '40%',
-        h: '45%',
-        color: 'rgba(253,237,167,0.55)',
-        blur: '75px',
+        w: '38%',
+        h: '42%',
+        color: 'rgba(239,203,99,0.34)',
+        blur: '74px',
       },
       {
         bottom: '0%',
-        left: '20%',
-        w: '55%',
-        h: '35%',
-        color: 'rgba(246,191,219,0.20)',
-        blur: '65px',
+        left: '22%',
+        w: '50%',
+        h: '28%',
+        color: 'rgba(255,31,31,0.08)',
+        blur: '62px',
       },
     ],
     clouds: [
@@ -192,19 +192,19 @@ export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
       { x: 85, y: 15, depth: 1, baseW: 260, travel: -40, dur: 64, delay: 20, opacity: 0.14, desktopOnly: true, flipX: true },
       { x: 30, y: 90, depth: 2, baseW: 220, travel: 30, dur: 45, delay: 3, opacity: 0.12 },
     ],
-    gridOpacity: 0.4,
+    gridOpacity: 0.3,
   },
 
   calm: {
     background:
-      'linear-gradient(180deg, #F6FBFF 0%, #FBFDFF 80%)',
+      'linear-gradient(180deg, #FBFCFE 0%, #FFFFFF 82%)',
     glows: [
       {
         top: '-3%',
         left: '-5%',
         w: '30%',
         h: '35%',
-        color: 'rgba(147,206,250,0.20)',
+        color: 'rgba(210,221,237,0.18)',
         blur: '55px',
       },
     ],
@@ -214,28 +214,28 @@ export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
       { x: 8, y: 70, depth: 1, baseW: 240, travel: 30, dur: 65, delay: 12, opacity: 0.10, desktopOnly: true },
       { x: 92, y: 15, depth: 1, baseW: 220, travel: -28, dur: 70, delay: 35, opacity: 0.09, desktopOnly: true, flipX: true },
     ],
-    gridOpacity: 0.15,
+    gridOpacity: 0.1,
   },
 
   sunset: {
     background:
-      'linear-gradient(180deg, #16386E 0%, #123056 55%, #0C2145 100%)',
+      'linear-gradient(180deg, #17355E 0%, #102949 56%, #0C2145 100%)',
     glows: [
       {
         top: '-15%',
         left: '0%',
-        w: '50%',
-        h: '60%',
-        color: 'rgba(231,195,77,0.22)',
+        w: '48%',
+        h: '58%',
+        color: 'rgba(231,195,77,0.18)',
         blur: '80px',
       },
       {
         bottom: '-10%',
         right: '0%',
-        w: '45%',
-        h: '50%',
-        color: 'rgba(246,191,219,0.18)',
-        blur: '85px',
+        w: '42%',
+        h: '46%',
+        color: 'rgba(255,31,31,0.12)',
+        blur: '84px',
       },
     ],
     clouds: [
@@ -244,7 +244,7 @@ export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
       { x: 25, y: 75, depth: 1, baseW: 320, travel: 50, dur: 55, delay: 5, opacity: 0.20, desktopOnly: true },
       { x: 75, y: 22, depth: 1, baseW: 280, travel: -45, dur: 60, delay: 20, opacity: 0.18, desktopOnly: true, flipX: true },
     ],
-    gridOpacity: 0.5,
+    gridOpacity: 0.34,
   },
 };
 

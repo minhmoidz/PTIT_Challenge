@@ -5,6 +5,7 @@ interface AdminUser {
   email: string;
   displayName: string;
   role: string;
+  permissions?: string[];
 }
 
 export const AdminContext = createContext<{ user: AdminUser | null }>({ user: null });

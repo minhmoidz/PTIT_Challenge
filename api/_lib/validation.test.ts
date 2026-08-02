@@ -36,4 +36,16 @@ describe('RegistrationSchema', () => {
   it('rejects a five-member team', () => {
     expect(RegistrationSchema.safeParse(payload(5)).success).toBe(false);
   });
+
+  it('rejects a payload without privacy acknowledgement', () => {
+    expect(
+      RegistrationSchema.safeParse({
+        ...payload(3),
+        commitments: {
+          ...payload(3).commitments,
+          privacyAcknowledged: false,
+        },
+      }).success,
+    ).toBe(false);
+  });
 });

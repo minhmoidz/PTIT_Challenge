@@ -13,7 +13,7 @@ export const CouncilMemberCard = ({ member }: CouncilMemberCardProps) => {
     <Tilt3DCard
       maxTilt={8}
       scale={1.02}
-      glareColor="rgba(56, 130, 241, 0.12)"
+      glareColor="rgba(225, 20, 20, 0.10)"
       sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
     >
       <Card
@@ -30,7 +30,7 @@ export const CouncilMemberCard = ({ member }: CouncilMemberCardProps) => {
           flexDirection: 'column',
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           '&:hover': {
-            borderColor: piccColors.blue[400],
+            borderColor: piccColors.ptitRed,
             bgcolor: '#FFFFFF',
             boxShadow: '0 14px 36px rgba(15, 42, 82, 0.1)',
             transform: 'translateY(-4px)',
@@ -42,7 +42,7 @@ export const CouncilMemberCard = ({ member }: CouncilMemberCardProps) => {
           sx={{
             height: 3,
             width: '100%',
-            background: 'linear-gradient(90deg, #3882F1 0%, #6366F1 100%)',
+            background: 'linear-gradient(90deg, #E11414 0%, #0F2A52 100%)',
           }}
         />
 
@@ -69,12 +69,12 @@ export const CouncilMemberCard = ({ member }: CouncilMemberCardProps) => {
               label={member.competitionRole}
               size="small"
               sx={{
-                bgcolor: 'rgba(56, 130, 241, 0.1)',
-                color: piccColors.blue[800],
+                bgcolor: 'rgba(225, 20, 20, 0.08)',
+                color: piccColors.ptitDarkRed,
                 fontWeight: 750,
                 fontSize: '0.725rem',
                 letterSpacing: '0.02em',
-                border: '1px solid rgba(56, 130, 241, 0.2)',
+                border: '1px solid rgba(225, 20, 20, 0.2)',
                 height: 24,
               }}
             />
@@ -98,7 +98,7 @@ export const CouncilMemberCard = ({ member }: CouncilMemberCardProps) => {
             sx={{
               fontSize: '0.885rem',
               fontWeight: 700,
-              color: piccColors.blue[700],
+              color: piccColors.ptitDarkRed,
               lineHeight: 1.35,
               mb: 0.5,
             }}

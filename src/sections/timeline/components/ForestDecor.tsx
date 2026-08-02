@@ -21,7 +21,7 @@ export const ForestDecor = () => {
           width: { xs: 340, md: 700 },
           height: { xs: 340, md: 700 },
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(56, 130, 241, 0.07) 0%, rgba(16, 185, 129, 0.04) 45%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(225, 20, 20, 0.06) 0%, rgba(15, 42, 82, 0.05) 45%, transparent 70%)',
         }}
       />
 

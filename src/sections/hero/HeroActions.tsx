@@ -2,6 +2,7 @@ import { Box, Button } from '@mui/material';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import MenuBookRoundedIcon from '@mui/icons-material/MenuBookRounded';
 import type { RegistrationStatus } from '@/types/registration';
+import { appHash, appPath } from '@/config/paths';
 
 interface Props {
   status: RegistrationStatus;
@@ -30,7 +31,7 @@ export const HeroActions = ({ status }: Props) => {
       <Button
         variant="contained"
         size="large"
-        href={primary.href}
+        href={appPath(primary.href)}
         endIcon={<ArrowForwardRoundedIcon />}
         sx={{
           borderRadius: 999,
@@ -54,7 +55,7 @@ export const HeroActions = ({ status }: Props) => {
       <Button
         variant="outlined"
         size="large"
-        href="/#the-le"
+        href={appHash('the-le')}
         startIcon={<MenuBookRoundedIcon />}
         sx={{
           borderRadius: 999,

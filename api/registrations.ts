@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { RegistrationSchema } from './_lib/validation';
+import { RegistrationSchema, mapValidationIssuesToFieldErrors } from './_lib/validation';
 import { appendRegistration, appendMember } from './_lib/sheets';
 import { getIdempotencyResult, setIdempotencyResult } from './_lib/idempotency';
 import { checkRateLimit } from './_lib/rate-limit';
@@ -46,8 +46,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).json(priorResult);
   }
 
-  const registrationEnabled = process.env.PICC_REGISTRATION_ENABLED === 'true';
-  if (!registrationEnabled) {
+  const registrationEnabled = process.env.PICC_REGISTRATION_ENABLED !== 'false';
+  const openAt = process.env.PICC_REGISTRATION_OPEN_AT ? new Date(process.env.PICC_REGISTRATION_OPEN_AT) : null;
+  const closeAt = process.env.PICC_REGISTRATION_CLOSE_AT ? new Date(process.env.PICC_REGISTRATION_CLOSE_AT) : null;
+  const now = new Date();
+  const withinWindow =
+    Boolean(openAt && closeAt) &&
+    !isNaN(openAt!.getTime()) &&
+    !isNaN(closeAt!.getTime()) &&
+    openAt! < closeAt! &&
+    now >= openAt! &&
+    now <= closeAt!;
+
+  if (!registrationEnabled || !withinWindow) {
     return res.status(409).json({
       success: false,
       error: { code: 'REGISTRATION_NOT_OPEN', message: 'Đăng ký hiện không mở.', requestId: `req_${Date.now()}` },
@@ -56,18 +67,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const parsed = RegistrationSchema.safeParse(req.body);
   if (!parsed.success) {
-    const fieldErrors: Record<string, string> = {};
-    for (const issue of parsed.error.issues) {
-      const path = issue.path.join('.');
-      fieldErrors[path] = issue.message;
-    }
     return res.status(400).json({
       success: false,
       error: {
         code: 'VALIDATION_ERROR',
         message: 'Dữ liệu chưa hợp lệ.',
         requestId: `req_${Date.now()}`,
-        fieldErrors,
+        fieldErrors: mapValidationIssuesToFieldErrors(parsed.error.issues),
       },
     });
   }

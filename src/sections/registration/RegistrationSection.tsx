@@ -16,7 +16,7 @@ export const RegistrationSection = () => {
       id="dang-ky"
       sx={{
         py: { xs: 10, md: 15 },
-        bgcolor: piccColors.sky[50],
+        bgcolor: piccColors.semantic.pageWarm,
         position: 'relative',
         overflow: 'hidden',
       }}
@@ -27,16 +27,16 @@ export const RegistrationSection = () => {
       <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
         <Box sx={{ textAlign: 'center', mb: { xs: 5, md: 8 } }}>
           <Chip
-            icon={<AppRegistrationRoundedIcon sx={{ fontSize: 16, color: `${piccColors.blue[700]} !important` }} />}
+            icon={<AppRegistrationRoundedIcon sx={{ fontSize: 16, color: `${piccColors.ptitRed} !important` }} />}
             label="Cổng Đăng Ký Trực Tuyến"
             sx={{
-              bgcolor: piccColors.blue[50],
-              color: piccColors.blue[700],
+              bgcolor: piccColors.red[50],
+              color: piccColors.ptitRed,
               fontWeight: 700,
               mb: 2,
               px: 1.5,
-              border: '1px solid rgba(56, 130, 241, 0.2)',
-              boxShadow: '0 4px 12px rgba(56, 130, 241, 0.1)',
+              border: '1px solid rgba(225, 20, 20, 0.12)',
+              boxShadow: '0 4px 12px rgba(15, 42, 82, 0.06)',
             }}
           />
           <Typography

@@ -1,50 +1,88 @@
 export const rules = {
+  intro:
+    'Phần thể lệ dưới đây tổng hợp những nguyên tắc, yêu cầu và mốc nội dung quan trọng để đội thi chuẩn bị hồ sơ, xây dựng giải pháp và tham gia PICC 2026 một cách chủ động, đầy đủ và đúng định hướng của Ban Tổ chức.',
   sections: [
     {
       id: 'doi-tuong',
-      title: 'Đối tượng tham gia',
-      content: [
+      number: '01',
+      title: 'Đối tượng và điều kiện tham gia',
+      intro:
+        'PICC 2026 được tổ chức dành cho sinh viên Học viện Công nghệ Bưu chính Viễn thông, hướng tới những đội thi có tinh thần học hỏi, dám tiếp cận vấn đề thực tế và sẵn sàng phát triển giải pháp trong môi trường liên ngành.',
+      bullets: [
         'Sinh viên đang học tập tại Học viện Công nghệ Bưu chính Viễn thông (PTIT).',
-        'Thành lập đội thi liên ngành, khuyến khích kết hợp sinh viên các nhóm ngành khác nhau.',
+        'Khuyến khích thành lập đội thi liên ngành để kết hợp các góc nhìn công nghệ, kinh doanh, marketing và truyền thông.',
+      ],
+    },
+    {
+      id: 'co-cau-doi-thi',
+      number: '02',
+      title: 'Cơ cấu đội thi',
+      intro:
+        'Mỗi đội thi được xây dựng như một đơn vị cộng tác học thuật và thực hành, trong đó cấu trúc thành viên cần bảo đảm đủ năng lực phối hợp để nghiên cứu, phát triển và trình bày giải pháp.',
+      bullets: [
         'Mỗi đội thi có từ 03 đến 04 thành viên.',
         'Trong đội có tối thiểu 02 thành viên thuộc khối kinh tế số, marketing, truyền thông đa phương tiện hoặc thiết kế.',
+        'Ban Tổ chức khuyến khích các đội phân công vai trò rõ ràng để bảo đảm hiệu quả làm việc nhóm trong suốt quá trình thi.',
       ],
     },
     {
-      id: 'hinh-thuc',
-      title: 'Hình thức thi',
-      content: [
-        'Cuộc thi được tổ chức theo hình thức giải Case Study.',
-        'Các đội thi sẽ nhận đề bài từ doanh nghiệp đồng hành và xây dựng giải pháp.',
-        'Bài thi được trình bày dưới dạng slide, video giới thiệu và báo cáo chi tiết.',
+      id: 'cac-vong-thi',
+      number: '03',
+      title: 'Các giai đoạn thi',
+      intro:
+        'PICC 2026 diễn ra theo 04 giai đoạn chính. Yêu cầu chi tiết của từng giai đoạn đã được trình bày tại mục Lộ trình ở phía trên.',
+      rounds: [
+        {
+          title: 'Giai đoạn 1 — Đăng ký / Vòng đơn',
+          period: '01/08 – 15/08/2026',
+        },
+        {
+          title: 'Giai đoạn 2 — Vòng Bán kết',
+          period: '20/08 – 15/09/2026',
+        },
+        {
+          title: 'Giai đoạn 3 — Chạy thử nghiệm',
+          period: '07/09 – 01/10/2026',
+          tentative: true,
+        },
+        {
+          title: 'Giai đoạn 4 — Vòng Chung kết',
+          period: '02/10/2026',
+        },
       ],
     },
     {
-      id: 'vong-thi',
-      title: 'Các giai đoạn',
-      content: [
-        'Giai đoạn 1 — Đăng ký / Vòng đơn: Các đội giải một đề bài chung do Ban Tổ chức công bố.',
-        'Giai đoạn 2 — Vòng Bán kết: Top 18 đội làm việc cùng mentor. 18 đội được chia thành 06 tiểu ban. Mỗi tiểu ban gồm 03 đội cùng giải một đề bài. Các đội thuyết trình và trả lời câu hỏi. Doanh nghiệp trực tiếp đánh giá. Mỗi đề bài chọn 01 đội xuất sắc nhất.',
-        'Giai đoạn 3 — Chạy thử nghiệm: Triển khai thử nghiệm giải pháp bằng nguồn lực doanh nghiệp cung cấp. Thu thập dữ liệu thực tế. Đánh giá tính khả thi. Hoàn thiện giải pháp. Chuẩn bị báo cáo và minh chứng.',
-        'Giai đoạn 4 — Chung kết: Các đội xuất sắc nhất bước vào Chung kết. Vòng 1 — Thuyết trình: Trình bày kế hoạch và kết quả triển khai. Trả lời câu hỏi của Hội đồng Giám khảo. Đánh giá năng lực phân tích, tính khả thi và hiệu quả. Vòng 2 — Tranh biện đối kháng: Sáu đội được ghép thành 03 cặp. Phản biện và bảo vệ giải pháp. Thể hiện tư duy phản biện và khả năng xử lý tình huống.',
+      id: 'ho-so-va-san-pham',
+      number: '04',
+      title: 'Hồ sơ và sản phẩm dự thi',
+      intro:
+        'Hồ sơ dự thi cần phản ánh đầy đủ thông tin đội thi, cơ sở phân tích bài toán và phương án giải pháp theo đúng yêu cầu của Ban Tổ chức ở từng giai đoạn.',
+      blocks: [
+        {
+          title: 'Thành phần hồ sơ',
+          items: [
+            'Thông tin đội thi.',
+            'Thông tin thành viên.',
+            'Cam kết tham gia cuộc thi.',
+          ],
+        },
+        {
+          title: 'Sản phẩm và yêu cầu nộp',
+          items: [
+            'Các đội phân tích vấn đề và đề xuất hướng giải quyết thông qua hồ sơ dự thi theo hướng dẫn chính thức của Ban Tổ chức.',
+            'Giải pháp có thể được trình bày dưới dạng slide, video giới thiệu hoặc báo cáo chi tiết theo yêu cầu của từng giai đoạn tương ứng.',
+            'Hướng dẫn định dạng hồ sơ và quy cách nộp bài chi tiết sẽ được Ban Tổ chức cập nhật tới các đội thi.',
+          ],
+        },
       ],
     },
     {
-      id: 'hinh-thuc',
-      title: 'Hình thức thi',
-      content: [
-        'Cuộc thi được tổ chức theo hình thức giải Case Study.',
-        'Các đội thi sẽ nhận đề bài từ doanh nghiệp đồng hành và xây dựng giải pháp.',
-        'Giải pháp được xây dựng qua ba hướng chính:',
-        '- Phân tích kinh doanh và thị trường',
-        '- Chiến lược marketing và truyền thông',
-        '- Kế hoạch triển khai và giá trị mang lại cho doanh nghiệp',
-      ],
-    },
-    {
-      id: 'tieu-chi',
+      id: 'tieu-chi-danh-gia',
+      number: '05',
       title: 'Tiêu chí đánh giá',
-      content: [
+      intro:
+        'Bài thi được xem xét trên cả chất lượng tư duy, tính thực tiễn của giải pháp và năng lực trình bày, phản biện của đội thi trước Hội đồng chuyên môn.',
+      bullets: [
         'Mức độ rõ ràng và ý nghĩa của vấn đề.',
         'Tính khả thi khi triển khai thực tế.',
         'Giá trị tạo ra cho doanh nghiệp.',
@@ -52,9 +90,12 @@ export const rules = {
       ],
     },
     {
-      id: 'quy-dinh',
+      id: 'quy-dinh-chung',
+      number: '06',
       title: 'Quy định chung',
-      content: [
+      intro:
+        'Tất cả đội thi cần tuân thủ đầy đủ những quy định chung dưới đây để bảo đảm tính công bằng, minh bạch và trách nhiệm học thuật trong suốt cuộc thi.',
+      bullets: [
         'Mỗi sinh viên chỉ được tham gia 01 đội thi.',
         'Sản phẩm dự thi phải do chính đội thực hiện và chưa từng đạt giải tại các cuộc thi khác.',
         'Đội thi chịu trách nhiệm về tính trung thực của toàn bộ nội dung dự thi.',

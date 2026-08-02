@@ -1,4 +1,4 @@
-import type { ChallengeCategory, ConsentType, EnterpriseExperience, Prisma } from '@prisma/client';
+import type { ChallengeCategory, ConsentType, EnterpriseExperience, Prisma, TeamCompetitionStatus } from '@prisma/client';
 import type { RegistrationFormValues } from '../../src/types/registration';
 import type { DBRegistrationRecord } from './store';
 
@@ -30,11 +30,24 @@ const EXPERIENCE_FROM_DB: Record<EnterpriseExperience, 'none' | 'previous' | 'on
   ONGOING: 'ongoing',
 };
 
+const TEAM_STATUS_TO_DB: Record<string, TeamCompetitionStatus> = {
+  verified: 'VERIFIED',
+  round_one: 'ROUND_ONE',
+  semifinalist: 'SEMIFINALIST',
+  pilot: 'PILOT',
+  finalist: 'FINALIST',
+  winner: 'WINNER',
+  completed: 'COMPLETED',
+};
+
 export const toDbCategory = (value?: string): ChallengeCategory =>
   CATEGORY_TO_DB[String(value ?? '').toLowerCase()] ?? 'OTHER';
 
 export const toDbExperience = (value?: string): EnterpriseExperience =>
   EXPERIENCE_TO_DB[String(value ?? '').toLowerCase()] ?? 'NONE';
+
+export const toDbTeamCompetitionStatus = (value?: string): TeamCompetitionStatus | null =>
+  TEAM_STATUS_TO_DB[String(value ?? '').toLowerCase()] ?? null;
 
 /**
  * The form collects four commitment checkboxes and four optional public-consent

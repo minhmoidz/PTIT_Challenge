@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z, type ZodIssue } from 'zod';
 import { competitionData } from '../../src/data/competition';
 
 export const MemberSchema = z.object({
@@ -37,3 +37,12 @@ export const RegistrationSchema = z.object({
   (data) => data.members[0]?.role === 'leader',
   { message: 'First member must be leader' },
 );
+
+export const mapValidationIssuesToFieldErrors = (issues: ZodIssue[]): Record<string, string> => {
+  const fieldErrors: Record<string, string> = {};
+  for (const issue of issues) {
+    const path = issue.path.join('.');
+    fieldErrors[path] = issue.message;
+  }
+  return fieldErrors;
+};

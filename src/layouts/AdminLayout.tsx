@@ -14,27 +14,30 @@ import ShieldRoundedIcon from '@mui/icons-material/ShieldRounded';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { adminColors, adminRadius, adminShadow } from '@/theme/adminTokens';
 import { AdminContext } from './AdminContext';
+import { env } from '@/config/env';
+import { appPath } from '@/config/paths';
 
 interface AdminUser {
   id: string;
   email: string;
   displayName: string;
   role: string;
+  permissions?: string[];
 }
 
 const NAV_GROUPS = [
   {
     label: 'Điều hành',
     items: [
-      { label: 'Tổng quan', icon: DashboardRoundedIcon, href: '/admin/dashboard' },
-      { label: 'Hồ sơ đăng ký', icon: AssignmentRoundedIcon, href: '/admin/registrations' },
-      { label: 'Đội thi công khai', icon: GroupsRoundedIcon, href: '/admin/teams' },
+      { label: 'Tổng quan', icon: DashboardRoundedIcon, href: '/admin/dashboard', permission: 'dashboard.read' },
+      { label: 'Hồ sơ đăng ký', icon: AssignmentRoundedIcon, href: '/admin/registrations', permission: 'registration.read' },
+      { label: 'Đội thi công khai', icon: GroupsRoundedIcon, href: '/admin/teams', permission: 'publicTeam.read' },
     ],
   },
   {
     label: 'Hệ thống',
     items: [
-      { label: 'Cấu hình cuộc thi', icon: SettingsRoundedIcon, href: '/admin/settings' },
+      { label: 'Cấu hình cuộc thi', icon: SettingsRoundedIcon, href: '/admin/settings', permission: 'competition.read' },
     ],
   },
 ];
@@ -60,26 +63,43 @@ export const AdminLayout = () => {
   const menuOpen = Boolean(anchorEl);
 
   useEffect(() => {
-    const userStr = localStorage.getItem('picc_admin_user');
-    const token = localStorage.getItem('picc_admin_token');
-    if (!userStr || !token || token.length < 16) {
-      navigate('/admin', { replace: true });
-      return;
-    }
-    try {
-      const parsed = JSON.parse(userStr);
-      if (!parsed?.id || !parsed?.email) throw new Error('Invalid user data');
-      queueMicrotask(() => setUser(parsed));
-    } catch {
-      localStorage.removeItem('picc_admin_user');
-      localStorage.removeItem('picc_admin_token');
-      navigate('/admin', { replace: true });
-    }
+    // Remove any token left behind by the pre-cookie version of the admin panel.
+    localStorage.removeItem('picc_admin_token');
+
+    let cancelled = false;
+
+    const validateSession = async () => {
+      try {
+        const res = await fetch(`${env.apiBaseUrl}/v1/admin/auth/me`, { credentials: 'include' });
+        if (!cancelled) {
+          if (res.ok) {
+            const data = await res.json();
+            const u = data?.data?.user;
+            if (u?.id && u?.email) {
+              setUser({ ...u, permissions: Array.isArray(u.permissions) ? u.permissions : [] });
+              return;
+            }
+          }
+          navigate('/admin', { replace: true });
+        }
+      } catch {
+        if (!cancelled) navigate('/admin', { replace: true });
+      }
+    };
+
+    validateSession();
+    return () => {
+      cancelled = true;
+    };
   }, [navigate]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setAnchorEl(null);
-    localStorage.removeItem('picc_admin_token');
+    try {
+      await fetch(`${env.apiBaseUrl}/v1/admin/auth/logout`, { method: 'POST', credentials: 'include' });
+    } catch {
+      // Session cookie is cleared server-side regardless; fall through.
+    }
     localStorage.removeItem('picc_admin_user');
     navigate('/admin', { replace: true });
   };
@@ -88,6 +108,8 @@ export const AdminLayout = () => {
     if (href === '/admin/dashboard') return location.pathname === '/admin/dashboard';
     return location.pathname.startsWith(href);
   };
+
+  const hasPermission = (permission: string) => Boolean(user?.permissions?.includes(permission));
 
   // Auth guard loading state
   if (!user) {
@@ -195,13 +217,14 @@ export const AdminLayout = () => {
                   </Typography>
                 )}
                 {group.items.map((item) => {
+                  if (!hasPermission(item.permission)) return null;
                   const Icon = item.icon;
                   const active = isActive(item.href);
                   const navItem = (
                     <Box
                       key={item.href}
                       component="a"
-                      href={item.href}
+                      href={appPath(item.href)}
                       onClick={(e) => {
                         e.preventDefault();
                         navigate(item.href);

@@ -31,7 +31,7 @@ export const Tilt3DCard = ({
   shimmer = true,
   depthShadow = true,
   borderGlow = true,
-  borderGlowColor = 'rgba(56, 130, 241, 0.3)',
+  borderGlowColor = 'rgba(225, 20, 20, 0.24)',
   interactive = false,
   sx,
   ...rest

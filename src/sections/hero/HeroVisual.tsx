@@ -52,14 +52,14 @@ const DigitBlock = ({
         py: { xs: 1.25, sm: 1.5 },
         px: { xs: 0.75, sm: 1 },
         bgcolor: 'rgba(244, 248, 253, 0.85)',
-        border: '1px solid rgba(56, 130, 241, 0.18)',
+        border: '1px solid rgba(15, 42, 82, 0.16)',
         borderRadius: '16px',
         boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.8), 0 2px 8px rgba(15, 42, 82, 0.04)',
         transition: 'all 0.25s ease',
         '&:hover': {
           bgcolor: '#FFFFFF',
-          borderColor: 'rgba(56, 130, 241, 0.35)',
-          boxShadow: '0 4px 14px rgba(56, 130, 241, 0.12)',
+          borderColor: 'rgba(225, 20, 20, 0.3)',
+          boxShadow: '0 4px 14px rgba(225, 20, 20, 0.10)',
         },
       }}
     >
@@ -104,7 +104,7 @@ const DigitBlock = ({
         sx={{
           fontSize: { xs: '1.25rem', sm: '1.5rem' },
           fontWeight: 800,
-          color: 'rgba(56, 130, 241, 0.35)',
+          color: 'rgba(15, 42, 82, 0.3)',
           mx: { xs: 0.25, sm: 0.5 },
           alignSelf: 'center',
           userSelect: 'none',
@@ -225,7 +225,7 @@ export const HeroVisual = ({
             inset: '-15%',
             borderRadius: '50%',
             background:
-              'radial-gradient(circle, rgba(56, 130, 241,0.32) 0%, rgba(106, 115, 220,0.18) 40%, rgba(214, 88, 144,0.12) 65%, transparent 78%)',
+              'radial-gradient(circle, rgba(225, 20, 20,0.16) 0%, rgba(15, 42, 82,0.14) 42%, rgba(231, 195, 77,0.12) 68%, transparent 80%)',
             filter: 'blur(32px)',
             zIndex: 0,
           }}
@@ -234,11 +234,11 @@ export const HeroVisual = ({
         {/* Outer Orbit Ring 1 (Indigo/Blue 3D Tilt) */}
         <OrbitalRing
           size={350}
-          color="rgba(56, 130, 241, 0.38)"
+          color="rgba(15, 42, 82, 0.26)"
           tiltX={64}
           tiltY={10}
           duration={26}
-          nodeColor="#3882F1"
+          nodeColor="#E11414"
           nodeTop
           zIndex={1}
           prefersReducedMotion={prefersReducedMotion}
@@ -247,7 +247,7 @@ export const HeroVisual = ({
         {/* Secondary campaign orbit */}
         <OrbitalRing
           size={300}
-          color="rgba(106, 115, 220, 0.22)"
+          color="rgba(231, 195, 77, 0.24)"
           tiltX={52}
           tiltY={-20}
           duration={34}
@@ -267,7 +267,7 @@ export const HeroVisual = ({
             width: '48%',
             height: 12,
             background:
-              'linear-gradient(180deg, rgba(56, 130, 241,0.22) 0%, rgba(56, 130, 241,0.02) 100%)',
+              'linear-gradient(180deg, rgba(225, 20, 20,0.18) 0%, rgba(225, 20, 20,0.02) 100%)',
             borderRadius: '50%',
             filter: 'blur(5px)',
             zIndex: 2,
@@ -302,7 +302,7 @@ export const HeroVisual = ({
           )}
         </Box>
 
-        <FloatingGem size={12} top="15%" right="12%" color1="#E7C34D" color2="#D65890" duration={5} delay={0} shape="circle" prefersReducedMotion={prefersReducedMotion} />
+        <FloatingGem size={12} top="15%" right="12%" color1="#E7C34D" color2="#E11414" duration={5} delay={0} shape="circle" prefersReducedMotion={prefersReducedMotion} />
       </Box>
 
       {/* ══ 2. STACKED COUNTDOWN CARD (Overlapping Unified Composition) ══ */}
@@ -457,7 +457,7 @@ const LogoFallback = () => (
       width: 170,
       height: 170,
       borderRadius: '24px',
-      background: 'linear-gradient(135deg, #0F2A52 0%, #3882F1 100%)',
+      background: 'linear-gradient(135deg, #0F2A52 0%, #1F3C63 100%)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -485,19 +485,19 @@ const CountdownCard = ({
   <Box
     sx={{
       bgcolor: 'rgba(255, 255, 255, 0.95)',
-      border: '1.5px solid rgba(56, 130, 241, 0.28)',
+      border: '1.5px solid rgba(225, 20, 20, 0.14)',
       borderRadius: '26px',
       boxShadow:
-        '0 20px 50px rgba(15, 42, 82, 0.12), 0 4px 16px rgba(56, 130, 241, 0.08)',
+        '0 20px 50px rgba(15, 42, 82, 0.12), 0 4px 16px rgba(225, 20, 20, 0.06)',
       backdropFilter: 'blur(20px)',
       overflow: 'hidden',
       position: 'relative',
       p: { xs: 2.75, sm: 3.25, md: 3.5 },
       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
       '&:hover': {
-        borderColor: 'rgba(56, 130, 241, 0.45)',
+        borderColor: 'rgba(225, 20, 20, 0.22)',
         boxShadow:
-          '0 26px 60px rgba(15, 42, 82, 0.16), 0 6px 20px rgba(56, 130, 241, 0.14)',
+          '0 26px 60px rgba(15, 42, 82, 0.16), 0 6px 20px rgba(225, 20, 20, 0.1)',
       },
     }}
   >
@@ -510,7 +510,7 @@ const CountdownCard = ({
         left: 0,
         right: 0,
         height: 4,
-        background: 'linear-gradient(90deg, #1C52A6 0%, #3882F1 100%)',
+        background: 'linear-gradient(90deg, #E11414 0%, #0F2A52 100%)',
       }}
     />
 
@@ -527,25 +527,25 @@ const CountdownCard = ({
     >
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
         <Chip
-          icon={<AutoAwesomeRoundedIcon sx={{ fontSize: '13px !important', color: '#3882F1 !important' }} />}
+          icon={<AutoAwesomeRoundedIcon sx={{ fontSize: '13px !important', color: `${piccColors.yellow[600]} !important` }} />}
           label="MỐC SỰ KIỆN TIẾP THEO"
           size="small"
           sx={{
-            bgcolor: 'rgba(56, 130, 241, 0.1)',
-            color: piccColors.blue[700],
+            bgcolor: 'rgba(255, 241, 241, 0.9)',
+            color: piccColors.ptitRed,
             fontWeight: 800,
             fontSize: '0.675rem',
             letterSpacing: '0.08em',
             height: 22,
             px: 0.5,
-            border: '1px solid rgba(56, 130, 241, 0.2)',
+            border: '1px solid rgba(225, 20, 20, 0.14)',
           }}
         />
       </Box>
 
       {activeMilestone?.dateStr && (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6, color: piccColors.slate[500] }}>
-          <AccessTimeRoundedIcon sx={{ fontSize: 14, color: piccColors.blue[600] }} />
+          <AccessTimeRoundedIcon sx={{ fontSize: 14, color: piccColors.yellow[600] }} />
           <Typography
             sx={{
               fontSize: '0.775rem',
@@ -623,7 +623,7 @@ const MilestoneProgress = ({
       {/* Progress Indicator */}
       <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', gap: 1.5 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexShrink: 0 }}>
-          <FlagRoundedIcon sx={{ fontSize: 15, color: piccColors.blue[600] }} />
+          <FlagRoundedIcon sx={{ fontSize: 15, color: piccColors.ptitRed }} />
           <Typography
             sx={{
               fontSize: '0.725rem',
@@ -640,7 +640,7 @@ const MilestoneProgress = ({
           sx={{
             flex: 1,
             height: 5,
-            bgcolor: 'rgba(56, 130, 241, 0.12)',
+            bgcolor: 'rgba(225, 20, 20, 0.08)',
             borderRadius: 3,
             overflow: 'hidden',
             maxWidth: 140,
@@ -653,7 +653,7 @@ const MilestoneProgress = ({
             transition={{ duration: 0.8, ease: 'easeOut', delay: 0.5 }}
             sx={{
               height: '100%',
-              background: 'linear-gradient(90deg, #3882F1 0%, #6366F1 100%)',
+              background: 'linear-gradient(90deg, #E11414 0%, #0F2A52 100%)',
               borderRadius: 3,
             }}
           />
@@ -667,14 +667,14 @@ const MilestoneProgress = ({
         sx={{
           fontSize: '0.8rem',
           fontWeight: 800,
-          color: piccColors.blue[700],
+          color: piccColors.ptitRed,
           display: 'inline-flex',
           alignItems: 'center',
           gap: 0.4,
           whiteSpace: 'nowrap',
           transition: 'all 0.2s ease',
           '&:hover': {
-            color: piccColors.blue[900],
+            color: piccColors.ptitDarkRed,
             transform: 'translateX(3px)',
           },
         }}
@@ -691,7 +691,7 @@ const CompletedPanel = () => (
   <Box
     sx={{
       bgcolor: 'rgba(255, 255, 255, 0.95)',
-      border: '1.5px solid rgba(56, 130, 241, 0.28)',
+      border: '1.5px solid rgba(225, 20, 20, 0.14)',
       borderRadius: '26px',
       p: 3.5,
       textAlign: 'center',
@@ -719,14 +719,14 @@ const CompletedPanel = () => (
         px: 3,
         py: 1,
         borderRadius: 999,
-        bgcolor: piccColors.blue[600],
+        bgcolor: piccColors.ptitRed,
         color: '#FFFFFF',
         fontWeight: 800,
         fontSize: '0.85rem',
-        boxShadow: '0 4px 14px rgba(56, 130, 241, 0.3)',
+        boxShadow: '0 4px 14px rgba(225, 20, 20, 0.22)',
         transition: 'all 0.2s ease',
         '&:hover': {
-          bgcolor: piccColors.blue[800],
+          bgcolor: piccColors.ptitDarkRed,
           transform: 'translateY(-2px)',
         },
       }}

@@ -2,7 +2,20 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="%BASE_URL%assets/branding/ptit-logo.png" />
+
+    <!--
+      Mount path, resolved at container start-up rather than at build time.
+      docker-entrypoint.sh replaces __PICC_BASE_PATH__ with APP_BASE_PATH, so the
+      same image can be reverse-proxied at "/", "/cuocthi/" or any other prefix.
+      The <base> tag must stay above every other URL in <head>: the build emits
+      relative asset paths that resolve against it.
+    -->
+    <base href="__PICC_BASE_PATH__" />
+    <script>
+      window.__PICC_BASE__ = '__PICC_BASE_PATH__';
+    </script>
+
+    <link rel="icon" type="image/png" href="assets/branding/ptit-logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="PTIT Innovation Catalyst Challenge 2026 — Sân chơi giải Case Study cấp Học viện, nơi các đội thi liên ngành cùng doanh nghiệp nghiên cứu, xây dựng và thử nghiệm những giải pháp tạo ra giá trị thực tế." />
     <meta property="og:title" content="PTIT Innovation Catalyst Challenge 2026" />

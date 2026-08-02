@@ -1,40 +1,39 @@
-import { Box, Typography, Grid } from '@mui/material';
+import { Box, Typography, Chip, Grid } from '@mui/material';
+import MenuBookRoundedIcon from '@mui/icons-material/MenuBookRounded';
 import RouteRoundedIcon from '@mui/icons-material/RouteRounded';
 import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
 import FolderZipRoundedIcon from '@mui/icons-material/FolderZipRounded';
 import { motion } from 'motion/react';
 import { fadeInUp } from '@/motion/variants';
 import { piccColors } from '@/theme/palette';
-import { competitionData } from '@/data/competition';
 
-/* Blue · pink · gold — the three brand secondaries, same triad as the hero stats. */
 const STATS = [
   {
-    number: '03',
-    label: 'Vòng thi',
+    number: '04',
+    label: 'Giai đoạn thi',
     icon: RouteRoundedIcon,
     color: piccColors.blue[600],
-    bg: piccColors.blue[50],
+    bg: piccColors.blue[100],
   },
   {
-    number: `${competitionData.teamRules.min}–${competitionData.teamRules.max}`,
+    number: '3–4',
     label: 'Thành viên / đội',
     icon: GroupsRoundedIcon,
-    color: piccColors.pink[600],
-    bg: piccColors.pink[50],
+    color: piccColors.indigo[600],
+    bg: piccColors.indigo[100],
   },
   {
     number: '03',
     label: 'Thành phần hồ sơ',
     icon: FolderZipRoundedIcon,
-    color: piccColors.yellow[700],
-    bg: piccColors.yellow[50],
+    color: piccColors.emerald[500],
+    bg: piccColors.emerald[100],
   },
 ];
 
 export const RulesHeader = () => {
   return (
-    <Box sx={{ textAlign: 'center', mb: { xs: 5, md: 7 }, position: 'relative' }}>
+    <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 5 }, position: 'relative' }}>
       {/* Background Soft Radial Glow */}
       <Box
         sx={{
@@ -45,22 +44,27 @@ export const RulesHeader = () => {
           width: { xs: 300, md: 540 },
           height: { xs: 300, md: 540 },
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(56, 130, 241, 0.08) 0%, rgba(106, 115, 220, 0.05) 50%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(255, 31, 31, 0.07) 0%, rgba(15, 42, 82, 0.05) 50%, transparent 70%)',
           pointerEvents: 'none',
           zIndex: 0,
         }}
       />
 
-      <Box component={motion.div} variants={fadeInUp} sx={{ position: 'relative', zIndex: 1, fontFamily: '"Manrope", sans-serif' }}>
-        {/* Red Accent Line */}
-        <Box
+      <Box component={motion.div} variants={fadeInUp} sx={{ position: 'relative', zIndex: 1 }}>
+        {/* Eyebrow Badge */}
+        <Chip
+          icon={<MenuBookRoundedIcon sx={{ fontSize: '15px !important', color: `${piccColors.blue[600]} !important` }} />}
+          label="Quy định & Thể lệ"
           sx={{
-            width: 44,
-            height: 4,
-            bgcolor: piccColors.ptitRed,
-            borderRadius: 2,
-            mx: 'auto',
-            mb: 2,
+            bgcolor: piccColors.blue[100],
+            color: piccColors.ptitNavy,
+            fontWeight: 700,
+            fontSize: '0.825rem',
+            mb: 1.5,
+            px: 1.5,
+            py: 0.5,
+            border: `1px solid ${piccColors.blue[300]}`,
+            boxShadow: '0 4px 12px rgba(53, 84, 126, 0.10)',
           }}
         />
 
@@ -72,25 +76,23 @@ export const RulesHeader = () => {
             mb: 1.25,
             color: piccColors.ptitNavy,
             fontWeight: 800,
-            fontSize: { xs: '2rem', sm: '2.5rem', md: '2.8rem' },
+            fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
             letterSpacing: '-0.02em',
-            lineHeight: 1.2,
-            fontFamily: '"Manrope", sans-serif',
+            lineHeight: 1.15,
           }}
         >
-          Tổng Quan Thể Lệ <Box component="span" sx={{ color: piccColors.ptitRed }}>PICC 2026</Box>
+          Tổng Quan Thể Lệ PICC 2026
         </Typography>
 
         {/* Subtitle */}
         <Typography
           sx={{
-            color: piccColors.slate[600],
+            color: piccColors.slate[500],
             maxWidth: 640,
             mx: 'auto',
-            fontSize: { xs: '1rem', md: '1.075rem' },
-            lineHeight: 1.7,
+            fontSize: { xs: '0.95rem', md: '1.05rem' },
+            lineHeight: 1.6,
             mb: 3,
-            fontFamily: '"Manrope", sans-serif',
           }}
         >
           Tất cả thông tin quan trọng bạn cần biết trước khi bắt đầu hành trình tại PICC 2026.
@@ -102,10 +104,10 @@ export const RulesHeader = () => {
             maxWidth: 680,
             mx: 'auto',
             p: { xs: 2, sm: 2.25 },
-            bgcolor: '#FFFFFF',
+            bgcolor: piccColors.semantic.surface,
             borderRadius: 4,
-            border: '1px solid #DFE6EF',
-            boxShadow: '0 4px 20px rgba(15, 42, 82, 0.05)',
+            border: `1px solid ${piccColors.slate[200]}`,
+            boxShadow: '0 4px 20px rgba(15, 42, 82, 0.06)',
           }}
         >
           <Grid container spacing={2} alignItems="center" justifyContent="center">
@@ -115,6 +117,11 @@ export const RulesHeader = () => {
               return (
                 <Grid size={{ xs: 4, sm: 4 }} key={idx}>
                   <Box
+                    component={motion.div}
+                    initial={{ opacity: 0, y: 14 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: '-40px' }}
+                    transition={{ duration: 0.45, delay: 0.12 + idx * 0.08, ease: 'easeOut' }}
                     sx={{
                       display: 'flex',
                       flexDirection: 'column',
@@ -142,7 +149,7 @@ export const RulesHeader = () => {
                       sx={{
                         fontSize: { xs: '1.25rem', sm: '1.6rem' },
                         fontWeight: 800,
-                        color: '#0F2A52',
+                        color: piccColors.ptitNavy,
                         lineHeight: 1.1,
                       }}
                     >
@@ -153,7 +160,7 @@ export const RulesHeader = () => {
                       sx={{
                         fontSize: { xs: '0.75rem', sm: '0.825rem' },
                         fontWeight: 600,
-                        color: '#67788F',
+                        color: piccColors.slate[500],
                         mt: 0.25,
                       }}
                     >

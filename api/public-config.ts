@@ -8,8 +8,8 @@ const config: PublicPiccConfig = {
   registration: {
     openAt: process.env.PICC_REGISTRATION_OPEN_AT ?? null,
     closeAt: process.env.PICC_REGISTRATION_CLOSE_AT ?? null,
-    allowSubmissions: process.env.PICC_REGISTRATION_ENABLED === 'true',
-    explicitlyDisabled: process.env.PICC_REGISTRATION_ENABLED !== 'true',
+    allowSubmissions: process.env.PICC_REGISTRATION_ENABLED !== 'false',
+    explicitlyDisabled: false,
     statusMessage: process.env.PICC_REGISTRATION_STATUS_MESSAGE,
   },
   teamSize: {

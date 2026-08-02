@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { Container, Box, Typography } from '@mui/material';
 import { env } from '@/config/env';
 import { awards } from '@/content/vi/awards';
+import { piccColors } from '@/theme/palette';
 import { SkyBackground } from '@/components/ui/SkyBackground';
 import { getSkyBackground } from '@/components/ui/skyBackgroundConfig';
 import { CelebrationEffects } from './components/CelebrationEffects';
@@ -46,7 +47,7 @@ export const AwardsSection = () => {
           <Typography
             sx={{
               textAlign: 'center',
-              color: '#67788F',
+              color: piccColors.slate[500],
               mt: 4,
               mb: 4,
               fontStyle: 'italic',

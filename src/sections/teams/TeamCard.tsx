@@ -5,6 +5,7 @@ import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
 import type { PublicTeamProfile } from '@/types/publicTeam';
 import { TEAM_STATUS_MAP } from '@/types/publicTeam';
 import { piccColors } from '@/theme/palette';
+import { appPath } from '@/config/paths';
 
 interface Props {
   team: PublicTeamProfile;
@@ -230,7 +231,7 @@ export const TeamCard = ({ team }: Props) => {
       <Box sx={{ pt: 1.5, borderTop: '1px solid rgba(223, 230, 239, 0.7)' }}>
         <Button
           component="a"
-          href={`/doi-thi/${team.slug}`}
+          href={appPath(`/doi-thi/${team.slug}`)}
           fullWidth
           endIcon={<ArrowForwardRoundedIcon className="team-card-cta-icon" sx={{ transition: 'transform 0.2s ease' }} />}
           sx={{

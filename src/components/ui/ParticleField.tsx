@@ -29,12 +29,12 @@ interface ParticleFieldProps {
 }
 
 const DEFAULT_COLORS = [
-  'rgba(56, 130, 241, 0.6)',  // PICC blue
-  'rgba(214, 88, 144, 0.5)',  // PICC pink
-  'rgba(253, 209, 102, 0.5)', // PICC yellow
-  'rgba(56, 130, 241, 0.3)',  // light blue
-  'rgba(214, 88, 144, 0.3)',  // light pink
-  'rgba(165, 180, 252, 0.4)', // indigo
+  'rgba(225, 20, 20, 0.55)',  // PTIT red
+  'rgba(217, 67, 67, 0.45)',  // rose red
+  'rgba(231, 195, 77, 0.5)',  // gold
+  'rgba(15, 42, 82, 0.42)',   // navy
+  'rgba(225, 20, 20, 0.28)',  // light red
+  'rgba(53, 84, 126, 0.42)',  // navy blue
 ];
 
 const generateParticles = (count: number, colors: string[]): Particle[] =>

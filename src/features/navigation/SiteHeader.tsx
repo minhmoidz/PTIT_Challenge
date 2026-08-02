@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Box, Container, Typography, Button } from '@mui/material';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
@@ -16,8 +16,15 @@ const NAV_ITEMS = [
   { label: 'Thể lệ', href: '/#the-le', id: 'the-le' },
   { label: 'Giải thưởng', href: '/#giai-thuong', id: 'giai-thuong' },
   { label: 'Đội thi', href: '/doi-thi', id: 'doi-thi' },
-  { label: 'FAQ', href: '/#faq', id: 'faq' },
-];
+] as const;
+
+const TOP_LEVEL_SECTION_IDS = NAV_ITEMS.filter((item) => item.href.startsWith('/#')).map((item) => item.id);
+const OBSERVER_THRESHOLDS = Array.from({ length: 11 }, (_, index) => index / 10);
+
+const getHashSectionId = (hash: string): string => {
+  const targetId = hash.replace('#', '');
+  return TOP_LEVEL_SECTION_IDS.includes(targetId as (typeof TOP_LEVEL_SECTION_IDS)[number]) ? targetId : '';
+};
 
 export const SiteHeader = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -26,10 +33,30 @@ export const SiteHeader = () => {
   const { status } = useRegistrationStatus();
   const location = useLocation();
   const navigate = useNavigate();
-  const isNavigatingRef = useRef(false);
+  const visibleRatiosRef = useRef<Record<string, number>>({});
 
   const ctaConfig = getCtaConfig(status);
   const isOnRegistrationPage = location.pathname === '/dang-ky';
+  const isOnLandingPage = location.pathname === '/';
+  const hashSection = isOnLandingPage ? getHashSectionId(location.hash) : '';
+
+  const resolveTopVisibleSection = useCallback(() => {
+    const visibleEntries = NAV_ITEMS.filter((item) => item.href.startsWith('/#'))
+      .map((item) => ({ id: item.id, ratio: visibleRatiosRef.current[item.id] ?? 0 }))
+      .filter((item) => item.ratio > 0);
+
+    if (visibleEntries.length === 0) {
+      return '';
+    }
+
+    visibleEntries.sort((a, b) => {
+      if (b.ratio !== a.ratio) return b.ratio - a.ratio;
+      return TOP_LEVEL_SECTION_IDS.indexOf(a.id as (typeof TOP_LEVEL_SECTION_IDS)[number])
+        - TOP_LEVEL_SECTION_IDS.indexOf(b.id as (typeof TOP_LEVEL_SECTION_IDS)[number]);
+    });
+
+    return visibleEntries[0]?.id ?? '';
+  }, []);
 
   useEffect(() => {
     const onScroll = () => {
@@ -41,27 +68,41 @@ export const SiteHeader = () => {
   }, []);
 
   useEffect(() => {
+    if (!isOnLandingPage) {
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
-        if (isNavigatingRef.current) return;
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
+          const id = entry.target.id;
+          visibleRatiosRef.current[id] = entry.isIntersecting ? entry.intersectionRatio : 0;
         });
+
+        const nextActive = resolveTopVisibleSection();
+        setActiveSection(nextActive);
+        if (nextActive && window.location.hash !== `#${nextActive}`) {
+          window.history.replaceState(null, '', `#${nextActive}`);
+        }
       },
-      { rootMargin: '-30% 0px -50% 0px', threshold: 0 }
+      {
+        rootMargin: '-18% 0px -46% 0px',
+        threshold: OBSERVER_THRESHOLDS,
+      },
     );
 
     NAV_ITEMS.forEach((item) => {
       if (item.href.startsWith('/#')) {
         const el = document.getElementById(item.id);
-        if (el) observer.observe(el);
+        if (el) {
+          visibleRatiosRef.current[item.id] = 0;
+          observer.observe(el);
+        }
       }
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [isOnLandingPage, location.hash, resolveTopVisibleSection]);
 
   /* ── Navigation Handler ── */
   const handleNavigate = (e: React.MouseEvent, href: string) => {
@@ -71,10 +112,9 @@ export const SiteHeader = () => {
 
       const targetId = href.replace('/#', '').replace('#', '');
       setActiveSection(targetId);
-      isNavigatingRef.current = true;
 
       if (location.pathname !== '/') {
-        navigate(`/${href.startsWith('/#') ? href.substring(1) : href}`);
+        navigate(`/#${targetId}`);
         return;
       }
 
@@ -88,10 +128,6 @@ export const SiteHeader = () => {
           window.history.pushState(null, '', `#${targetId}`);
         }
       }
-
-      setTimeout(() => {
-        isNavigatingRef.current = false;
-      }, 750);
     } else {
       e.preventDefault();
       setMenuOpen(false);
@@ -105,6 +141,7 @@ export const SiteHeader = () => {
   };
 
   const handleCtaClick = (e: React.MouseEvent) => {
+    setMenuOpen(false);
     if (isOnRegistrationPage && ctaConfig.href === '/dang-ky') {
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -112,6 +149,17 @@ export const SiteHeader = () => {
     }
     handleNavigate(e, ctaConfig.href);
   };
+
+  const effectiveActiveSection = isOnLandingPage ? activeSection || hashSection : '';
+
+  const desktopNav = useMemo(
+    () =>
+      NAV_ITEMS.map((item) => {
+        const isActive = effectiveActiveSection === item.id || (item.href === '/doi-thi' && location.pathname.startsWith('/doi-thi'));
+        return { ...item, isActive };
+      }),
+    [effectiveActiveSection, location.pathname],
+  );
 
   return (
     <Box
@@ -129,7 +177,7 @@ export const SiteHeader = () => {
         boxShadow: scrolled
           ? '0 8px 32px rgba(15, 42, 82, 0.1)'
           : '0 2px 10px rgba(15, 42, 82, 0.04)',
-        borderBottom: `1px solid ${scrolled ? 'rgba(255, 31, 31, 0.14)' : piccColors.neutral[200]}`,
+        borderBottom: `1px solid ${scrolled ? 'rgba(225, 20, 20, 0.14)' : piccColors.neutral[200]}`,
       }}
     >
       {/* ── Signature PTIT Crimson Red Top Bar ── */}
@@ -214,7 +262,6 @@ export const SiteHeader = () => {
               cursor: 'pointer',
             }}
           >
-            {/* Logomark combination */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, md: 0.75 } }}>
               <Box
                 component="img"
@@ -230,7 +277,6 @@ export const SiteHeader = () => {
               />
             </Box>
 
-            {/* Two-line Institution & Campaign Title */}
             <Box sx={{ borderLeft: `1px solid ${piccColors.neutral[300]}`, pl: 1.5, display: { xs: 'none', md: 'block' } }}>
               <Typography
                 sx={{
@@ -281,64 +327,61 @@ export const SiteHeader = () => {
           {/* Desktop Uppercase Navigation Items */}
           <Box
             component="nav"
+            aria-label="Điều hướng chính"
             sx={{
               display: { xs: 'none', lg: 'flex' },
               alignItems: 'center',
               gap: 0.25,
             }}
           >
-            {NAV_ITEMS.map((item) => {
-              const isActive = activeSection === item.id || (item.href === '/doi-thi' && location.pathname.startsWith('/doi-thi'));
-              return (
-                <Box key={item.href} sx={{ position: 'relative' }}>
-                  <Box
-                    component="a"
-                    href={item.href.startsWith('/#') ? appHash(item.id) : item.href}
-                    onClick={(e) => handleNavigate(e, item.href)}
-                    sx={{
-                      px: 1.15,
-                      py: 0.85,
-                      color: isActive ? piccColors.ptitRed : piccColors.ptitNavy,
-                      fontSize: '0.9rem',
-                      fontWeight: 750,
-                      letterSpacing: '0.02em',
-                      textTransform: 'uppercase',
-                      fontFamily: '"Manrope", sans-serif',
-                      whiteSpace: 'nowrap',
-                      transition: 'color 0.2s ease',
-                      display: 'block',
-                      textDecoration: 'none',
-                      cursor: 'pointer',
-                      position: 'relative',
-                      '&:hover': {
-                        color: piccColors.ptitRed,
-                      },
-                      '&::after': {
-                        content: '""',
-                        position: 'absolute',
-                        bottom: 0,
-                        left: '15%',
-                        right: '15%',
-                        height: 2,
-                        bgcolor: piccColors.ptitRed,
-                        borderRadius: '2px',
-                        transform: isActive ? 'scaleX(1)' : 'scaleX(0)',
-                        transformOrigin: 'left',
-                        transition: 'transform 0.28s cubic-bezier(0.4, 0, 0.2, 1)',
-                      },
-                      '&:hover::after': {
-                        transform: 'scaleX(1)',
-                      },
-                    }}
-                  >
-                    {item.label}
-                  </Box>
+            {desktopNav.map((item) => (
+              <Box key={item.href} sx={{ position: 'relative' }}>
+                <Box
+                  component="a"
+                  href={item.href.startsWith('/#') ? appHash(item.id) : appPath(item.href)}
+                  onClick={(e) => handleNavigate(e, item.href)}
+                  sx={{
+                    px: 1.15,
+                    py: 0.85,
+                    color: item.isActive ? piccColors.ptitRed : piccColors.ptitNavy,
+                    fontSize: '0.9rem',
+                    fontWeight: 750,
+                    letterSpacing: '0.02em',
+                    textTransform: 'uppercase',
+                    fontFamily: '"Manrope", sans-serif',
+                    whiteSpace: 'nowrap',
+                    transition: 'color 0.2s ease',
+                    display: 'block',
+                    textDecoration: 'none',
+                    cursor: 'pointer',
+                    position: 'relative',
+                    '&:hover': {
+                      color: piccColors.ptitRed,
+                    },
+                    '&::after': {
+                      content: '""',
+                      position: 'absolute',
+                      bottom: 0,
+                      left: '15%',
+                      right: '15%',
+                      height: 2,
+                      bgcolor: piccColors.ptitRed,
+                      borderRadius: '2px',
+                      transform: item.isActive ? 'scaleX(1)' : 'scaleX(0)',
+                      transformOrigin: 'left',
+                      transition: 'transform 0.28s cubic-bezier(0.4, 0, 0.2, 1)',
+                    },
+                    '&:hover::after': {
+                      transform: 'scaleX(1)',
+                    },
+                  }}
+                >
+                  {item.label}
                 </Box>
-              );
-            })}
+              </Box>
+            ))}
           </Box>
 
-          {/* Header Action CTA Button & Mobile Menu Toggle */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Button
               component="a"
@@ -358,12 +401,12 @@ export const SiteHeader = () => {
                 fontFamily: '"Manrope", sans-serif',
                 color: '#FFFFFF',
                 background: gradientMesh.ptitCta,
-                boxShadow: '0 4px 14px rgba(255, 31, 31, 0.35)',
+                boxShadow: '0 4px 14px rgba(225, 20, 20, 0.28)',
                 textTransform: 'uppercase',
                 whiteSpace: 'nowrap',
                 transition: 'all 0.25s ease',
                 '&:hover': {
-                  background: 'linear-gradient(135deg, #B81111 0%, #8F1010 100%)',
+                  background: 'linear-gradient(135deg, #B91212 0%, #7A0F0F 100%)',
                   boxShadow: '0 6px 20px rgba(255, 31, 31, 0.5)',
                   transform: 'translateY(-1px)',
                 },
@@ -376,6 +419,9 @@ export const SiteHeader = () => {
               onClick={() => setMenuOpen(!menuOpen)}
               variant="text"
               size="small"
+              aria-label={menuOpen ? 'Đóng menu điều hướng' : 'Mở menu điều hướng'}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-nav-panel"
               sx={{
                 display: { xs: 'inline-flex', lg: 'none' },
                 minWidth: 42,
@@ -383,8 +429,8 @@ export const SiteHeader = () => {
                 p: 0,
                 color: piccColors.ptitNavy,
                 borderRadius: 2,
-                bgcolor: 'rgba(240, 244, 248, 0.8)',
-                '&:hover': { bgcolor: piccColors.blue[50] },
+                bgcolor: 'rgba(248, 249, 251, 0.82)',
+                '&:hover': { bgcolor: piccColors.red[50] },
               }}
             >
               {menuOpen ? <CloseRoundedIcon /> : <MenuRoundedIcon />}
@@ -393,7 +439,6 @@ export const SiteHeader = () => {
         </Box>
       </Container>
 
-      {/* Mobile Drawer Menu */}
       <AnimatePresence>
         {menuOpen && (
           <Box
@@ -402,6 +447,7 @@ export const SiteHeader = () => {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25, ease: 'easeInOut' }}
+            id="mobile-nav-panel"
             sx={{
               display: { xs: 'block', lg: 'none' },
               bgcolor: 'rgba(255, 255, 255, 0.96)',
@@ -414,49 +460,45 @@ export const SiteHeader = () => {
           >
             <Container maxWidth="lg">
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                {NAV_ITEMS.map((item) => {
-                  const isActive = activeSection === item.id || (item.href === '/doi-thi' && location.pathname.startsWith('/doi-thi'));
-                  return (
-                    <Box
-                      key={item.href}
-                      component="a"
-                      href={item.href.startsWith('/#') ? appHash(item.id) : item.href}
-                      onClick={(e) => handleNavigate(e, item.href)}
-                      sx={{
-                        px: 2.5,
-                        py: 1.5,
-                        borderRadius: 3,
-                        color: isActive ? piccColors.ptitRed : piccColors.ptitNavy,
-                        bgcolor: isActive ? 'rgba(255, 31, 31, 0.08)' : 'transparent',
-                        fontSize: '0.95rem',
-                        fontWeight: isActive ? 800 : 600,
-                        textTransform: 'uppercase',
-                        fontFamily: '"Manrope", sans-serif',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        textDecoration: 'none',
-                        transition: 'all 0.2s ease',
-                        cursor: 'pointer',
-                        '&:hover': { bgcolor: 'rgba(255, 31, 31, 0.08)', color: piccColors.ptitRed },
-                      }}
-                    >
-                      <span>{item.label}</span>
-                      {isActive && (
-                        <Box
-                          sx={{
-                            width: 8,
-                            height: 8,
-                            borderRadius: '50%',
-                            bgcolor: piccColors.ptitRed,
-                          }}
-                        />
-                      )}
-                    </Box>
-                  );
-                })}
+                {desktopNav.map((item) => (
+                  <Box
+                    key={item.href}
+                    component="a"
+                    href={item.href.startsWith('/#') ? appHash(item.id) : appPath(item.href)}
+                    onClick={(e) => handleNavigate(e, item.href)}
+                    sx={{
+                      px: 2.5,
+                      py: 1.5,
+                      borderRadius: 3,
+                      color: item.isActive ? piccColors.ptitRed : piccColors.ptitNavy,
+                      bgcolor: item.isActive ? 'rgba(255, 31, 31, 0.08)' : 'transparent',
+                      fontSize: '0.95rem',
+                      fontWeight: item.isActive ? 800 : 600,
+                      textTransform: 'uppercase',
+                      fontFamily: '"Manrope", sans-serif',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      textDecoration: 'none',
+                      transition: 'all 0.2s ease',
+                      cursor: 'pointer',
+                      '&:hover': { bgcolor: 'rgba(255, 31, 31, 0.08)', color: piccColors.ptitRed },
+                    }}
+                  >
+                    <span>{item.label}</span>
+                    {item.isActive && (
+                      <Box
+                        sx={{
+                          width: 8,
+                          height: 8,
+                          borderRadius: '50%',
+                          bgcolor: piccColors.ptitRed,
+                        }}
+                      />
+                    )}
+                  </Box>
+                ))}
 
-                {/* Mobile Menu Bottom Prominent Registration CTA */}
                 <Button
                   component="a"
                   href={ctaConfig.href.startsWith('/#') ? appHash(ctaConfig.href.slice(2)) : appPath(ctaConfig.href)}

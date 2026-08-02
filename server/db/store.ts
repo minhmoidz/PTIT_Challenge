@@ -1,9 +1,15 @@
 import type { PublicationStatus, PublicTeamProfile as DbPublicTeam, Prisma, RegistrationStatus, TeamCompetitionStatus } from '@prisma/client';
 import type { PublicTeamProfile } from '../../src/types/publicTeam';
-import { CATEGORY_LABEL_MAP, TEAM_STATUS_MAP } from '../../src/types/publicTeam';
 import type { RegistrationFormValues } from '../../src/types/registration';
+import { CATEGORY_LABEL_MAP, TEAM_STATUS_MAP } from '../../src/types/publicTeam';
 import { prisma } from './prisma';
-import { buildConsentRows, toDbCategory, toDbExperience, toRegistrationRecord } from './mappers';
+import {
+  buildConsentRows,
+  toDbCategory,
+  toDbExperience,
+  toDbTeamCompetitionStatus,
+  toRegistrationRecord,
+} from './mappers';
 
 export interface DBRegistrationRecord {
   id: string;
@@ -74,7 +80,7 @@ const toPublicTeam = (row: PublicTeamRow): PublicTeamProfile => {
         }))
       : [],
     project:
-      row.showProjectSummary && row.publicProject
+      row.showProjectSummary && row.publicProject?.isPublished
         ? {
             title: row.publicProject.title ?? undefined,
             summary: row.publicProject.summary ?? undefined,
@@ -133,45 +139,94 @@ class DBStore {
   ): Promise<{ registrationCode: string; submissionId: string; submittedAt: string }> {
     const competitionId = await this.ensureCompetition();
     const captain = values.members.find((m) => m.role === 'leader') ?? values.members[0];
+    const studentIds = values.members.map((m) => m.studentId.trim().toUpperCase());
+    const emails = values.members.map((m) => m.email.trim().toLowerCase());
 
-    const created = await prisma.registration.create({
-      data: {
-        competitionId,
-        registrationCode: await this.nextRegistrationCode(),
-        teamName: values.teamName.trim(),
-        teamSize: values.teamSize,
-        captainEmail: captain.email.trim().toLowerCase(),
-        captainPhone: captain.phone.trim(),
-        challengeCategory: toDbCategory(values.challengeCategories?.[0]),
-        challengeCategoryOther: values.otherChallengeCategory?.trim() || null,
-        previousCompetitions: values.previousCompetitions?.trim() || null,
-        notableProject: values.featuredProject,
-        expectations: values.expectations,
-        companyExperience: toDbExperience(values.companyExperience),
-        members: {
-          create: values.members.map((m, index) => ({
-            memberIndex: index,
-            isCaptain: m.role === 'leader',
-            fullName: m.fullName.trim(),
-            studentId: m.studentId.trim().toUpperCase(),
-            major: m.major?.trim() || 'PTIT',
-            email: m.email.trim().toLowerCase(),
-            phone: m.phone.trim(),
-          })),
-        },
-        consents: {
-          create: buildConsentRows(values).map((c) => ({ ...c, ipHash: ipHash ?? null })),
-        },
-      },
-    });
+    let lastError: unknown;
 
-    await this.addAuditLog('CREATE_REGISTRATION', 'Registration', created.id, { ipHash });
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const created = await prisma.$transaction(
+          async (tx) => {
+            const clash = await tx.teamMember.findFirst({
+              where: {
+                registration: { status: { not: 'WITHDRAWN' } },
+                OR: [{ studentId: { in: studentIds } }, { email: { in: emails } }],
+              },
+            });
 
-    return {
-      registrationCode: created.registrationCode,
-      submissionId: created.id,
-      submittedAt: created.submittedAt.toISOString(),
-    };
+            if (clash) {
+              throw {
+                status: 409,
+                code: 'DUPLICATE_REGISTRATION',
+                message: studentIds.includes(clash.studentId)
+                  ? `Mã sinh viên ${clash.studentId} đã đăng ký trong đội khác.`
+                  : `Email ${clash.email} đã đăng ký trong đội khác.`,
+              };
+            }
+
+            return tx.registration.create({
+              data: {
+                competitionId,
+                registrationCode: await this.nextRegistrationCode(),
+                teamName: values.teamName.trim(),
+                teamSize: values.teamSize,
+                captainEmail: captain.email.trim().toLowerCase(),
+                captainPhone: captain.phone.trim(),
+                challengeCategory: toDbCategory(values.challengeCategories?.[0]),
+                challengeCategoryOther: values.otherChallengeCategory?.trim() || null,
+                previousCompetitions: values.previousCompetitions?.trim() || null,
+                notableProject: values.featuredProject,
+                expectations: values.expectations,
+                companyExperience: toDbExperience(values.companyExperience),
+                members: {
+                  create: values.members.map((m, index) => ({
+                    memberIndex: index,
+                    isCaptain: m.role === 'leader',
+                    fullName: m.fullName.trim(),
+                    studentId: m.studentId.trim().toUpperCase(),
+                    major: m.major?.trim() || 'PTIT',
+                    email: m.email.trim().toLowerCase(),
+                    phone: m.phone.trim(),
+                  })),
+                },
+                consents: {
+                  create: buildConsentRows(values).map((c) => ({ ...c, ipHash: ipHash ?? null })),
+                },
+              },
+            });
+          },
+          {
+            isolationLevel: 'Serializable',
+          },
+        );
+
+        await this.addAuditLog('CREATE_REGISTRATION', 'Registration', created.id, { ipHash });
+
+        return {
+          registrationCode: created.registrationCode,
+          submissionId: created.id,
+          submittedAt: created.submittedAt.toISOString(),
+        };
+      } catch (err) {
+        lastError = err;
+        const error = err as { code?: string; status?: number; message?: string };
+        if (error.code === 'DUPLICATE_REGISTRATION' || error.status === 409) {
+          throw err;
+        }
+
+        const duplicateErr = await this.checkDuplicateStudentOrEmail(studentIds, emails);
+        if (duplicateErr) {
+          throw {
+            status: 409,
+            code: 'DUPLICATE_REGISTRATION',
+            message: duplicateErr,
+          };
+        }
+      }
+    }
+
+    throw lastError;
   }
 
   /** Retries on the unique constraint rather than trusting a bare random draw. */
@@ -241,15 +296,18 @@ class DBStore {
       : `Email ${clash.email} đã đăng ký trong đội khác.`;
   }
 
-  public async getPublicTeams(category?: string, status?: string, search?: string): Promise<PublicTeamProfile[]> {
+  public async getPublicTeams(
+    category?: string,
+    status?: string | 'all',
+    search?: string,
+  ): Promise<PublicTeamProfile[]> {
+    const competitionStatus = status && status !== 'all' ? toDbTeamCompetitionStatus(status) : null;
     const rows = await prisma.publicTeamProfile.findMany({
       where: {
         publicationStatus: 'PUBLISHED',
         showTeamProfile: true,
         ...(category && category !== 'all' ? { challengeCategory: toDbCategory(category) } : {}),
-        ...(status && status !== 'all'
-          ? { competitionStatus: status.toUpperCase() as TeamCompetitionStatus }
-          : {}),
+        ...(competitionStatus ? { competitionStatus } : {}),
         ...(search?.trim()
           ? {
               OR: [

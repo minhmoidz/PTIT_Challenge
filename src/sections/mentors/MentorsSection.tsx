@@ -115,18 +115,18 @@ export const MentorsSection = ({ mentors = competitionData.mentors }: Props) => 
               ].map((item, idx) => (
                 <Grid size={{ xs: 12, sm: 4 }} key={idx}>
                   <motion.div variants={fadeInUp}>
-                    <Tilt3DCard maxTilt={5} scale={1.01} glareColor="rgba(56, 130, 241,0.1)">
+                    <Tilt3DCard maxTilt={5} scale={1.01} glareColor="rgba(225, 20, 20,0.08)">
                       <Card
                         sx={{
                           p: 3,
                           borderRadius: '20px',
-                          border: '1.5px dashed rgba(56, 130, 241, 0.3)',
+                          border: '1.5px dashed rgba(225, 20, 20, 0.18)',
                           bgcolor: 'rgba(255, 255, 255, 0.85)',
                           backdropFilter: 'blur(12px)',
                           textAlign: 'center',
                           transition: 'all 0.3s ease',
                           '&:hover': {
-                            borderColor: '#3882F1',
+                            borderColor: piccColors.ptitRed,
                             bgcolor: '#FFFFFF',
                           },
                         }}
@@ -137,8 +137,8 @@ export const MentorsSection = ({ mentors = competitionData.mentors }: Props) => 
                               width: 48,
                               height: 48,
                               borderRadius: '50%',
-                              bgcolor: 'rgba(56, 130, 241, 0.08)',
-                              color: '#3882F1',
+                              bgcolor: 'rgba(225, 20, 20, 0.08)',
+                              color: piccColors.ptitRed,
                               display: 'inline-flex',
                               alignItems: 'center',
                               justifyContent: 'center',
@@ -147,15 +147,15 @@ export const MentorsSection = ({ mentors = competitionData.mentors }: Props) => 
                           >
                             <PersonOutlineRoundedIcon sx={{ fontSize: 24 }} />
                           </Box>
-                          <Typography sx={{ fontWeight: 750, color: '#0F2A52', fontSize: '0.95rem', mb: 0.5 }}>
+                          <Typography sx={{ fontWeight: 750, color: piccColors.ptitNavy, fontSize: '0.95rem', mb: 0.5 }}>
                             {item.title}
                           </Typography>
                           <Chip
                             label={item.sub}
                             size="small"
                             sx={{
-                              bgcolor: '#EFF3F8',
-                              color: '#67788F',
+                              bgcolor: piccColors.slate[100],
+                              color: piccColors.slate[500],
                               fontWeight: 700,
                               fontSize: '0.675rem',
                             }}

@@ -39,7 +39,7 @@ export const EVENT_MILESTONES: EventMilestone[] = [
   {
     id: 'chung-ket',
     order: 4,
-    title: 'Đêm Chung kết & Trao giải',
+    title: 'Giai đoạn Chung kết & Trao giải',
     shortTitle: 'Chung kết',
     dateStr: '02/10/2026 · 23:59',
     dateIso: '2026-10-02T23:59:59+07:00',

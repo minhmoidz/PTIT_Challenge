@@ -32,13 +32,13 @@ export const AdminLoginPage = () => {
       const res = await fetch(`${env.apiBaseUrl}/v1/admin/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ email: email.trim().toLowerCase(), password: password }),
       });
 
       const data = await res.json();
 
       if (res.ok && data.success) {
-        localStorage.setItem('picc_admin_token', data.data.token);
         localStorage.setItem('picc_admin_user', JSON.stringify(data.data.user));
         navigate('/admin/dashboard', { replace: true });
         return;

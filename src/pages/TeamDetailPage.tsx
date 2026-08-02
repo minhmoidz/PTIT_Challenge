@@ -15,7 +15,7 @@ import { TEAM_STATUS_MAP } from '@/types/publicTeam';
 import { piccColors } from '@/theme/palette';
 import { SkyBackground } from '@/components/ui/SkyBackground';
 import { getSkyBackground } from '@/components/ui/skyBackgroundConfig';
-import { appHash } from '@/config/paths';
+import { appHash, appPath } from '@/config/paths';
 
 export const TeamDetailPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -121,7 +121,7 @@ useEffect(() => {
             <MuiLink underline="hover" color="inherit" href={appHash('hero')}>
               Trang chủ
             </MuiLink>
-            <MuiLink underline="hover" color="inherit" href="/doi-thi">
+            <MuiLink underline="hover" color="inherit" href={appPath('/doi-thi')}>
               Đội thi
             </MuiLink>
             <Typography color="text.primary" sx={{ fontWeight: 700 }}>

@@ -24,7 +24,7 @@ export const BenefitsSection = () => {
   return (
     <Box
       sx={{
-        mt: { xs: 7, sm: 8, md: 9, lg: 10 },
+        mt: { xs: 10, md: 14 },
         position: 'relative',
         zIndex: 1,
       }}
@@ -34,21 +34,21 @@ export const BenefitsSection = () => {
         <Chip
           icon={
             <RocketLaunchRoundedIcon
-              sx={{ fontSize: 16, color: `${piccColors.blue[700]} !important` }}
+              sx={{ fontSize: 16, color: `${piccColors.ptitRed} !important` }}
             />
           }
           label="Đặc Quyền Vòng Trong"
           sx={{
-            bgcolor: 'rgba(223, 235, 253, 0.9)',
+            bgcolor: 'rgba(255, 241, 241, 0.9)',
             backdropFilter: 'blur(8px)',
-            color: piccColors.blue[700],
+            color: piccColors.ptitRed,
             fontWeight: 800,
             fontSize: '0.825rem',
             mb: 2.25,
             px: 1.5,
             py: 0.5,
-            border: '1px solid rgba(56, 130, 241, 0.25)',
-            boxShadow: '0 4px 12px rgba(56, 130, 241, 0.08)',
+            border: '1px solid rgba(225, 20, 20, 0.18)',
+            boxShadow: '0 4px 12px rgba(225, 20, 20, 0.08)',
           }}
         />
         <Typography
@@ -94,7 +94,7 @@ export const BenefitsSection = () => {
 
             return (
               <Grid
-                size={{ xs: 12, sm: 6, lg: 4 }}
+                size={{ xs: 12, sm: 6, md: 4 }}
                 key={benefit.id}
                 sx={{ display: 'flex' }}
               >
@@ -118,8 +118,8 @@ export const BenefitsSection = () => {
                         borderRadius: '22px',
                         bgcolor: 'rgba(255, 255, 255, 0.92)',
                         backdropFilter: 'blur(20px)',
-                        border: '1.5px solid rgba(223, 230, 239, 0.85)',
-                        boxShadow: '0 8px 30px rgba(15, 42, 82, 0.05)',
+                        border: '1.5px solid rgba(226, 232, 240, 0.85)',
+                        boxShadow: '0 8px 30px rgba(22, 58, 103, 0.05)',
                         position: 'relative',
                         overflow: 'hidden',
                         display: 'flex',
@@ -225,42 +225,6 @@ export const BenefitsSection = () => {
             );
           })}
         </Grid>
-
-        {/* Closing Central Callout Message */}
-        <Box
-          component={motion.div}
-          variants={fadeInUp}
-          sx={{
-            mt: 4.5,
-            textAlign: 'center',
-          }}
-        >
-          <Box
-            sx={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 1.25,
-              px: { xs: 2.5, sm: 3.5 },
-              py: 1.5,
-              borderRadius: '999px',
-              bgcolor: 'rgba(255, 255, 255, 0.85)',
-              backdropFilter: 'blur(12px)',
-              border: '1px solid rgba(56, 130, 241, 0.2)',
-              boxShadow: '0 4px 16px rgba(15, 42, 82, 0.04)',
-            }}
-          >
-            <AutoAwesomeRoundedIcon sx={{ fontSize: 18, color: piccColors.blue[600] }} />
-            <Typography
-              sx={{
-                fontSize: { xs: '0.85rem', sm: '0.925rem' },
-                fontWeight: 650,
-                color: piccColors.ink,
-              }}
-            >
-              Vào vòng trong là bước khởi đầu cho hành trình phát triển dài hạn — nơi ý tưởng chuyển hóa thành giá trị thực tiễn.
-            </Typography>
-          </Box>
-        </Box>
       </Box>
     </Box>
   );

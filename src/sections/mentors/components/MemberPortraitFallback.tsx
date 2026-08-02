@@ -75,8 +75,8 @@ export const MemberPortraitFallback = ({
         overflow: 'hidden',
         position: 'relative',
         background:
-          'linear-gradient(135deg, #DFEBFD 0%, #F0F4FF 50%, #E0E7FF 100%)',
-        border: '1px solid rgba(56, 130, 241, 0.2)',
+          'linear-gradient(135deg, #FFF1F1 0%, #F4F7FB 50%, #FFF6DC 100%)',
+        border: '1px solid rgba(225, 20, 20, 0.16)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -90,7 +90,7 @@ export const MemberPortraitFallback = ({
           position: 'absolute',
           inset: 0,
           backgroundImage:
-            'radial-gradient(circle, rgba(56, 130, 241, 0.12) 1px, transparent 1px)',
+            'radial-gradient(circle, rgba(225, 20, 20, 0.10) 1px, transparent 1px)',
           backgroundSize: '20px 20px',
           opacity: 0.6,
           pointerEvents: 'none',
@@ -105,7 +105,7 @@ export const MemberPortraitFallback = ({
           width: '75%',
           height: '75%',
           borderRadius: '50%',
-          border: '1.5px dashed rgba(56, 130, 241, 0.25)',
+          border: '1.5px dashed rgba(225, 20, 20, 0.22)',
           pointerEvents: 'none',
         }}
       />
@@ -118,7 +118,7 @@ export const MemberPortraitFallback = ({
           top: 12,
           right: 12,
           opacity: 0.35,
-          color: '#3B7AD6',
+          color: '#C04343',
         }}
       >
         <SchoolRoundedIcon sx={{ fontSize: 22 }} />
@@ -141,8 +141,8 @@ export const MemberPortraitFallback = ({
             height: 64,
             borderRadius: '50%',
             bgcolor: '#FFFFFF',
-            boxShadow: '0 8px 24px rgba(56, 130, 241, 0.15)',
-            border: '2px solid rgba(56, 130, 241, 0.3)',
+            boxShadow: '0 8px 24px rgba(225, 20, 20, 0.12)',
+            border: '2px solid rgba(225, 20, 20, 0.26)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',

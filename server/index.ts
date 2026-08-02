@@ -1,13 +1,17 @@
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import { serverEnv } from './config/env';
 import { CompetitionStatusService } from './services/competitionStatus';
 import { RegistrationService } from './services/registrationService';
 import { AuthService, type AdminUser } from './services/authService';
 import { dbStore } from './db/store';
-import { assertDatabaseReachable } from './db/prisma';
+import { assertDatabaseReachable, prisma } from './db/prisma';
 import { competitionData } from '../src/data/competition';
 import type { RegistrationFormValues } from '../src/types/registration';
+import { RegistrationSchema, mapValidationIssuesToFieldErrors } from '../api/_lib/validation';
+import { toDbTeamCompetitionStatus } from './db/mappers';
+import { getClientIp } from './utils/clientIp';
 
 /* ── Idempotency Store ── */
 const idempotencyStore = new Map<string, { result: unknown; expiresAt: number }>();
@@ -30,13 +34,22 @@ const setIdempotencyResult = (key: string, result: unknown): void => {
 const app = express();
 const PORT = serverEnv.PORT || 3001;
 
+// Only our own nginx sits in front of this process, so exactly one hop is
+// trusted. Leaving this unset would make req.ip the proxy's address; trusting
+// the whole chain would let a client forge it.
+app.set('trust proxy', 1);
+
 /* ── 1. Security & Body Parser Middleware ── */
+// The SPA is served from the same origin as the API by the nginx in front of
+// this process, so browsers send no cross-origin requests in normal operation
+// and CORS_ORIGIN can stay unset. Set it only when the app is served from a
+// different origin than the API.
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:80',
   'http://127.0.0.1:5173',
   'http://127.0.0.1:80',
-  serverEnv.CORS_ORIGIN,
+  ...(serverEnv.CORS_ORIGIN ? serverEnv.CORS_ORIGIN.split(',').map((o) => o.trim()) : []),
 ].filter(Boolean);
 
 app.use(
@@ -52,11 +65,12 @@ app.use(
 );
 
 app.use(express.json({ limit: '128kb' }));
+app.use(cookieParser());
 
 /* ── Simple in-memory sliding-window rate limiter ── */
 const rateLimitBuckets = new Map<string, number[]>();
 const rateLimit = (windowMs: number, max: number) => (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  const key = `${req.path}:${(req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ?? req.ip ?? 'unknown'}`;
+  const key = `${req.path}:${getClientIp(req)}`;
   const now = Date.now();
   const hits = (rateLimitBuckets.get(key) ?? []).filter((t) => now - t < windowMs);
   if (hits.length >= max) {
@@ -80,10 +94,11 @@ declare global {
   }
 }
 
-const requireAdminAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+const requireAdminAuth = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   const header = req.headers.authorization;
-  const token = header?.startsWith('Bearer ') ? header.slice('Bearer '.length) : undefined;
-  const user = AuthService.verifyToken(token);
+  const bearer = header?.startsWith('Bearer ') ? header.slice('Bearer '.length) : undefined;
+  const token = bearer ?? req.cookies?.picc_session;
+  const user = await AuthService.verifyToken(token);
   if (!user) {
     return res.status(401).json({
       success: false,
@@ -93,6 +108,19 @@ const requireAdminAuth = (req: express.Request, res: express.Response, next: exp
   req.adminUser = user;
   next();
 };
+
+const requireAdminPermission =
+  (...permissions: string[]) =>
+  (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const user = req.adminUser;
+    if (!user || !AuthService.hasAnyPermission(user, permissions)) {
+      return res.status(403).json({
+        success: false,
+        error: { code: 'FORBIDDEN', message: 'Tài khoản không có quyền thực hiện thao tác này.' },
+      });
+    }
+    next();
+  };
 
 /* ── Security Headers Middleware ── */
 app.use((_req, res, next) => {
@@ -139,13 +167,6 @@ const openApiSpec = {
     '/api/v1/public/milestones': {
       get: {
         summary: 'Lấy mốc thời gian cuộc thi (Timeline)',
-        tags: ['Public API'],
-        responses: { '200': { description: 'Thành công' } }
-      }
-    },
-    '/api/v1/public/faqs': {
-      get: {
-        summary: 'Lấy danh sách câu hỏi FAQ',
         tags: ['Public API'],
         responses: { '200': { description: 'Thành công' } }
       }
@@ -293,8 +314,13 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString(), service: 'PICC 2026 Core API' });
 });
 
-app.get('/health/ready', (_req, res) => {
-  res.json({ status: 'ready', database: 'connected', timestamp: new Date().toISOString() });
+app.get('/health/ready', async (_req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ status: 'ready', database: 'connected', timestamp: new Date().toISOString() });
+  } catch {
+    res.status(503).json({ status: 'not_ready', database: 'disconnected', timestamp: new Date().toISOString() });
+  }
 });
 
 /* ── 3. PUBLIC API ENDPOINTS (/api/v1/public/*) ── */
@@ -317,7 +343,7 @@ app.get('/api/public-config', (_req, res) => {
       openAt: status.openAt,
       closeAt: status.closeAt,
       allowSubmissions: status.registrationAvailable,
-      explicitlyDisabled: !status.registrationAvailable,
+      explicitlyDisabled: status.currentStatus === 'paused',
       statusMessage: status.statusMessage,
     },
     teamSize: {
@@ -333,11 +359,6 @@ app.get('/api/public-config', (_req, res) => {
 // 3.2 Public Milestones / Timeline
 app.get('/api/v1/public/milestones', (_req, res) => {
   res.json({ success: true, data: competitionData.timeline });
-});
-
-// 3.3 Public FAQs
-app.get('/api/v1/public/faqs', (_req, res) => {
-  res.json({ success: true, data: competitionData.faq });
 });
 
 // 3.4 Public Prizes
@@ -378,10 +399,20 @@ app.get('/api/v1/public/mentors', (_req, res) => {
 // 3.8 Public Teams List
 app.get('/api/v1/public/teams', async (req, res) => {
   const category = req.query.category as string;
-  const status = req.query.status as string;
+  const status = req.query.status as string | 'all' | undefined;
   const search = req.query.search as string;
 
-  const teams = await dbStore.getPublicTeams(category, status, search);
+  if (status && status !== 'all' && !toDbTeamCompetitionStatus(status)) {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: 'Trạng thái đội thi không hợp lệ.',
+      },
+    });
+  }
+
+  const teams = await dbStore.getPublicTeams(category, status ?? undefined, search);
   const finalists = teams.filter((t) => t.competitionStatus === 'finalist' || t.competitionStatus === 'winner');
 
   res.json({
@@ -420,24 +451,46 @@ const handleRegistrationSubmit = async (req: express.Request, res: express.Respo
     }
   }
 
-  const clientIp = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ?? req.ip ?? 'unknown';
+  const parsed = RegistrationSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: 'Dữ liệu đăng ký chưa hợp lệ.',
+        requestId: `req_${Date.now()}`,
+        fieldErrors: mapValidationIssuesToFieldErrors(parsed.error.issues),
+      },
+    });
+  }
+
+  const clientIp = getClientIp(req);
 
   try {
-    const payload = req.body as RegistrationFormValues;
+    const payload = parsed.data as RegistrationFormValues;
     const result = await RegistrationService.processRegistration(payload, clientIp);
     if (idempotencyKey) {
       setIdempotencyResult(idempotencyKey, result);
     }
     res.status(201).json(result);
   } catch (err: unknown) {
-    const errorObj = err as { status?: number; code?: string; message?: string };
-    const statusCode = errorObj.status || 400;
+    const errorObj = err as {
+      status?: number;
+      code?: string;
+      message?: string;
+      fieldErrors?: Record<string, string>;
+    };
+    const statusCode = errorObj.status ?? 500;
     res.status(statusCode).json({
       success: false,
       error: {
-        code: errorObj.code || 'VALIDATION_ERROR',
-        message: errorObj.message || 'Dữ liệu đăng ký chưa hợp lệ.',
+        code: statusCode >= 500 ? 'INTERNAL_ERROR' : errorObj.code || 'VALIDATION_ERROR',
+        message:
+          statusCode >= 500
+            ? 'Hệ thống đang gặp sự cố. Hồ sơ của bạn vẫn được lưu tạm trên thiết bị, vui lòng thử lại sau ít phút.'
+            : errorObj.message || 'Dữ liệu đăng ký chưa hợp lệ.',
         requestId: `req_${Date.now()}`,
+        ...(errorObj.fieldErrors ? { fieldErrors: errorObj.fieldErrors } : {}),
       },
     });
   }
@@ -470,11 +523,30 @@ app.post('/api/v1/admin/auth/login', rateLimit(60_000, 10), async (req, res) => 
     });
   }
 
+  res.cookie('picc_session', result.token, {
+    httpOnly: true,
+    secure: serverEnv.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 24 * 60 * 60 * 1000,
+  });
+
   res.json({ success: true, data: result });
 });
 
+// 4.1b Session self-check — returns the authenticated admin (cookie or Bearer).
+app.get('/api/v1/admin/auth/me', requireAdminAuth, (_req, res) => {
+  res.json({ success: true, data: { user: _req.adminUser } });
+});
+
+// 4.1c Logout — clears the httpOnly session cookie.
+app.post('/api/v1/admin/auth/logout', (_req, res) => {
+  res.clearCookie('picc_session', { httpOnly: true, secure: serverEnv.NODE_ENV === 'production', sameSite: 'lax', path: '/' });
+  res.json({ success: true });
+});
+
 // 4.2 Admin Dashboard Summary Metrics
-app.get('/api/v1/admin/dashboard/summary', requireAdminAuth, async (_req, res) => {
+app.get('/api/v1/admin/dashboard/summary', requireAdminAuth, requireAdminPermission('dashboard.read'), async (_req, res) => {
   const registrations = await dbStore.getRegistrations();
 
   res.json({
@@ -490,7 +562,7 @@ app.get('/api/v1/admin/dashboard/summary', requireAdminAuth, async (_req, res) =
 });
 
 // 4.3 Admin List Registrations
-app.get('/api/v1/admin/registrations', requireAdminAuth, async (_req, res) => {
+app.get('/api/v1/admin/registrations', requireAdminAuth, requireAdminPermission('registration.read'), async (_req, res) => {
   const list = await dbStore.getRegistrations();
   res.json({ success: true, data: list });
 });
@@ -505,7 +577,7 @@ const REVIEWABLE_STATUSES = [
   'WITHDRAWN',
 ] as const;
 
-app.patch('/api/v1/admin/registrations/:id/status', requireAdminAuth, async (req, res) => {
+app.patch('/api/v1/admin/registrations/:id/status', requireAdminAuth, requireAdminPermission('registration.review'), async (req, res) => {
   const { status, rejectionReason } = req.body ?? {};
 
   if (!REVIEWABLE_STATUSES.includes(status)) {
@@ -544,19 +616,19 @@ app.patch('/api/v1/admin/registrations/:id/status', requireAdminAuth, async (req
 });
 
 // 4.3c Admin Team Profiles — every profile, not just the published ones
-app.get('/api/v1/admin/teams', requireAdminAuth, async (_req, res) => {
+app.get('/api/v1/admin/teams', requireAdminAuth, requireAdminPermission('publicTeam.read'), async (_req, res) => {
   const teams = await dbStore.getAllTeamProfiles();
   res.json({ success: true, data: { teams, total: teams.length } });
 });
 
 // 4.4 Admin Get Competition Time & Override Configuration
-app.get('/api/v1/admin/competition/config', requireAdminAuth, (_req, res) => {
+app.get('/api/v1/admin/competition/config', requireAdminAuth, requireAdminPermission('competition.read'), (_req, res) => {
   const status = CompetitionStatusService.getStatus();
   res.json({ success: true, data: status });
 });
 
 // 4.5 Admin Update Competition Time & Override Configuration
-app.patch('/api/v1/admin/competition/config', requireAdminAuth, async (req, res) => {
+app.patch('/api/v1/admin/competition/config', requireAdminAuth, requireAdminPermission('competition.update'), async (req, res) => {
   const { openAt, closeAt, statusOverride } = req.body ?? {};
 
   try {
@@ -588,7 +660,7 @@ const sanitizeCsvCell = (val: string | number | boolean | undefined | null): str
 };
 
 // 4.7 Admin Export All Registrations to Excel CSV Endpoint
-app.get('/api/v1/admin/registrations/export', requireAdminAuth, async (_req, res) => {
+app.get('/api/v1/admin/registrations/export', requireAdminAuth, requireAdminPermission('registration.export'), async (_req, res) => {
   const registrations = await dbStore.getRegistrations();
   dbStore.addAuditLog('EXPORT_REGISTRATIONS', 'Registration', 'all');
 
@@ -651,7 +723,25 @@ app.get('/api/v1/admin/registrations/export', requireAdminAuth, async (_req, res
   res.status(200).send(csvContent);
 });
 
-/* ── 5. Start Express API Server ── */
+/* ── 5. Global Error Handler (must be registered last) ── */
+app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  const known = err as { status?: number; code?: string; message?: string };
+  const statusCode = known.status ?? 500;
+  console.error('[Server] Unhandled error:', err);
+  res.status(statusCode).json({
+    success: false,
+    error: {
+      code: statusCode >= 500 ? 'INTERNAL_ERROR' : known.code || 'VALIDATION_ERROR',
+      message:
+        statusCode >= 500
+          ? 'Hệ thống đang gặp sự cố. Vui lòng thử lại sau ít phút.'
+          : known.message || 'Yêu cầu không hợp lệ.',
+      requestId: `req_${Date.now()}`,
+    },
+  });
+});
+
+/* ── 6. Start Express API Server ── */
 const start = async () => {
   // Refuse to serve if the database is unreachable: a booting server that
   // accepts registrations it cannot store is worse than one that fails.

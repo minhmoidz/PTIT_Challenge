@@ -1,32 +1,47 @@
+# PICC 2026 — the whole stack behind one HTTP port.
+#
+# This publishes a single plain-HTTP port for an upstream reverse proxy to point
+# at. TLS, the public hostname and HSTS belong to that upstream proxy.
+#
+# The mount path is a RUNTIME setting: change APP_BASE_PATH and restart, no
+# rebuild. See .env.example for the handful of variables that matter.
 services:
-  cloudflared:
-    container_name: picc-cloudflared
-    image: cloudflare/cloudflared:latest
-    restart: unless-stopped
-    command: tunnel --no-autoupdate run
-    environment:
-      TUNNEL_TOKEN: "${CLOUDFLARE_TUNNEL_TOKEN:-}"
-    depends_on:
-      - nginx
-
   nginx:
-    container_name: nginx
+    container_name: picc-nginx
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        VITE_BASE_PATH: "${VITE_BASE_PATH:-/cuocthi/}"
-        VITE_PUBLIC_API_BASE_URL: "${VITE_PUBLIC_API_BASE_URL:-/cuocthi/api}"
-        VITE_PUBLIC_SITE_URL: "${VITE_PUBLIC_SITE_URL:-https://challenge.p-tech.xyz/cuocthi/}"
         VITE_APP_ENV: "${VITE_APP_ENV:-production}"
     ports:
-      - "80:80"
+      # Bound to loopback by default so the port is not world-reachable before
+      # the upstream proxy is in place. Set APP_BIND=0.0.0.0 to expose it, and
+      # firewall it to the upstream proxy's address.
+      - "${APP_BIND:-127.0.0.1}:${APP_PORT:-8080}:80"
     environment:
       BACKEND_URL: "http://picc-api:3001"
-    volumes:
-      - picc-data:/usr/share/nginx/html/data:ro
+      # Public path on the upstream origin: "/" or e.g. "/cuocthi/".
+      APP_BASE_PATH: "${APP_BASE_PATH:-/}"
+      # MUST include the upstream proxy, or every visitor shares one rate-limit
+      # bucket and registration locks up after five submissions site-wide.
+      TRUSTED_PROXY_CIDRS: "${TRUSTED_PROXY_CIDRS:-127.0.0.1 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16}"
     depends_on:
-      - api
+      api:
+        condition: service_healthy
+    healthcheck:
+      # 127.0.0.1 (not localhost): wget resolves localhost to ::1 first, but
+      # nginx listens on IPv4 only, so the check would spuriously fail.
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   api:
     container_name: picc-api
@@ -35,19 +50,41 @@ services:
       dockerfile: Dockerfile.api
     expose:
       - "3001"
-    volumes:
-      - picc-data:/app/data
+    init: true
+    security_opt:
+      - no-new-privileges:true
     environment:
       PORT: 3001
       NODE_ENV: production
-      CORS_ORIGIN: "${CORS_ORIGIN:-https://challenge.p-tech.xyz}"
-      DATABASE_URL: "${DATABASE_URL:-}"
+      # Normally unset: nginx serves the SPA and the API from one origin, so
+      # browser requests are same-origin. Comma-separated list if ever needed.
+      CORS_ORIGIN: "${CORS_ORIGIN:-}"
+      DATABASE_URL: "${DATABASE_URL:?DATABASE_URL is required (postgresql://...). See .env.example}"
       DIRECT_URL: "${DIRECT_URL:-}"
-      JWT_SECRET: "${JWT_SECRET:-picc2026-super-secret-jwt-key-change-in-prod-789213!}"
+      JWT_SECRET: "${JWT_SECRET:?JWT_SECRET is required - generate with: openssl rand -base64 48}"
       PICC_REGISTRATION_OPEN_AT: "${PICC_REGISTRATION_OPEN_AT:-2026-08-01T00:00:00+07:00}"
       PICC_REGISTRATION_CLOSE_AT: "${PICC_REGISTRATION_CLOSE_AT:-2026-08-15T23:59:59+07:00}"
       PICC_REGISTRATION_ENABLED: "${PICC_REGISTRATION_ENABLED:-true}"
-
-volumes:
-  picc-data:
-
+      # Optional SMTP for confirmation emails. Leave SMTP_HOST unset to disable.
+      SMTP_HOST: "${SMTP_HOST:-}"
+      SMTP_PORT: "${SMTP_PORT:-587}"
+      SMTP_USER: "${SMTP_USER:-}"
+      SMTP_PASSWORD: "${SMTP_PASSWORD:-}"
+      MAIL_FROM: "${MAIL_FROM:-}"
+      # Optional: seeds the first SUPER_ADMIN when the users table is empty.
+      PICC_ADMIN_EMAIL: "${PICC_ADMIN_EMAIL:-}"
+      PICC_ADMIN_PASSWORD: "${PICC_ADMIN_PASSWORD:-}"
+    healthcheck:
+      # /health/ready also verifies the database connection, so a degraded DB
+      # marks the container unhealthy instead of silently dropping registrations.
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 25s
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

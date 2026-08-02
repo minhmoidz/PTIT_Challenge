@@ -147,11 +147,25 @@ export const FormStep3 = ({ onEdit }: Props) => {
               </Typography>
             }
           />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                {...register('commitments.privacyAcknowledged')}
+                color="primary"
+              />
+            }
+            label={
+              <Typography sx={{ fontSize: '0.85rem', fontWeight: 600, color: piccColors.slate[700] }}>
+                {competitionData.form.commitment.checkboxes[3]}
+              </Typography>
+            }
+          />
         </FormGroup>
 
         {errors.commitments && (
           <Typography variant="caption" color="error" sx={{ mt: 1.5, display: 'block', fontWeight: 700 }}>
-            ⚠️ Vui lòng đánh dấu hoàn thành cả 03 cam kết bắt buộc để gửi biểu mẫu đăng ký.
+            ⚠️ Vui lòng đánh dấu hoàn thành đầy đủ các cam kết và xác nhận bảo mật bắt buộc để gửi biểu mẫu đăng ký.
           </Typography>
         )}
       </Box>

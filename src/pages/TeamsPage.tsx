@@ -20,7 +20,7 @@ import { Top6Section } from '@/sections/teams/Top6Section';
 import { piccColors } from '@/theme/palette';
 import { SkyBackground } from '@/components/ui/SkyBackground';
 import { getSkyBackground } from '@/components/ui/skyBackgroundConfig';
-import { appHash } from '@/config/paths';
+import { appHash, appPath } from '@/config/paths';
 
 export const TeamsPage = () => {
   const { status } = useRegistrationStatus();
@@ -306,7 +306,7 @@ export const TeamsPage = () => {
             ) : (
               <Button
                 variant="contained"
-                href={status === 'open' ? '/dang-ky' : '/#lo-trinh'}
+                href={status === 'open' ? appPath('/dang-ky') : appHash('lo-trinh')}
                 endIcon={<AutoAwesomeRoundedIcon />}
                 sx={{
                   borderRadius: 999,

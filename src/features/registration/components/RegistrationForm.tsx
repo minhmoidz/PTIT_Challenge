@@ -225,6 +225,7 @@ export const RegistrationForm = () => {
         );
         if (result.success) {
           clearDraft();
+          sessionStorage.setItem('picc-registration-result', JSON.stringify(result.data));
           navigate('/dang-ky/thanh-cong', { replace: true });
         }
       } catch (err: unknown) {
@@ -264,7 +265,15 @@ export const RegistrationForm = () => {
 
   const renderStepContent = () => {
     switch (activeStep) {
-      case 0: return <FormStep1 teamMin={teamMin} teamMax={teamMax} />;
+      case 0:
+        return (
+          <FormStep1
+            teamMin={teamMin}
+            teamMax={teamMax}
+            challengeMode={config.challengeSelection.mode}
+            maxSelections={config.challengeSelection.maxSelections}
+          />
+        );
       case 1: return <FormStep2 teamMin={teamMin} teamMax={teamMax} />;
       case 2: return <FormStep3 onEdit={(step) => setActiveStep(step)} />;
       default: return null;
