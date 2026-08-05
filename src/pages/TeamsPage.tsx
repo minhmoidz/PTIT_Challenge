@@ -15,6 +15,7 @@ import type {
 } from '@/types/publicTeam';
 import { useRegistrationStatus } from '@/features/registration/hooks';
 import { TeamCard } from '@/sections/teams/TeamCard';
+import { TeamTableView } from '@/sections/teams/TeamTableView';
 import { TeamFilter } from '@/sections/teams/TeamFilter';
 import { Top6Section } from '@/sections/teams/Top6Section';
 import { piccColors } from '@/theme/palette';
@@ -34,6 +35,9 @@ export const TeamsPage = () => {
   const [category, setCategory] = useState<ChallengeCategoryType | 'all'>('all');
   const [teamStatus, setTeamStatus] = useState<TeamCompetitionStatus | 'all'>('all');
   const [search, setSearch] = useState<string>('');
+
+  /* ── Display Mode State (Table View vs Grid View) ── */
+  const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -212,7 +216,7 @@ export const TeamsPage = () => {
           </Grid>
         )}
 
-        {/* ── Filters & Search ── */}
+        {/* ── Filters & Search & View Mode Switcher ── */}
         <TeamFilter
           selectedCategory={category}
           onSelectCategory={setCategory}
@@ -221,6 +225,8 @@ export const TeamsPage = () => {
           searchQuery={search}
           onSearchChange={setSearch}
           showSearch={totalCount >= 10 || search !== ''}
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
         />
 
         {/* ── Top 6 Finalists Section (Only if published finalists exist) ── */}
@@ -321,6 +327,8 @@ export const TeamsPage = () => {
               </Button>
             )}
           </Paper>
+        ) : viewMode === 'table' ? (
+          <TeamTableView teams={teams} />
         ) : (
           <Grid container spacing={3}>
             {teams.map((team) => (
@@ -336,3 +344,5 @@ export const TeamsPage = () => {
 };
 
 export default TeamsPage;
+
+

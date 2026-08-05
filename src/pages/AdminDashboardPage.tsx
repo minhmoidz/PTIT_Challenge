@@ -17,6 +17,7 @@ import {
   Form,
   Input as AntInput,
   Radio,
+  Switch,
   Tooltip,
   Badge,
   message,
@@ -121,6 +122,7 @@ export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSe
   const [openAt, setOpenAt] = useState('2026-08-01T00:00');
   const [closeAt, setCloseAt] = useState('2026-08-15T23:59');
   const [statusOverride, setStatusOverride] = useState<'auto' | 'open' | 'paused' | 'closed' | 'live' | 'completed'>('auto');
+  const [registrationEnabled, setRegistrationEnabled] = useState(true);
   const [configSaving, setConfigSaving] = useState(false);
   const [reviewingId, setReviewingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -176,6 +178,7 @@ export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSe
           if (cfgData.data.openAt) setOpenAt(formatToLocalDatetime(cfgData.data.openAt));
           if (cfgData.data.closeAt) setCloseAt(formatToLocalDatetime(cfgData.data.closeAt));
           if (cfgData.data.statusOverride) setStatusOverride(cfgData.data.statusOverride);
+          if (typeof cfgData.data.registrationEnabled === 'boolean') setRegistrationEnabled(cfgData.data.registrationEnabled);
         }
       }
 
@@ -299,12 +302,13 @@ export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSe
     setConfigSaving(true);
     try {
       const res = await authFetch(`${env.apiBaseUrl}/v1/admin/competition/config`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           openAt: new Date(openAt).toISOString(),
           closeAt: new Date(closeAt).toISOString(),
           statusOverride,
+          registrationEnabled,
         }),
       });
 
@@ -782,8 +786,26 @@ export const AdminDashboardPage = ({ section = 'overview' }: { section?: AdminSe
                   <Radio value="closed">
                     <strong>Đóng cổng (Closed)</strong> — Đã hết hạn đăng ký
                   </Radio>
+                  <Radio value="live">
+                    <strong>Đang diễn ra (Live)</strong> — Cuộc thi đã bắt đầu, cổng vẫn nhận đơn
+                  </Radio>
+                  <Radio value="completed">
+                    <strong>Đã kết thúc (Completed)</strong> — Cuộc thi đã khép lại
+                  </Radio>
                 </Space>
               </Radio.Group>
+            </Form.Item>
+
+            <Form.Item
+              label={<Text style={{ fontWeight: 700 }}>Cho phép tiếp nhận đăng ký</Text>}
+              extra="Tắt nhanh cổng đăng ký khi cần (khẩn cấp, trùng ngày...) mà không đổi thời gian mở/đóng."
+            >
+              <Switch
+                checked={registrationEnabled}
+                onChange={(checked) => setRegistrationEnabled(checked)}
+                checkedChildren="Đang mở"
+                unCheckedChildren="Đã tắt"
+              />
             </Form.Item>
 
             <Form.Item>

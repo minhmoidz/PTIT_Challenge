@@ -44,12 +44,6 @@ export default defineConfig(({ mode, command }) => {
     server: {
       port: 5173,
       proxy: {
-        '/cuocthi/api': {
-          target: 'http://localhost:3001',
-          changeOrigin: true,
-          secure: false,
-          rewrite: (path) => path.replace(/^\/cuocthi/, ''),
-        },
         '/api': {
           target: 'http://localhost:3001',
           changeOrigin: true,

@@ -1,6 +1,18 @@
-import { Box, Chip, TextField, InputAdornment, IconButton, MenuItem } from '@mui/material';
+import {
+  Box,
+  Chip,
+  TextField,
+  InputAdornment,
+  IconButton,
+  MenuItem,
+  ToggleButtonGroup,
+  ToggleButton,
+  Tooltip,
+} from '@mui/material';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
+import TableRowsRoundedIcon from '@mui/icons-material/TableRowsRounded';
+import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
 import type { ChallengeCategoryType, TeamCompetitionStatus } from '@/types/publicTeam';
 import { CATEGORY_LABEL_MAP } from '@/types/publicTeam';
 import { piccColors } from '@/theme/palette';
@@ -13,6 +25,8 @@ interface Props {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   showSearch: boolean;
+  viewMode: 'table' | 'grid';
+  onViewModeChange: (mode: 'table' | 'grid') => void;
 }
 
 const CATEGORY_OPTIONS: { value: ChallengeCategoryType | 'all'; label: string }[] = [
@@ -39,6 +53,8 @@ export const TeamFilter = ({
   searchQuery,
   onSearchChange,
   showSearch,
+  viewMode,
+  onViewModeChange,
 }: Props) => {
   return (
     <Box sx={{ mb: 4 }}>
@@ -59,6 +75,7 @@ export const TeamFilter = ({
             flexWrap: 'wrap',
             gap: 1,
             alignItems: 'center',
+            flex: 1,
           }}
         >
           {CATEGORY_OPTIONS.map((opt) => {
@@ -91,34 +108,105 @@ export const TeamFilter = ({
           })}
         </Box>
 
-        {/* Status Dropdown Filter */}
-        <Box sx={{ minWidth: { xs: '100%', sm: 200 } }}>
-          <TextField
-            select
-            fullWidth
+        {/* Right Controls: Status Dropdown Filter & View Mode Switcher */}
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1.5,
+            minWidth: { xs: '100%', sm: 'auto' },
+          }}
+        >
+          <Box sx={{ minWidth: { xs: '100%', sm: 180 }, flex: { xs: 1, sm: 'none' } }}>
+            <TextField
+              select
+              fullWidth
+              size="small"
+              value={selectedStatus}
+              onChange={(e) => onSelectStatus(e.target.value as TeamCompetitionStatus | 'all')}
+              sx={{
+                bgcolor: '#FFFFFF',
+                borderRadius: 3,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 3,
+                  fontWeight: 700,
+                  fontSize: '0.85rem',
+                },
+              }}
+            >
+              {STATUS_OPTIONS.map((opt) => (
+                <MenuItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
+
+          {/* View Mode Toggle */}
+          <ToggleButtonGroup
+            value={viewMode}
+            exclusive
+            onChange={(_, newMode) => {
+              if (newMode) onViewModeChange(newMode);
+            }}
             size="small"
-            value={selectedStatus}
-            onChange={(e) => onSelectStatus(e.target.value as TeamCompetitionStatus | 'all')}
             sx={{
               bgcolor: '#FFFFFF',
-              borderRadius: 3,
-              '& .MuiOutlinedInput-root': {
-                borderRadius: 3,
-                fontWeight: 700,
-                fontSize: '0.85rem',
-              },
+              borderRadius: '12px',
+              p: 0.5,
+              border: `1px solid ${piccColors.slate[200]}`,
+              boxShadow: '0 2px 6px rgba(15, 42, 82, 0.03)',
+              height: 40,
             }}
           >
-            {STATUS_OPTIONS.map((opt) => (
-              <MenuItem key={opt.value} value={opt.value}>
-                {opt.label}
-              </MenuItem>
-            ))}
-          </TextField>
+            <Tooltip title="Xem dạng bảng" arrow>
+              <ToggleButton
+                value="table"
+                sx={{
+                  borderRadius: '8px !important',
+                  border: 'none',
+                  px: 1.25,
+                  py: 0.5,
+                  color: piccColors.slate[600],
+                  '&.Mui-selected': {
+                    bgcolor: piccColors.blue[600],
+                    color: '#FFFFFF',
+                    '&:hover': {
+                      bgcolor: piccColors.blue[700],
+                    },
+                  },
+                }}
+              >
+                <TableRowsRoundedIcon sx={{ fontSize: 19 }} />
+              </ToggleButton>
+            </Tooltip>
+
+            <Tooltip title="Xem dạng thẻ" arrow>
+              <ToggleButton
+                value="grid"
+                sx={{
+                  borderRadius: '8px !important',
+                  border: 'none',
+                  px: 1.25,
+                  py: 0.5,
+                  color: piccColors.slate[600],
+                  '&.Mui-selected': {
+                    bgcolor: piccColors.blue[600],
+                    color: '#FFFFFF',
+                    '&:hover': {
+                      bgcolor: piccColors.blue[700],
+                    },
+                  },
+                }}
+              >
+                <GridViewRoundedIcon sx={{ fontSize: 19 }} />
+              </ToggleButton>
+            </Tooltip>
+          </ToggleButtonGroup>
         </Box>
       </Box>
 
-      {/* Search Input Bar (Conditionally rendered when showSearch is true or when user is searching) */}
+      {/* Search Input Bar */}
       {(showSearch || searchQuery !== '') && (
         <Box sx={{ maxWidth: 540 }}>
           <TextField
@@ -158,3 +246,4 @@ export const TeamFilter = ({
     </Box>
   );
 };
+

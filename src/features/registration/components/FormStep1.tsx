@@ -34,6 +34,9 @@ export const FormStep1 = ({ teamMin, teamMax, challengeMode = 'multiple', maxSel
 
   const rawCategories = useWatch({ control, name: 'challengeCategories' });
   const categories = Array.isArray(rawCategories) ? rawCategories : [];
+  const featuredProjectLen = (useWatch({ control, name: 'featuredProject' }) ?? '').length;
+  const expectationsLen = (useWatch({ control, name: 'expectations' }) ?? '').length;
+  const prevCompetitionsLen = (useWatch({ control, name: 'previousCompetitions' }) ?? '').length;
 
   return (
     <Box>
@@ -158,7 +161,7 @@ export const FormStep1 = ({ teamMin, teamMax, challengeMode = 'multiple', maxSel
             placeholder="doitruong@ptit.edu.vn"
             {...register('members.0.email')}
             error={!!errors.members?.[0]?.email}
-            helperText={errors.members?.[0]?.email?.message}
+            helperText={errors.members?.[0]?.email?.message || 'VD: doi_truong@ptit.edu.vn'}
           />
         </Grid>
 
@@ -170,7 +173,7 @@ export const FormStep1 = ({ teamMin, teamMax, challengeMode = 'multiple', maxSel
             inputMode="tel"
             {...register('members.0.phone')}
             error={!!errors.members?.[0]?.phone}
-            helperText={errors.members?.[0]?.phone?.message}
+            helperText={errors.members?.[0]?.phone?.message || 'VD: 0912 345 678 (bắt đầu 0, đủ 10 số)'}
           />
         </Grid>
 
@@ -246,7 +249,11 @@ export const FormStep1 = ({ teamMin, teamMax, challengeMode = 'multiple', maxSel
             placeholder="Ghi tên cuộc thi, năm tham gia và thành tích nếu có..."
             {...register('previousCompetitions')}
             error={!!errors.previousCompetitions}
-            helperText={errors.previousCompetitions?.message}
+            helperText={
+              errors.previousCompetitions?.message ||
+              (prevCompetitionsLen > 0 ? `${prevCompetitionsLen}/500 ký tự` : 'Không bắt buộc, tối đa 500 ký tự')
+            }
+            inputProps={{ maxLength: 500 }}
           />
         </Grid>
 
@@ -259,7 +266,10 @@ export const FormStep1 = ({ teamMin, teamMax, challengeMode = 'multiple', maxSel
             placeholder="Mô tả dự án, vai trò thành viên và kết quả đạt được..."
             {...register('featuredProject')}
             error={!!errors.featuredProject}
-            helperText={errors.featuredProject?.message || 'Tối đa 1500 ký tự'}
+            helperText={
+              errors.featuredProject?.message ||
+              (featuredProjectLen > 0 ? `${featuredProjectLen}/1500 ký tự` : 'Tối đa 1500 ký tự')
+            }
             inputProps={{ maxLength: 1500 }}
           />
         </Grid>
@@ -273,7 +283,10 @@ export const FormStep1 = ({ teamMin, teamMax, challengeMode = 'multiple', maxSel
             placeholder="Đội mong muốn học hỏi hay đạt được điều gì sau PICC 2026?"
             {...register('expectations')}
             error={!!errors.expectations}
-            helperText={errors.expectations?.message || 'Tối đa 1000 ký tự'}
+            helperText={
+              errors.expectations?.message ||
+              (expectationsLen > 0 ? `${expectationsLen}/1000 ký tự` : 'Tối đa 1000 ký tự')
+            }
             inputProps={{ maxLength: 1000 }}
           />
         </Grid>

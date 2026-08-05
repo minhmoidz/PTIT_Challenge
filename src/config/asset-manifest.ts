@@ -4,7 +4,7 @@ import { assetPath } from './paths';
 export const assetManifest: Record<string, PiccAsset> = {
   heroAvatar: {
     id: 'heroAvatar',
-    src: assetPath('assets/branding/ptit-iec-logo-2026.png'),
+    src: assetPath('assets/branding/logo_picc.png?v=2026'),
     usage: 'production-candidate',
     approvalStatus: 'unresolved',
     containsText: false,

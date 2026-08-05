@@ -5,6 +5,9 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import type { RegistrationFormValues } from '@/types/registration';
 import { piccColors } from '@/theme/palette';
 
+const PHONE_HINT = 'VD: 0912 345 678 (bắt đầu 0, đủ 10 số)';
+const EMAIL_HINT = 'VD: ten@ptit.edu.vn';
+
 interface FormStep2Props {
   teamMin: number;
   teamMax: number;
@@ -107,7 +110,7 @@ export const FormStep2 = ({ teamMin, teamMax }: FormStep2Props) => {
               placeholder="doitruong@ptit.edu.vn"
               {...register('members.0.email')}
               error={!!errors.members?.[0]?.email}
-              helperText={errors.members?.[0]?.email?.message}
+              helperText={errors.members?.[0]?.email?.message || EMAIL_HINT}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
@@ -118,7 +121,7 @@ export const FormStep2 = ({ teamMin, teamMax }: FormStep2Props) => {
               inputMode="tel"
               {...register('members.0.phone')}
               error={!!errors.members?.[0]?.phone}
-              helperText={errors.members?.[0]?.phone?.message}
+              helperText={errors.members?.[0]?.phone?.message || PHONE_HINT}
             />
           </Grid>
         </Grid>
@@ -179,7 +182,7 @@ export const FormStep2 = ({ teamMin, teamMax }: FormStep2Props) => {
                 placeholder={`thanhvien${index + 1}@example.com`}
                 {...register(`members.${index}.email` as const)}
                 error={!!errors.members?.[index]?.email}
-                helperText={errors.members?.[index]?.email?.message}
+                helperText={errors.members?.[index]?.email?.message || EMAIL_HINT}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
@@ -190,7 +193,7 @@ export const FormStep2 = ({ teamMin, teamMax }: FormStep2Props) => {
                 inputMode="tel"
                 {...register(`members.${index}.phone` as const)}
                 error={!!errors.members?.[index]?.phone}
-                helperText={errors.members?.[index]?.phone?.message}
+                helperText={errors.members?.[index]?.phone?.message || PHONE_HINT}
               />
             </Grid>
           </Grid>

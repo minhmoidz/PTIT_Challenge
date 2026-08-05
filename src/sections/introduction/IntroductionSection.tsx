@@ -1,4 +1,4 @@
-import { Container, Typography, Grid, Card, CardContent, Box, Chip } from '@mui/material';
+import { Container, Typography, Grid, Card, CardContent, Box, Chip, Paper } from '@mui/material';
 import { motion, useReducedMotion } from 'motion/react';
 import BusinessCenterRounded from '@mui/icons-material/BusinessCenterRounded';
 import GroupsRounded from '@mui/icons-material/GroupsRounded';
@@ -158,85 +158,192 @@ export const IntroductionSection = () => {
         </motion.div>
       </Box>
 
-      {/* Mở đầu chi tiết */}
+      {/* ── Editorial 2-Column Grid: Sứ Mệnh & Trải Nghiệm PICC 2026 ── */}
       <Box
         component={motion.div}
         variants={fadeInUp}
         initial="hidden"
         whileInView="visible"
-        whileHover={prefersReducedMotion ? undefined : { y: -5 }}
         viewport={{ once: true, amount: 0.2 }}
         sx={{
-          position: 'relative',
-          maxWidth: 920,
+          maxWidth: 1040,
           mx: 'auto',
-          mb: { xs: 6, md: 7 },
-          p: { xs: 3, sm: 4, md: 4.5 },
-          pt: { xs: 3.5, sm: 4.5, md: 5 },
-          borderRadius: '24px',
-          bgcolor: 'rgba(255, 255, 255, 0.72)',
-          backdropFilter: 'blur(14px)',
-          border: '1px solid rgba(226, 232, 240, 0.85)',
-          boxShadow: '0 10px 32px rgba(22, 58, 103, 0.05)',
-          overflow: 'hidden',
-          transition: 'box-shadow 0.3s ease',
-          '&:hover': {
-            boxShadow: '0 18px 44px rgba(22, 58, 103, 0.10)',
-          },
+          mb: { xs: 7, md: 9 },
         }}
       >
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 4,
-            background: 'linear-gradient(90deg, #E11414 0%, #E7C34D 50%, #0F2A52 100%)',
-          }}
-        />
-        <Box
-          component={motion.div}
-          aria-hidden
-          animate={prefersReducedMotion ? undefined : { rotate: [0, 12, 0] }}
-          transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-          sx={{
-            position: 'absolute',
-            top: 20,
-            right: 24,
-            width: 56,
-            height: 56,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(201, 154, 57, 0.22), transparent 70%)',
-            filter: 'blur(6px)',
-            pointerEvents: 'none',
-          }}
-        />
-        <Typography
-          sx={{
-            position: 'relative',
-            zIndex: 1,
-            fontSize: { xs: '1rem', md: '1.06rem' },
-            lineHeight: 1.85,
-            color: piccColors.ink,
-            fontWeight: 600,
-            mb: 2.5,
-          }}
-        >
-          {introduction.expanded.lead}
-        </Typography>
-        <Typography
-          sx={{
-            position: 'relative',
-            zIndex: 1,
-            fontSize: { xs: '0.95rem', md: '1rem' },
-            lineHeight: 1.85,
-            color: piccColors.slate[600],
-            fontWeight: 450,
-          }}
-        >
-          {introduction.expanded.supporting}
-        </Typography>
+        <Grid container spacing={{ xs: 2.5, md: 3.5 }} alignItems="stretch">
+          {/* Card 1: Trải nghiệm Bài toán Thực tế */}
+          <Grid size={{ xs: 12, md: 6 }} sx={{ display: 'flex' }}>
+            <Paper
+              elevation={0}
+              sx={{
+                width: '100%',
+                p: { xs: 3.5, sm: 4, md: 4.5 },
+                borderRadius: '20px',
+                bgcolor: '#FFFFFF',
+                border: '1px solid rgba(223, 230, 239, 0.9)',
+                boxShadow: '0 10px 30px rgba(15, 42, 82, 0.04)',
+                position: 'relative',
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  borderColor: piccColors.ptitRed,
+                  boxShadow: '0 18px 42px rgba(225, 20, 20, 0.12)',
+                },
+              }}
+            >
+              {/* Top Brand Accent Bar */}
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 4,
+                  bgcolor: piccColors.ptitRed,
+                }}
+              />
+
+              <Box sx={{ mb: 2.5 }}>
+                <Chip
+                  icon={
+                    <LightbulbRounded
+                      sx={{ fontSize: '14px !important', color: `${piccColors.ptitRed} !important` }}
+                    />
+                  }
+                  label="CHUYỂN ĐỔI SỐ & LIÊN NGÀNH"
+                  size="small"
+                  sx={{
+                    bgcolor: 'rgba(255, 241, 241, 0.9)',
+                    color: piccColors.ptitRed,
+                    fontWeight: 800,
+                    fontSize: '0.7rem',
+                    letterSpacing: '0.06em',
+                    px: 1,
+                    py: 0.3,
+                    mb: 2,
+                    border: '1px solid rgba(225, 20, 20, 0.2)',
+                  }}
+                />
+
+                <Typography
+                  variant="h3"
+                  component="h3"
+                  sx={{
+                    fontSize: { xs: '1.25rem', sm: '1.4rem' },
+                    fontWeight: 850,
+                    color: piccColors.ink,
+                    lineHeight: 1.35,
+                    letterSpacing: '-0.015em',
+                  }}
+                >
+                  Trải nghiệm Quy trình Giải quyết Bài toán Thực tế
+                </Typography>
+              </Box>
+
+              <Typography
+                sx={{
+                  fontSize: { xs: '0.95rem', sm: '1rem' },
+                  color: piccColors.slate[700],
+                  lineHeight: 1.75,
+                  fontWeight: 450,
+                  flexGrow: 1,
+                }}
+              >
+                {introduction.expanded.lead}
+              </Typography>
+            </Paper>
+          </Grid>
+
+          {/* Card 2: Bản lĩnh Chiến lược & Mentor */}
+          <Grid size={{ xs: 12, md: 6 }} sx={{ display: 'flex' }}>
+            <Paper
+              elevation={0}
+              sx={{
+                width: '100%',
+                p: { xs: 3.5, sm: 4, md: 4.5 },
+                borderRadius: '20px',
+                bgcolor: '#FFFFFF',
+                border: '1px solid rgba(223, 230, 239, 0.9)',
+                boxShadow: '0 10px 30px rgba(15, 42, 82, 0.04)',
+                position: 'relative',
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  borderColor: piccColors.blue[600],
+                  boxShadow: '0 18px 42px rgba(56, 130, 241, 0.14)',
+                },
+              }}
+            >
+              {/* Top Brand Accent Bar */}
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 4,
+                  bgcolor: piccColors.blue[600],
+                }}
+              />
+
+              <Box sx={{ mb: 2.5 }}>
+                <Chip
+                  icon={
+                    <GroupsRounded
+                      sx={{ fontSize: '14px !important', color: `${piccColors.blue[700]} !important` }}
+                    />
+                  }
+                  label="MENTOR & DOANH NGHIỆP"
+                  size="small"
+                  sx={{
+                    bgcolor: 'rgba(241, 246, 254, 0.9)',
+                    color: piccColors.blue[800],
+                    fontWeight: 800,
+                    fontSize: '0.7rem',
+                    letterSpacing: '0.06em',
+                    px: 1,
+                    py: 0.3,
+                    mb: 2,
+                    border: '1px solid rgba(56, 130, 241, 0.25)',
+                  }}
+                />
+
+                <Typography
+                  variant="h3"
+                  component="h3"
+                  sx={{
+                    fontSize: { xs: '1.25rem', sm: '1.4rem' },
+                    fontWeight: 850,
+                    color: piccColors.ink,
+                    lineHeight: 1.35,
+                    letterSpacing: '-0.015em',
+                  }}
+                >
+                  Bồi dưỡng Tư duy Chiến lược &amp; Bản lĩnh Thực chiến
+                </Typography>
+              </Box>
+
+              <Typography
+                sx={{
+                  fontSize: { xs: '0.95rem', sm: '1rem' },
+                  color: piccColors.slate[700],
+                  lineHeight: 1.75,
+                  fontWeight: 450,
+                  flexGrow: 1,
+                }}
+              >
+                {introduction.expanded.supporting}
+              </Typography>
+            </Paper>
+          </Grid>
+        </Grid>
       </Box>
 
       {/* Điểm nhấn nổi bật */}

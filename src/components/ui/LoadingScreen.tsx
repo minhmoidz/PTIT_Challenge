@@ -48,7 +48,7 @@ export const LoadingScreen = () => (
       >
         <Box
           component="img"
-          src={assetPath('assets/branding/ptit-iec-logo-2026.png')}
+          src={assetPath('assets/branding/logo_picc.png?v=2026')}
           alt="PTIT IEC"
           sx={{ width: '78%', height: '78%', objectFit: 'contain' }}
         />

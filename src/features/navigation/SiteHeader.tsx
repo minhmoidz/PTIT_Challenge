@@ -271,7 +271,7 @@ export const SiteHeader = () => {
               />
               <Box
                 component="img"
-                src={assetPath('assets/branding/ptit-iec-logo-2026.png')}
+                src={assetPath('assets/branding/logo_picc.png?v=2026')}
                 alt="PTIT IEC"
                 sx={{ width: { xs: 38, md: 40 }, height: { xs: 38, md: 40 }, objectFit: 'contain' }}
               />

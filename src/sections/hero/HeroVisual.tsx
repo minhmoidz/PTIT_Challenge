@@ -36,86 +36,70 @@ const computeTimeDiff = (targetDate: Date | null): CountdownState => {
 const DigitBlock = ({
   value,
   label,
-  isLast,
 }: {
   value: number;
   label: string;
-  isLast?: boolean;
 }) => (
-  <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
-    <Box
-      sx={{
-        flex: 1,
-        minWidth: 0,
-        textAlign: 'center',
-        py: { xs: 1.1, sm: 1.35 },
-        px: { xs: 0.25, sm: 0.5 },
-        background: 'linear-gradient(180deg, #FFFFFF 0%, #F4F7FB 100%)',
-        border: '1.5px solid rgba(210, 221, 237, 0.9)',
-        borderRadius: '14px',
+  <Box
+    sx={{
+      flex: 1,
+      minWidth: 0,
+      aspectRatio: '1 / 1.05',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      p: { xs: 0.75, sm: 1 },
+      background: 'linear-gradient(180deg, #FFFFFF 0%, #F6F8FC 100%)',
+      border: '1.5px solid rgba(203, 213, 225, 0.9)',
+      borderRadius: '18px',
+      boxShadow:
+        '0 4px 14px -2px rgba(15, 42, 82, 0.07), 0 2px 4px rgba(15, 42, 82, 0.03), inset 0 1.5px 0 #FFFFFF',
+      transition: 'all 0.25s ease',
+      '&:hover': {
+        transform: 'translateY(-2px)',
+        background: 'linear-gradient(180deg, #FFFFFF 0%, #EEF4FD 100%)',
+        borderColor: 'rgba(225, 20, 20, 0.4)',
         boxShadow:
-          '0 4px 14px -2px rgba(15, 42, 82, 0.08), 0 2px 4px rgba(15, 42, 82, 0.04), inset 0 1.5px 0 #FFFFFF',
-        transition: 'all 0.25s ease',
-        '&:hover': {
-          transform: 'translateY(-2px)',
-          background: 'linear-gradient(180deg, #FFFFFF 0%, #EEF4FD 100%)',
-          borderColor: 'rgba(225, 20, 20, 0.4)',
-          boxShadow:
-            '0 8px 20px -2px rgba(225, 20, 20, 0.18), 0 3px 8px rgba(15, 42, 82, 0.06), inset 0 1.5px 0 #FFFFFF',
-        },
+          '0 8px 20px -2px rgba(225, 20, 20, 0.16), 0 3px 8px rgba(15, 42, 82, 0.06), inset 0 1.5px 0 #FFFFFF',
+      },
+    }}
+  >
+    <Typography
+      sx={{
+        fontSize: { xs: '1.35rem', sm: '1.65rem', md: '1.85rem' },
+        fontWeight: 850,
+        color: '#0F2A52',
+        lineHeight: 1,
+        fontFamily: '"Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        fontVariantNumeric: 'tabular-nums',
+        letterSpacing: '-0.02em',
+        whiteSpace: 'nowrap',
       }}
     >
-      <Typography
-        sx={{
-          fontSize: { xs: '1.35rem', sm: '1.65rem', md: '1.75rem', lg: '1.9rem' },
-          fontWeight: 900,
-          color: '#0F2A52',
-          lineHeight: 1,
-          fontVariantNumeric: 'tabular-nums',
-          letterSpacing: '-0.035em',
-        }}
+      <motion.span
+        key={value}
+        initial={{ opacity: 0, y: -3 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2 }}
+        aria-live="off"
       >
-        <motion.span
-          key={value}
-          initial={{ opacity: 0, y: -4 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
-          style={{ display: 'block' }}
-          aria-live="off"
-        >
-          {String(value).padStart(2, '0')}
-        </motion.span>
-      </Typography>
-      <Typography
-        sx={{
-          fontSize: { xs: '0.62rem', sm: '0.68rem' },
-          fontWeight: 800,
-          color: piccColors.slate[500],
-          textTransform: 'uppercase',
-          letterSpacing: '0.06em',
-          mt: 0.4,
-        }}
-      >
-        {label}
-      </Typography>
-    </Box>
-
-    {!isLast && (
-      <Typography
-        aria-hidden="true"
-        sx={{
-          fontSize: { xs: '1rem', sm: '1.25rem' },
-          fontWeight: 900,
-          color: 'rgba(15, 42, 82, 0.28)',
-          mx: { xs: 0.1, sm: 0.25 },
-          alignSelf: 'center',
-          userSelect: 'none',
-          flexShrink: 0,
-        }}
-      >
-        :
-      </Typography>
-    )}
+        {String(value).padStart(2, '0')}
+      </motion.span>
+    </Typography>
+    <Typography
+      sx={{
+        fontSize: { xs: '0.62rem', sm: '0.7rem', md: '0.75rem' },
+        fontWeight: 800,
+        color: piccColors.slate[500],
+        textTransform: 'uppercase',
+        letterSpacing: '0.06em',
+        mt: 0.5,
+        whiteSpace: 'nowrap',
+      }}
+    >
+      {label}
+    </Typography>
   </Box>
 );
 
@@ -189,7 +173,7 @@ export const HeroVisual = ({
       onMouseLeave={handleMouseLeave}
       sx={{
         width: '100%',
-        maxWidth: { xs: 440, sm: 520, md: 660, lg: 700 },
+        maxWidth: { xs: 500, sm: 600, md: 780, lg: 840 },
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -211,24 +195,24 @@ export const HeroVisual = ({
           width: '100%',
           position: 'relative',
           zIndex: 5,
-          borderRadius: '28px',
+          borderRadius: '30px',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: { xs: 'column', md: 'row' },
           background: '#FFFFFF',
-          boxShadow: '0 24px 60px -12px rgba(15, 42, 82, 0.2), 0 0 0 1px rgba(15, 42, 82, 0.08)',
+          boxShadow: '0 28px 70px -12px rgba(15, 42, 82, 0.2), 0 0 0 1px rgba(15, 42, 82, 0.08)',
         }}
       >
         {/* Left Side: Logo & Brand Area */}
         <Box
           sx={{
-            width: { xs: '100%', md: '38%' },
+            width: { xs: '100%', md: '44%' },
             position: 'relative',
-            background: `radial-gradient(ellipse at 50% 40%, rgba(225, 20, 20, 0.12) 0%, rgba(216, 229, 245, 0) 70%), linear-gradient(150deg, #EBF2FA 0%, #D8E5F5 100%)`,
+            background: `radial-gradient(ellipse at 50% 40%, rgba(225, 20, 20, 0.14) 0%, rgba(216, 229, 245, 0) 70%), linear-gradient(150deg, #EBF2FA 0%, #D8E5F5 100%)`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            p: { xs: 2.5, sm: 3, md: 2.5 },
+            p: { xs: 3.5, sm: 4, md: 3.5 },
             borderRight: { md: '1px solid rgba(15, 42, 82, 0.08)' },
             borderBottom: { xs: '1px solid rgba(15, 42, 82, 0.08)', md: 'none' },
           }}
@@ -238,7 +222,7 @@ export const HeroVisual = ({
             sx={{
               position: 'absolute',
               inset: 0,
-              opacity: 0.12,
+              opacity: 0.14,
               backgroundImage: 'radial-gradient(rgba(15, 42, 82, 0.4) 1px, transparent 0)',
               backgroundSize: '14px 14px',
               pointerEvents: 'none',
@@ -249,7 +233,15 @@ export const HeroVisual = ({
             component={motion.div}
             animate={prefersReducedMotion ? {} : { y: [0, -5, 0] }}
             transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-            sx={{ width: { xs: 160, sm: 190, md: 200 }, display: 'flex', position: 'relative', zIndex: 1 }}
+            sx={{
+              width: '100%',
+              maxWidth: { xs: 240, sm: 290, md: 330 },
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'relative',
+              zIndex: 1,
+            }}
           >
             {logoSrc ? (
               <Box
@@ -259,9 +251,10 @@ export const HeroVisual = ({
                 sx={{
                   width: '100%',
                   height: 'auto',
+                  maxHeight: { xs: 200, md: 250 },
                   display: 'block',
                   objectFit: 'contain',
-                  filter: 'drop-shadow(0 8px 24px rgba(15, 42, 82, 0.15))',
+                  filter: 'drop-shadow(0 10px 28px rgba(15, 42, 82, 0.16))',
                 }}
               />
             ) : (
@@ -273,8 +266,8 @@ export const HeroVisual = ({
         {/* Right Side: Countdown & Event Status Details */}
         <Box
           sx={{
-            width: { xs: '100%', md: '62%' },
-            p: { xs: 2.25, sm: 2.75, md: 2.75 },
+            width: { xs: '100%', md: '56%' },
+            p: { xs: 2.75, sm: 3.25, md: 3.25 },
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
@@ -302,8 +295,8 @@ export const HeroVisual = ({
 const LogoFallback = () => (
   <Box
     sx={{
-      width: 170,
-      height: 170,
+      width: 190,
+      height: 190,
       borderRadius: '24px',
       background: 'linear-gradient(135deg, #0F2A52 0%, #1F3C63 100%)',
       display: 'flex',
@@ -312,7 +305,7 @@ const LogoFallback = () => (
       boxShadow: '0 12px 32px rgba(15, 42, 82,0.3)',
     }}
   >
-    <Typography sx={{ color: '#fff', fontWeight: 900, fontSize: '2.2rem', letterSpacing: '-0.04em' }}>
+    <Typography sx={{ color: '#fff', fontWeight: 900, fontSize: '2.5rem', letterSpacing: '-0.04em' }}>
       PICC
     </Typography>
   </Box>
@@ -342,24 +335,24 @@ const CountdownCard = ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        mb: 1.25,
+        mb: 1.5,
         flexWrap: 'wrap',
         gap: 1,
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
         <Chip
-          icon={<AutoAwesomeRoundedIcon sx={{ fontSize: '13px !important', color: `${piccColors.ptitRed} !important` }} />}
+          icon={<AutoAwesomeRoundedIcon sx={{ fontSize: '14px !important', color: `${piccColors.ptitRed} !important` }} />}
           label="MỐC SỰ KIỆN TIẾP THEO"
           size="small"
           sx={{
             background: 'linear-gradient(135deg, rgba(255, 241, 241, 0.95) 0%, rgba(255, 226, 226, 0.8) 100%)',
             color: piccColors.ptitRed,
             fontWeight: 800,
-            fontSize: '0.65rem',
+            fontSize: '0.7rem',
             letterSpacing: '0.08em',
-            height: 23,
-            px: 0.75,
+            height: 25,
+            px: 1,
             border: '1px solid rgba(225, 20, 20, 0.2)',
             boxShadow: '0 2px 6px rgba(225, 20, 20, 0.08)',
           }}
@@ -367,11 +360,11 @@ const CountdownCard = ({
       </Box>
 
       {activeMilestone?.dateStr && (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: piccColors.slate[500] }}>
-          <AccessTimeRoundedIcon sx={{ fontSize: 13, color: piccColors.ptitRed }} />
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6, color: piccColors.slate[500] }}>
+          <AccessTimeRoundedIcon sx={{ fontSize: 14, color: piccColors.ptitRed }} />
           <Typography
             sx={{
-              fontSize: '0.75rem',
+              fontSize: '0.825rem',
               fontWeight: 750,
               color: piccColors.slate[600],
               fontVariantNumeric: 'tabular-nums',
@@ -388,11 +381,11 @@ const CountdownCard = ({
       variant="h3"
       component="h3"
       sx={{
-        fontSize: { xs: '1.2rem', sm: '1.35rem', md: '1.4rem' },
+        fontSize: { xs: '1.3rem', sm: '1.5rem', md: '1.65rem' },
         fontWeight: 850,
         color: '#0F2A52',
         lineHeight: 1.25,
-        mb: 2,
+        mb: 2.25,
         letterSpacing: '-0.015em',
       }}
     >
@@ -404,8 +397,8 @@ const CountdownCard = ({
       sx={{
         display: 'flex',
         alignItems: 'center',
-        gap: { xs: 0.4, sm: 0.75 },
-        mb: 2.25,
+        gap: { xs: 1, sm: 1.25, md: 1.5 },
+        mb: 2.5,
       }}
       role="timer"
       aria-label={`Đếm ngược mốc sự kiện: ${countdown.days} ngày ${countdown.hours} giờ ${countdown.minutes} phút ${countdown.seconds} giây`}
@@ -413,7 +406,7 @@ const CountdownCard = ({
       <DigitBlock value={countdown.days} label="Ngày" />
       <DigitBlock value={countdown.hours} label="Giờ" />
       <DigitBlock value={countdown.minutes} label="Phút" />
-      <DigitBlock value={countdown.seconds} label="Giây" isLast />
+      <DigitBlock value={countdown.seconds} label="Giây" />
     </Box>
 
     {/* ── TIER 4: Footer Progress & Action ── */}

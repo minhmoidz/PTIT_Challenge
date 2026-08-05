@@ -6,13 +6,11 @@ import { piccColors } from '@/theme/palette';
 import { footer } from '@/content/vi/footer';
 import { appHash, appPath, assetPath } from '@/config/paths';
 
-/* ── Shared type scale ─────────────────────────────────────────
-   Labels sit at 72% white and values at full white. On the crimson
-   background that keeps every pair above 4.5:1. */
+/* ── Shared type scale ───────────────────────────────────────── */
 const labelSx = {
   fontSize: '0.8125rem',
   fontWeight: 500,
-  color: 'rgba(255, 255, 255, 0.72)',
+  color: piccColors.slate[400],
   mb: 0.5,
   lineHeight: 1.4,
 } as const;
@@ -26,7 +24,7 @@ const valueSx = {
 
 const dividerSx = {
   height: '1px',
-  bgcolor: 'rgba(255, 255, 255, 0.16)',
+  bgcolor: 'rgba(255, 255, 255, 0.08)',
   border: 0,
 } as const;
 
@@ -37,25 +35,28 @@ const SocialButton = ({ label, href, icon }: { label: string; href: string; icon
     rel="noopener noreferrer"
     aria-label={label}
     sx={{
-      width: 44,
-      height: 44,
+      width: 42,
+      height: 42,
       borderRadius: '50%',
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
-      bgcolor: 'rgba(255, 255, 255, 0.14)',
+      bgcolor: 'rgba(255, 255, 255, 0.08)',
       color: '#FFFFFF',
-      transition: 'background-color 0.2s ease, transform 0.2s ease',
+      border: '1px solid rgba(255, 255, 255, 0.12)',
+      transition: 'all 0.25s ease',
       '&:hover': {
-        bgcolor: 'rgba(255, 255, 255, 0.26)',
+        bgcolor: piccColors.ptitRed,
+        borderColor: piccColors.ptitRed,
         transform: 'translateY(-2px)',
+        boxShadow: '0 6px 16px rgba(225, 20, 20, 0.35)',
       },
     }}
   >
     {icon === 'facebook' ? (
-      <FacebookRoundedIcon sx={{ fontSize: 21 }} />
+      <FacebookRoundedIcon sx={{ fontSize: 20 }} />
     ) : (
-      <LanguageRoundedIcon sx={{ fontSize: 21 }} />
+      <LanguageRoundedIcon sx={{ fontSize: 20 }} />
     )}
   </Link>
 );
@@ -93,10 +94,10 @@ export const FooterSection = () => {
         overflow: 'hidden',
         color: '#FFFFFF',
         fontFamily: '"Manrope", sans-serif',
-        background: `linear-gradient(180deg, ${piccColors.ptitRed} 0%, ${piccColors.ptitDarkRed} 62%, ${piccColors.red[800]} 100%)`,
+        background: 'linear-gradient(180deg, #0B192C 0%, #06101E 100%)',
       }}
     >
-      {/* Top Accent Gradient Transition Ribbon */}
+      {/* Top Accent Gradient Ribbon */}
       <Box
         aria-hidden="true"
         sx={{
@@ -105,12 +106,12 @@ export const FooterSection = () => {
           left: 0,
           right: 0,
           height: 4,
-          background: 'linear-gradient(90deg, #E11414 0%, #E7C34D 50%, #0F2A52 100%)',
+          background: 'linear-gradient(90deg, #E11414 0%, #E7C34D 50%, #3882F1 100%)',
           zIndex: 2,
         }}
       />
-      {/* Oversized brand mark, barely visible — the same trick the official PTIT
-          portals use to stop a large flat red panel from reading as empty. */}
+
+      {/* Oversized Subtle Background Brand Mark */}
       <Box
         aria-hidden="true"
         component="img"
@@ -118,18 +119,19 @@ export const FooterSection = () => {
         alt=""
         sx={{
           position: 'absolute',
-          right: { xs: '-18%', md: '4%' },
+          right: { xs: '-20%', md: '3%' },
           top: '50%',
           transform: 'translateY(-50%)',
-          width: { xs: 420, md: 560 },
-          opacity: 0.05,
+          width: { xs: 380, md: 540 },
+          opacity: 0.035,
+          filter: 'invert(1) brightness(2)',
           pointerEvents: 'none',
           userSelect: 'none',
         }}
       />
 
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1, px: { xs: 3, sm: 4 } }}>
-        {/* ── Masthead: institution lockup + socials ── */}
+        {/* ── Masthead: Institution Lockup with Clear White Badge Logo + Socials ── */}
         <Box
           sx={{
             display: 'flex',
@@ -141,19 +143,37 @@ export const FooterSection = () => {
             pb: { xs: 4, md: 5 },
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.25 }}>
+            {/* White Glass Card Badge for PTIT Logo */}
             <Box
-              component="img"
-              src={assetPath('assets/branding/ptit-logo.png')}
-              alt={footer.institution}
-              sx={{ width: { xs: 52, md: 62 }, height: 'auto', objectFit: 'contain', flexShrink: 0 }}
-            />
+              sx={{
+                width: { xs: 56, md: 68 },
+                height: { xs: 56, md: 68 },
+                borderRadius: '16px',
+                bgcolor: '#FFFFFF',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                p: 1,
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                flexShrink: 0,
+              }}
+            >
+              <Box
+                component="img"
+                src={assetPath('assets/branding/ptit-logo.png')}
+                alt={footer.institution}
+                sx={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              />
+            </Box>
+
             <Box>
               <Typography
                 sx={{
-                  fontSize: { xs: '0.875rem', md: '1rem' },
+                  fontSize: { xs: '0.85rem', md: '0.95rem' },
                   fontWeight: 600,
-                  color: 'rgba(255, 255, 255, 0.86)',
+                  color: piccColors.slate[300],
                   lineHeight: 1.35,
                 }}
               >
@@ -163,11 +183,14 @@ export const FooterSection = () => {
                 component="p"
                 sx={{
                   fontSize: { xs: '1.15rem', sm: '1.4rem', md: '1.6rem' },
-                  fontWeight: 800,
+                  fontWeight: 850,
                   letterSpacing: '0.01em',
                   textTransform: 'uppercase',
                   lineHeight: 1.2,
                   mt: 0.25,
+                  background: `linear-gradient(135deg, #FFFFFF 0%, ${piccColors.slate[200]} 100%)`,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
                 }}
               >
                 {footer.portalName}
@@ -175,7 +198,7 @@ export const FooterSection = () => {
             </Box>
           </Box>
 
-          <Box sx={{ display: 'flex', gap: 1.5, flexShrink: 0 }}>
+          <Box sx={{ display: 'flex', gap: 1.25, flexShrink: 0 }}>
             {footer.socials.map((s) => (
               <SocialButton key={s.label} {...s} />
             ))}
@@ -195,7 +218,7 @@ export const FooterSection = () => {
                   sx={{
                     ...valueSx,
                     textDecoration: 'none',
-                    '&:hover': { textDecoration: 'underline' },
+                    '&:hover': { color: piccColors.blue[400], textDecoration: 'underline' },
                   }}
                 >
                   {item.value}
@@ -214,11 +237,11 @@ export const FooterSection = () => {
           <Typography
             component="h2"
             sx={{
-              fontSize: '0.9375rem',
-              fontWeight: 600,
+              fontSize: '0.85rem',
+              fontWeight: 700,
               letterSpacing: '0.12em',
               textTransform: 'uppercase',
-              color: 'rgba(255, 255, 255, 0.72)',
+              color: piccColors.slate[400],
               mb: { xs: 2.5, md: 3.5 },
             }}
           >
@@ -245,8 +268,8 @@ export const FooterSection = () => {
                             ...valueSx,
                             display: 'inline-block',
                             textDecoration: 'none',
-                            transition: 'opacity 0.2s ease, transform 0.2s ease',
-                            '&:hover': { opacity: 0.78, transform: 'translateX(3px)' },
+                            transition: 'all 0.2s ease',
+                            '&:hover': { color: piccColors.blue[400], transform: 'translateX(3px)' },
                           }}
                         >
                           {link.label}
@@ -262,14 +285,14 @@ export const FooterSection = () => {
       </Container>
 
       {/* ── Copyright bar ── */}
-      <Box sx={{ position: 'relative', zIndex: 1, bgcolor: 'rgba(0, 0, 0, 0.16)' }}>
+      <Box sx={{ position: 'relative', zIndex: 1, bgcolor: 'rgba(0, 0, 0, 0.4)', borderTop: '1px solid rgba(255, 255, 255, 0.05)' }}>
         <Container maxWidth="lg" sx={{ px: { xs: 3, sm: 4 } }}>
           <Typography
             sx={{
               py: 2.5,
               textAlign: 'center',
               fontSize: { xs: '0.8125rem', md: '0.875rem' },
-              color: 'rgba(255, 255, 255, 0.82)',
+              color: piccColors.slate[400],
               lineHeight: 1.6,
             }}
           >
@@ -282,3 +305,4 @@ export const FooterSection = () => {
 };
 
 export default FooterSection;
+

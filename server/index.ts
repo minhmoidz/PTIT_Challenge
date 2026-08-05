@@ -669,10 +669,10 @@ app.get('/api/v1/admin/competition/config', requireAdminAuth, requireAdminPermis
 
 // 4.5 Admin Update Competition Time & Override Configuration
 app.patch('/api/v1/admin/competition/config', requireAdminAuth, requireAdminPermission('competition.update'), async (req, res) => {
-  const { openAt, closeAt, statusOverride } = req.body ?? {};
+  const { openAt, closeAt, statusOverride, registrationEnabled } = req.body ?? {};
 
   try {
-    await CompetitionStatusService.updateConfig({ openAt, closeAt, statusOverride });
+    await CompetitionStatusService.updateConfig({ openAt, closeAt, statusOverride, registrationEnabled });
   } catch (err: unknown) {
     const e = err as { status?: number; code?: string; message?: string };
     return res.status(e.status ?? 400).json({
@@ -683,7 +683,7 @@ app.patch('/api/v1/admin/competition/config', requireAdminAuth, requireAdminPerm
 
   await dbStore.addAuditLog('UPDATE_COMPETITION_CONFIG', 'Competition', 'picc-2026', {
     actorUserId: req.adminUser!.id,
-    afterData: { openAt, closeAt, statusOverride },
+    afterData: { openAt, closeAt, statusOverride, registrationEnabled },
   });
 
   res.json({ success: true, data: CompetitionStatusService.getStatus() });

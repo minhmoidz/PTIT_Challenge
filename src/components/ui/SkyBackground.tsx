@@ -25,8 +25,8 @@ import { VARIANTS, type SkyVariant, type SkyVariantConfig, type CloudConfig } fr
 export type { SkyVariant, SkyVariantConfig, CloudConfig } from './skyBackgroundConfig';
 
 /* ────────────────────────────────────────────────
-   Glow decoration
-───────────────────────────────────────────────── */
+   Glow decoration (static soft light field)
+──────────────────────────────────────────────── */
 const AtmosphericGlow = ({ glow }: { glow: SkyVariantConfig['glows'][0] }) => (
   <Box
     aria-hidden="true"
@@ -80,7 +80,7 @@ const RealisticCloud = ({
   flipX?: boolean;
   depth: 0 | 1 | 2;
 }) => {
-  const blurPx = depth === 0 ? 4 : depth === 1 ? 2 : 0;
+  const blurPx = depth === 0 ? 2 : depth === 1 ? 1 : 0;
   const height = width * 0.46;
   const idSuffix = useId().replace(/[^a-zA-Z0-9_-]/g, '');
 
@@ -102,10 +102,10 @@ const RealisticCloud = ({
       <defs>
         {/* Organic Water Vapor Noise Distortion Filter */}
         <filter id={`cloudOrganic_${idSuffix}`} x="-20%" y="-20%" width="140%" height="140%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="4" result="noise" />
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="22" xChannelSelector="R" yChannelSelector="G" result="displaced" />
-          <feGaussianBlur in="displaced" stdDeviation="3.5" result="blurred" />
-          <feDropShadow dx="0" dy="8" stdDeviation="10" floodColor="#0F2A52" floodOpacity="0.08" />
+          <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="4" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="11" xChannelSelector="R" yChannelSelector="G" result="displaced" />
+          <feGaussianBlur in="displaced" stdDeviation="1.6" result="blurred" />
+          <feDropShadow dx="0" dy="7" stdDeviation="8" floodColor="#0F2A52" floodOpacity="0.05" />
         </filter>
 
         {/* Sunlight Scattered Vapor Gradient */}
@@ -153,6 +153,8 @@ const AnimatedCloud = ({ cfg }: { cfg: CloudConfig }) => {
   const scale = cfg.depth === 0 ? 1.0 : cfg.depth === 1 ? 1.25 : 1.5;
   const width = cfg.baseW * scale;
   const prefersReducedMotion = useReducedMotion();
+  // Almost static: a barely-there drift so the sky feels calm, not busy.
+  const drift = cfg.travel * 0.35;
 
   return (
     <Box
@@ -173,11 +175,11 @@ const AnimatedCloud = ({ cfg }: { cfg: CloudConfig }) => {
           prefersReducedMotion
             ? undefined
             : {
-                x: [0, cfg.travel, 0],
+                x: [0, drift, 0],
                 transition: {
-                  duration: cfg.dur,
+                  duration: cfg.dur * 1.6,
                   delay: cfg.delay,
-                  ease: 'linear',
+                  ease: 'easeInOut',
                   repeat: Infinity,
                 },
               }

@@ -90,6 +90,7 @@ export const RegistrationForm = () => {
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(0);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [stepError, setStepError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [idempotencyKey] = useState(() => crypto.randomUUID());
 
@@ -170,6 +171,7 @@ export const RegistrationForm = () => {
   useEffect(() => {
     const subscription = methods.watch((values) => {
       saveDraft(values as RegistrationFormValues);
+      setStepError(null);
     });
     return () => subscription.unsubscribe();
   }, [methods]);
@@ -201,13 +203,27 @@ export const RegistrationForm = () => {
 
     const valid = await trigger(fieldsToValidate);
     if (valid) {
+      setStepError(null);
       setActiveStep((prev) => Math.min(prev + 1, 2));
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      setStepError(
+        '⚠️ Còn một số ô chưa điền hoặc chưa đúng định dạng. Vui lòng kiểm tra các ô được đánh dấu đỏ để hoàn thành bước này.',
+      );
+      window.setTimeout(() => {
+        const firstError = document.querySelector(
+          '#registration-form .Mui-error, #registration-form [class*="Mui-error"]',
+        );
+        if (firstError instanceof HTMLElement) {
+          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 60);
     }
   }, [activeStep, trigger, getValues]);
 
   const handleBack = useCallback(() => {
     setActiveStep((prev) => Math.max(prev - 1, 0));
+    setStepError(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
@@ -300,6 +316,7 @@ export const RegistrationForm = () => {
     clearDraft();
     reset(defaultValues);
     setActiveStep(0);
+    setStepError(null);
   };
 
   const renderStepContent = () => {
@@ -370,6 +387,7 @@ export const RegistrationForm = () => {
       <FormProvider {...methods}>
         <Box
           component="form"
+          id="registration-form"
           onSubmit={handleSubmit(onSubmit)}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && activeStep < 2) {
@@ -385,6 +403,12 @@ export const RegistrationForm = () => {
           {submitError && (
             <Alert severity="error" sx={{ mb: 4, borderRadius: 3, fontWeight: 600 }}>
               {submitError}
+            </Alert>
+          )}
+
+          {stepError && (
+            <Alert severity="warning" sx={{ mb: 3, borderRadius: 3, fontWeight: 600 }}>
+              {stepError}
             </Alert>
           )}
 

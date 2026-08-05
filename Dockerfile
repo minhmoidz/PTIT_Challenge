@@ -3,12 +3,17 @@ WORKDIR /app
 RUN npm install -g pnpm@11
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
-COPY . .
+# Copy only what the SPA build needs. With `COPY . .` any change under server/,
+# api/, prisma/ or scripts/ invalidated this build's cache and forced a full
+# vite rebuild. Restricting the copy keeps those layers cached across deploys.
 # The mount path is NOT baked in here. Production builds emit relative asset
 # URLs and read the path from the <base href> that docker-entrypoint.sh injects
 # at container start, so this image works at any prefix without a rebuild.
 ARG VITE_APP_ENV=production
 ENV VITE_APP_ENV=${VITE_APP_ENV}
+COPY src ./src
+COPY public ./public
+COPY index.html vite.config.ts tsconfig.json tsconfig.app.json tsconfig.node.json ./
 RUN pnpm build
 
 FROM nginx:stable-alpine AS runner

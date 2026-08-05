@@ -12,6 +12,7 @@ export interface CompetitionStatusResponse {
   closeAt: string;
   statusOverride: string | null;
   statusMessage: string;
+  registrationEnabled: boolean;
   nextMilestone: {
     title: string;
     dateLabel: string;
@@ -30,6 +31,7 @@ type StatusOverride = 'upcoming' | 'open' | 'paused' | 'closed' | 'live' | 'comp
 let dynamicOpenAt: string = serverEnv.PICC_REGISTRATION_OPEN_AT;
 let dynamicCloseAt: string = serverEnv.PICC_REGISTRATION_CLOSE_AT;
 let dynamicStatusOverride: StatusOverride | null = null;
+let dynamicRegistrationEnabled: boolean = serverEnv.PICC_REGISTRATION_ENABLED !== 'false';
 
 const OVERRIDE_TO_DB: Record<StatusOverride, CompetitionStatusOverride> = {
   upcoming: 'UPCOMING',
@@ -68,6 +70,7 @@ export class CompetitionStatusService {
     if (row.registrationOpenAt) dynamicOpenAt = row.registrationOpenAt.toISOString();
     if (row.registrationCloseAt) dynamicCloseAt = row.registrationCloseAt.toISOString();
     dynamicStatusOverride = row.statusOverride ? OVERRIDE_FROM_DB[row.statusOverride] : null;
+    dynamicRegistrationEnabled = row.registrationEnabled ?? process.env.PICC_REGISTRATION_ENABLED !== 'false';
 
     // First boot: persist the env defaults so the DB becomes the source of truth.
     if (!row.registrationOpenAt || !row.registrationCloseAt) {
@@ -85,11 +88,13 @@ export class CompetitionStatusService {
     openAt?: string;
     closeAt?: string;
     statusOverride?: StatusOverride | null;
+    registrationEnabled?: boolean;
   }): Promise<void> {
     const data: {
       registrationOpenAt?: Date;
       registrationCloseAt?: Date;
       statusOverride?: CompetitionStatusOverride | null;
+      registrationEnabled?: boolean;
     } = {};
 
     if (newConfig.openAt) {
@@ -113,12 +118,17 @@ export class CompetitionStatusService {
       data.statusOverride = newConfig.statusOverride ? OVERRIDE_TO_DB[newConfig.statusOverride] : null;
     }
 
+    if (newConfig.registrationEnabled !== undefined) {
+      data.registrationEnabled = newConfig.registrationEnabled;
+    }
+
     const competitionId = await dbStore.ensureCompetition();
     await prisma.competition.update({ where: { id: competitionId }, data });
 
     if (data.registrationOpenAt) dynamicOpenAt = data.registrationOpenAt.toISOString();
     if (data.registrationCloseAt) dynamicCloseAt = data.registrationCloseAt.toISOString();
     if (newConfig.statusOverride !== undefined) dynamicStatusOverride = newConfig.statusOverride;
+    if (newConfig.registrationEnabled !== undefined) dynamicRegistrationEnabled = newConfig.registrationEnabled;
   }
 
   public static getStatus(): CompetitionStatusResponse {
@@ -144,7 +154,7 @@ export class CompetitionStatusService {
       currentStatus = 'closed';
     }
 
-    const explicitlyEnabled = process.env.PICC_REGISTRATION_ENABLED !== 'false';
+    const explicitlyEnabled = dynamicRegistrationEnabled;
     const registrationAvailable = (currentStatus === 'open' || currentStatus === 'live') && explicitlyEnabled;
 
     const statusMessage =
@@ -172,6 +182,7 @@ export class CompetitionStatusService {
       closeAt: closeAtStr,
       statusOverride: dynamicStatusOverride,
       statusMessage,
+      registrationEnabled: dynamicRegistrationEnabled,
       nextMilestone,
     };
   }

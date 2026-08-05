@@ -142,6 +142,7 @@ model Competition {
   registrationCloseAt  DateTime?
   statusOverride       CompetitionStatusOverride?
   isPublished          Boolean                    @default(true)
+  registrationEnabled  Boolean                    @default(true)
   createdAt            DateTime                   @default(now())
   updatedAt            DateTime                   @updatedAt
 
