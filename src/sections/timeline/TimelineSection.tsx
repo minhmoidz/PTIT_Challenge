@@ -16,8 +16,6 @@ import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import { piccColors } from '@/theme/palette';
 import { SkyBackground } from '@/components/ui/SkyBackground';
 import { getSkyBackground } from '@/components/ui/skyBackgroundConfig';
-import { QuickFacts } from './components/QuickFacts';
-import { ForestDecor } from './components/ForestDecor';
 
 /* ── Stage Data Definition ─────────────────────────── */
 
@@ -62,7 +60,7 @@ const STAGES: StageData[] = [
     statusType: 'completed',
     accentColor: piccColors.blue[600],
     lightBg: piccColors.blue[50],
-    borderColor: 'rgba(59, 122, 214, 0.2)',
+    borderColor: 'rgba(53, 84, 126, 0.22)',
     icon: AssignmentRoundedIcon,
     description: 'Các đội giải một đề bài chung do Ban Tổ chức công bố.',
     bullets: [
@@ -79,9 +77,9 @@ const STAGES: StageData[] = [
     title: 'Vòng Bán kết',
     statusText: 'Đang diễn ra',
     statusType: 'active',
-    accentColor: piccColors.pink[500],
-    lightBg: piccColors.pink[50],
-    borderColor: 'rgba(232, 91, 159, 0.25)',
+    accentColor: piccColors.indigo[600],
+    lightBg: piccColors.indigo[50],
+    borderColor: 'rgba(83, 90, 196, 0.25)',
     icon: CoPresentRoundedIcon,
     bullets: [
       {
@@ -111,9 +109,9 @@ const STAGES: StageData[] = [
     title: 'Chạy thử nghiệm',
     statusText: 'Dự kiến',
     statusType: 'estimated',
-    accentColor: piccColors.amber[600],
-    lightBg: piccColors.amber[50],
-    borderColor: 'rgba(217, 119, 6, 0.25)',
+    accentColor: piccColors.pink[600],
+    lightBg: piccColors.pink[50],
+    borderColor: 'rgba(190, 64, 119, 0.25)',
     icon: RocketLaunchRoundedIcon,
     description:
       'Triển khai thử nghiệm giải pháp bằng nguồn lực doanh nghiệp cung cấp. Thu thập dữ liệu thực tế, đánh giá tính khả thi và hoàn thiện giải pháp.',
@@ -141,9 +139,9 @@ const STAGES: StageData[] = [
     title: 'Vòng Chung kết',
     statusText: 'Chung kết',
     statusType: 'finale',
-    accentColor: piccColors.emerald[600],
-    lightBg: piccColors.emerald[50],
-    borderColor: 'rgba(5, 150, 105, 0.3)',
+    accentColor: piccColors.amber[600],
+    lightBg: piccColors.amber[50],
+    borderColor: 'rgba(158, 122, 25, 0.3)',
     icon: EmojiEventsRoundedIcon,
     description: '06 đội xuất sắc nhất bước vào Đêm Chung kết tranh tài qua 02 vòng thi:',
     subCards: [
@@ -224,14 +222,14 @@ const StatusBadge = ({ type, text }: { type: StageData['statusType']; text: stri
           label={text}
           size="small"
           sx={{
-            bgcolor: piccColors.emerald[600],
+            bgcolor: piccColors.amber[600],
             color: '#FFFFFF',
             fontWeight: 800,
             fontSize: '0.6875rem',
             letterSpacing: '0.05em',
             height: 22,
             px: 0.5,
-            boxShadow: '0 2px 8px rgba(5, 150, 105, 0.3)',
+            boxShadow: '0 2px 8px rgba(158, 122, 25, 0.3)',
           }}
         />
       );
@@ -260,7 +258,7 @@ const StageCard = ({ stage, index }: { stage: StageData; index: number }) => {
           borderRadius: '20px',
           bgcolor: '#FFFFFF',
           border: `1px solid ${stage.borderColor}`,
-          boxShadow: '0 8px 24px rgba(16, 42, 86, 0.05)',
+          boxShadow: '0 8px 24px rgba(15, 42, 82, 0.05)',
           position: 'relative',
           overflow: 'hidden',
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -485,7 +483,7 @@ export const TimelineSection = () => {
     if (!el) return;
     const obs = new IntersectionObserver(
       ([e]) => {
-        if (e.isIntersecting) setHasEnteredViewport(true);
+        if (e?.isIntersecting) setHasEnteredViewport(true);
       },
       { threshold: 0.1 }
     );
@@ -500,8 +498,7 @@ export const TimelineSection = () => {
       ref={sectionRef}
       aria-labelledby="timeline-heading"
       sx={{
-        pt: { xs: 8, sm: 10, md: 12 },
-        pb: { xs: 7, sm: 8, md: 10 },
+        py: { xs: 8, sm: 10, md: 12 },
         background: getSkyBackground('journey'),
         position: 'relative',
         overflow: 'hidden',
@@ -509,7 +506,34 @@ export const TimelineSection = () => {
     >
       {/* Sky World Atmospheric Design System Background */}
       <SkyBackground variant="journey" />
-      <ForestDecor />
+
+      {/* Top & Bottom Smooth Transition Blend Masks */}
+      <Box
+        aria-hidden="true"
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 80,
+          background: 'linear-gradient(to bottom, rgba(208, 231, 254, 0.95), transparent)',
+          zIndex: 1,
+          pointerEvents: 'none',
+        }}
+      />
+      <Box
+        aria-hidden="true"
+        sx={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 80,
+          background: 'linear-gradient(to top, rgba(208, 231, 254, 0.95), transparent)',
+          zIndex: 1,
+          pointerEvents: 'none',
+        }}
+      />
 
       <Container
         maxWidth="lg"
@@ -519,14 +543,11 @@ export const TimelineSection = () => {
           px: { xs: 2, sm: 2.5, md: 3 },
         }}
       >
-        {/* Khối Thông tin nhanh cuộc thi */}
-        <QuickFacts />
-
         {/* Header Lộ trình cuộc thi */}
         <Box
           sx={{
             textAlign: 'center',
-            mb: { xs: 4, sm: 5, md: 6 },
+            mb: { xs: 5, md: 7 },
             maxWidth: 720,
             mx: 'auto',
             fontFamily: '"Manrope", sans-serif',
@@ -562,11 +583,11 @@ export const TimelineSection = () => {
             variant="h2"
             id="timeline-heading"
             sx={{
-              fontSize: { xs: '1.75rem', sm: '2.1rem', md: '2.4rem' },
+              fontSize: { xs: '2rem', sm: '2.5rem', md: '2.8rem' },
               fontWeight: 800,
-              lineHeight: 1.2,
-              letterSpacing: '-0.02em',
-              mb: 1.5,
+              lineHeight: 1.15,
+              letterSpacing: '-0.025em',
+              mb: 1.75,
               fontFamily: '"Manrope", sans-serif',
             }}
           >
@@ -580,9 +601,9 @@ export const TimelineSection = () => {
 
           <Typography
             sx={{
-              fontSize: { xs: '0.9rem', md: '0.975rem' },
+              fontSize: { xs: '1rem', md: '1.075rem' },
               color: piccColors.slate[600],
-              lineHeight: 1.65,
+              lineHeight: 1.7,
               maxWidth: 680,
               mx: 'auto',
               fontFamily: '"Manrope", sans-serif',
@@ -611,7 +632,7 @@ export const TimelineSection = () => {
               bottom: 40,
               width: 4,
               transform: 'translateX(-50%)',
-              background: `linear-gradient(180deg, ${piccColors.blue[600]} 0%, ${piccColors.pink[500]} 33%, ${piccColors.amber[600]} 66%, ${piccColors.emerald[600]} 100%)`,
+              background: `linear-gradient(180deg, ${piccColors.blue[600]} 0%, ${piccColors.indigo[600]} 33%, ${piccColors.pink[600]} 66%, ${piccColors.amber[600]} 100%)`,
               borderRadius: 2,
               zIndex: 0,
             }}
@@ -716,7 +737,7 @@ export const TimelineSection = () => {
               top: 24,
               bottom: 40,
               width: 3,
-              background: `linear-gradient(180deg, ${piccColors.blue[600]} 0%, ${piccColors.pink[500]} 33%, ${piccColors.amber[600]} 66%, ${piccColors.emerald[600]} 100%)`,
+              background: `linear-gradient(180deg, ${piccColors.blue[600]} 0%, ${piccColors.indigo[600]} 33%, ${piccColors.pink[600]} 66%, ${piccColors.amber[600]} 100%)`,
               borderRadius: 2,
               zIndex: 0,
             }}

@@ -10,6 +10,20 @@ describe('sanitizeAndFilterPublicTeams', () => {
     const sanitized = sanitizeAndFilterPublicTeams(legacyTeam ? [legacyTeam] : []);
 
     expect(sanitized).toHaveLength(1);
-    expect(sanitized[0].teamSize).toBe(5);
+    expect(sanitized[0]?.teamSize).toBe(5);
+  });
+
+  it('removes project data when showProjectSummary is false', () => {
+    const team = {
+      ...MOCK_PUBLIC_TEAMS_FIXTURE[0]!,
+      publication: {
+        ...MOCK_PUBLIC_TEAMS_FIXTURE[0]!.publication,
+        showProjectSummary: false,
+      },
+    };
+
+    const sanitized = sanitizeAndFilterPublicTeams([team]);
+
+    expect(sanitized[0]?.project).toBeUndefined();
   });
 });

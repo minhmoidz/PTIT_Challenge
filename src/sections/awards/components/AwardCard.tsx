@@ -24,51 +24,51 @@ export interface AwardCardProps {
 const variantStyles = {
   champion: {
     bg: '#FFFFFF',
-    borderColor: 'rgba(245, 166, 35, 0.45)',
-    borderGradient: 'linear-gradient(135deg, #F5A623 0%, #FBBF24 50%, #B85D00 100%)',
-    shadow: '0 20px 50px rgba(245, 166, 35, 0.22)',
-    hoverShadow: '0 28px 60px rgba(245, 166, 35, 0.32)',
-    badgeBg: 'linear-gradient(135deg, #F5A623 0%, #B85D00 100%)',
+    borderColor: 'rgba(231, 195, 77, 0.45)',
+    borderGradient: 'linear-gradient(135deg, #E7C34D 0%, #E7C34D 50%, #7F6114 100%)',
+    shadow: '0 20px 50px rgba(231, 195, 77, 0.22)',
+    hoverShadow: '0 28px 60px rgba(231, 195, 77, 0.32)',
+    badgeBg: 'linear-gradient(135deg, #E7C34D 0%, #7F6114 100%)',
     badgeColor: '#FFFFFF',
-    iconColor: '#B85D00',
+    iconColor: '#7F6114',
     iconBg: '#FFF8EC',
-    iconBorder: '3px solid #F5A623',
-    prizeColor: '#B85D00',
-    watermarkColor: 'rgba(245, 166, 35, 0.08)',
+    iconBorder: '3px solid #E7C34D',
+    prizeColor: '#7F6114',
+    watermarkColor: 'rgba(231, 195, 77, 0.08)',
     iconComponent: EmojiEventsRoundedIcon,
     heightElevation: { lg: 'translateY(-30px)' },
     minHeight: { xs: 'auto', lg: 440 },
   },
   'runner-up': {
     bg: '#FFFFFF',
-    borderColor: 'rgba(116, 131, 154, 0.3)',
-    borderGradient: 'linear-gradient(135deg, #74839A 0%, #46566F 100%)',
-    shadow: '0 12px 32px rgba(116, 131, 154, 0.14)',
-    hoverShadow: '0 20px 45px rgba(116, 131, 154, 0.22)',
-    badgeBg: '#F1F5F9',
-    badgeColor: '#46566F',
-    iconColor: '#46566F',
-    iconBg: '#F8FAFC',
-    iconBorder: '3px solid #74839A',
-    prizeColor: '#15375F',
-    watermarkColor: 'rgba(116, 131, 154, 0.07)',
+    borderColor: 'rgba(103, 120, 143, 0.3)',
+    borderGradient: 'linear-gradient(135deg, #93A3B8 0%, #374961 100%)',
+    shadow: '0 12px 32px rgba(103, 120, 143, 0.14)',
+    hoverShadow: '0 20px 45px rgba(103, 120, 143, 0.22)',
+    badgeBg: '#EFF3F8',
+    badgeColor: '#374961',
+    iconColor: '#374961',
+    iconBg: '#F7F9FC',
+    iconBorder: '3px solid #93A3B8',
+    prizeColor: '#0F2A52',
+    watermarkColor: 'rgba(103, 120, 143, 0.07)',
     iconComponent: WorkspacePremiumRoundedIcon,
     heightElevation: { md: 0 },
     minHeight: { xs: 'auto', lg: 440 },
   },
   third: {
     bg: '#FFFFFF',
-    borderColor: 'rgba(201, 104, 37, 0.3)',
-    borderGradient: 'linear-gradient(135deg, #C96825 0%, #943A0E 100%)',
-    shadow: '0 12px 32px rgba(201, 104, 37, 0.12)',
-    hoverShadow: '0 20px 45px rgba(201, 104, 37, 0.20)',
-    badgeBg: '#FEF3C7',
-    badgeColor: '#943A0E',
-    iconColor: '#943A0E',
+    borderColor: 'rgba(158, 122, 25, 0.3)',
+    borderGradient: 'linear-gradient(135deg, #9E7A19 0%, #7F6114 100%)',
+    shadow: '0 12px 32px rgba(158, 122, 25, 0.12)',
+    hoverShadow: '0 20px 45px rgba(158, 122, 25, 0.20)',
+    badgeBg: '#FDF3CF',
+    badgeColor: '#7F6114',
+    iconColor: '#7F6114',
     iconBg: '#FFFBEB',
-    iconBorder: '3px solid #C96825',
-    prizeColor: '#943A0E',
-    watermarkColor: 'rgba(201, 104, 37, 0.07)',
+    iconBorder: '3px solid #9E7A19',
+    prizeColor: '#7F6114',
+    watermarkColor: 'rgba(158, 122, 25, 0.07)',
     iconComponent: MilitaryTechRoundedIcon,
     heightElevation: { md: 0 },
     minHeight: { xs: 'auto', lg: 440 },
@@ -76,7 +76,7 @@ const variantStyles = {
 };
 
 const getPerkIcon = (type?: string, color?: string) => {
-  const iconProps = { sx: { fontSize: 18, color: color ?? '#367BEA', flexShrink: 0, mt: 0.1 } };
+  const iconProps = { sx: { fontSize: 18, color: color ?? '#E11414', flexShrink: 0, mt: 0.1 } };
   switch (type) {
     case 'school':
       return <SchoolRoundedIcon {...iconProps} />;
@@ -121,7 +121,7 @@ export const AwardCard = ({
           transform: style.heightElevation,
           '&:hover': {
             boxShadow: style.hoverShadow,
-            borderColor: isChampion ? '#F5A623' : style.borderColor,
+            borderColor: isChampion ? '#E7C34D' : style.borderColor,
             transform: isChampion ? 'translateY(-35px)' : 'translateY(-6px)',
             '& .award-main-icon': {
               transform: 'scale(1.08) rotate(3deg)',
@@ -140,7 +140,7 @@ export const AwardCard = ({
               width: 220,
               height: 220,
               borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(245, 166, 35, 0.18) 0%, transparent 70%)',
+              background: 'radial-gradient(circle, rgba(231, 195, 77, 0.18) 0%, transparent 70%)',
               pointerEvents: 'none',
               zIndex: 0,
             }}
@@ -235,7 +235,7 @@ export const AwardCard = ({
             sx={{
               fontSize: isChampion ? '1.4rem' : '1.25rem',
               fontWeight: 800,
-              color: '#15375F',
+              color: '#0F2A52',
               mb: prizeAmount ? 0.5 : 2.5,
             }}
           >
@@ -261,11 +261,11 @@ export const AwardCard = ({
           <Box sx={{ mt: 'auto', display: 'flex', flexDirection: 'column', gap: 1.5, textAlign: 'left' }}>
             {perks.map((perk, i) => (
               <Box key={i} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.25 }}>
-                {getPerkIcon(perk.iconType, isChampion ? '#F5A623' : undefined)}
+                {getPerkIcon(perk.iconType, isChampion ? '#E7C34D' : undefined)}
                 <Typography
                   sx={{
                     fontSize: '0.875rem',
-                    color: '#15375F',
+                    color: '#0F2A52',
                     fontWeight: 600,
                     lineHeight: 1.45,
                   }}

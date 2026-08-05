@@ -1,5 +1,7 @@
+import crypto from 'crypto';
 import { dbStore } from '../db/store';
 import { CompetitionStatusService } from './competitionStatus';
+import { sendRegistrationConfirmation } from './emailService';
 import type { RegistrationFormValues } from '../../src/types/registration';
 import { competitionData } from '../../src/data/competition';
 
@@ -12,10 +14,13 @@ export interface RegistrationSubmissionResult {
   };
 }
 
+const hashIp = (ip: string): string =>
+  crypto.createHash('sha256').update(ip.trim() || 'unknown').digest('hex');
+
 export class RegistrationService {
   public static async processRegistration(
     payload: RegistrationFormValues,
-    _clientIp: string,
+    clientIp: string,
   ): Promise<RegistrationSubmissionResult> {
     const statusInfo = CompetitionStatusService.getStatus();
 
@@ -28,7 +33,7 @@ export class RegistrationService {
       };
     }
 
-    // 2. Business Rule: Team size range 3 to 4
+    // 2. Business Rule: Team size range from competition rules (3–4)
     if (
       payload.teamSize < competitionData.teamRules.min ||
       payload.teamSize > competitionData.teamRules.max
@@ -91,21 +96,32 @@ export class RegistrationService {
       };
     }
 
-    // 8. Business Rule: 3 Mandatory Commitments
+    // 8. Business Rule: 4 Mandatory Commitments (incl. privacy acknowledgement)
     if (
       !payload.commitments?.truthfulInformation ||
       !payload.commitments?.mediaConsent ||
-      !payload.commitments?.rulesAccepted
+      !payload.commitments?.rulesAccepted ||
+      !payload.commitments?.privacyAcknowledged
     ) {
       throw {
         status: 400,
         code: 'CONSENT_REQUIRED',
-        message: 'Vui lòng đánh dấu hoàn thành cả 03 cam kết bắt buộc.',
+        message: 'Vui lòng đánh dấu hoàn thành cả 04 cam kết bắt buộc.',
       };
     }
 
     // 9. Process Submission & Save Transactionally
-    const result = await dbStore.saveRegistration(payload);
+    const result = await dbStore.saveRegistration(payload, hashIp(clientIp));
+
+    // Fire-and-forget confirmation email. Never blocks or fails the submission.
+    const leader = payload.members.find((m) => m.role === 'leader') ?? payload.members[0];
+    void sendRegistrationConfirmation({
+      to: leader.email,
+      teamName: payload.teamName,
+      leaderName: leader.fullName,
+      registrationCode: result.registrationCode,
+      submittedAt: result.submittedAt,
+    }).catch(() => undefined);
 
     return {
       success: true,

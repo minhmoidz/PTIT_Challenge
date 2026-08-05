@@ -80,7 +80,7 @@ const BrandSvgLogo = ({ name, height = 48 }: { name: string; height?: number }) 
           fontFamily="system-ui, -apple-system, sans-serif"
           fontWeight="600"
           fontSize="14"
-          fill="#475569"
+          fill="#4C5D75"
         >
           Technology
         </text>
@@ -123,7 +123,7 @@ const BrandSvgLogo = ({ name, height = 48 }: { name: string; height?: number }) 
           fontFamily="system-ui, -apple-system, sans-serif"
           fontWeight="600"
           fontSize="14"
-          fill="#475569"
+          fill="#4C5D75"
         >
           Software
         </text>
@@ -211,7 +211,7 @@ const BrandSvgLogo = ({ name, height = 48 }: { name: string; height?: number }) 
       >
         {/* PTIT Shield Emblem */}
         <g transform="translate(8, 5)">
-          <path d="M20 2 L38 10 V24 C38 33 20 38 20 38 C20 38 2 33 2 24 V10 Z" fill="#173B66" />
+          <path d="M20 2 L38 10 V24 C38 33 20 38 20 38 C20 38 2 33 2 24 V10 Z" fill="#0F2A52" />
           <path d="M20 6 L33 12 V22 C33 29 20 33 20 33 C20 33 7 29 7 22 V12 Z" fill="#D9262E" />
           <text
             x="20"
@@ -232,7 +232,7 @@ const BrandSvgLogo = ({ name, height = 48 }: { name: string; height?: number }) 
           fontFamily="system-ui, -apple-system, sans-serif"
           fontWeight="900"
           fontSize="22"
-          fill="#173B66"
+          fill="#0F2A52"
           letterSpacing="0.02em"
         >
           PTIT
@@ -258,7 +258,7 @@ const BrandSvgLogo = ({ name, height = 48 }: { name: string; height?: number }) 
       sx={{
         fontSize: '1.25rem',
         fontWeight: 800,
-        color: '#173B66',
+        color: '#0F2A52',
         letterSpacing: '-0.02em',
       }}
     >

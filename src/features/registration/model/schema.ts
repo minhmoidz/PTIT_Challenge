@@ -12,7 +12,26 @@ export const createRegistrationSchema = (config: {
       teamSize: z.number().min(config.teamMin, `Tối thiểu ${config.teamMin} thành viên`).max(config.teamMax, `Tối đa ${config.teamMax} thành viên`),
       challengeCategories: z
         .array(z.string())
-        .min(1, 'Vui lòng chọn ít nhất một nhóm bài toán'),
+        .min(1, 'Vui lòng chọn ít nhất một nhóm bài toán')
+        .superRefine((categories, ctx) => {
+          if (config.challengeMode === 'single' && categories.length > 1) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: 'Chỉ được chọn 01 nhóm bài toán theo cấu hình hiện tại.',
+            });
+          }
+
+          if (
+            config.challengeMode === 'multiple' &&
+            typeof config.maxSelections === 'number' &&
+            categories.length > config.maxSelections
+          ) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: `Chỉ được chọn tối đa ${config.maxSelections} nhóm bài toán.`,
+            });
+          }
+        }),
       otherChallengeCategory: z.string().optional(),
       previousCompetitions: z.string().max(500).optional(),
       featuredProject: z.string().trim().min(1, 'Vui lòng nhập mô tả dự án').max(1500, 'Mô tả tối đa 1500 ký tự'),
@@ -66,4 +85,13 @@ export const createRegistrationSchema = (config: {
         return memberCount === data.teamSize;
       },
       { message: 'Số lượng thành viên phải bằng teamSize' },
-    );
+    )
+    .superRefine((data, ctx) => {
+      if (data.challengeCategories?.includes('other') && !data.otherChallengeCategory?.trim()) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['otherChallengeCategory'],
+          message: 'Vui lòng nhập rõ nhóm bài toán khác',
+        });
+      }
+    });

@@ -38,11 +38,11 @@ export const AwardHeader = () => {
         {/* Subtitle */}
         <Typography
           sx={{
-            color: '#4e4f53',
+            color: piccColors.slate[600],
             maxWidth: 640,
             mx: 'auto',
-            fontSize: { xs: '0.95rem', md: '1.05rem' },
-            lineHeight: 1.6,
+            fontSize: { xs: '1rem', md: '1.075rem' },
+            lineHeight: 1.7,
             mb: 3.5,
             fontFamily: '"Manrope", sans-serif',
           }}
@@ -58,17 +58,17 @@ export const AwardHeader = () => {
             p: { xs: 2.25, sm: 2.75 },
             px: { xs: 3, sm: 4 },
             borderRadius: 5,
-            background: 'linear-gradient(135deg, #FFFDF5 0%, #FFFFFF 50%, #F4F8FD 100%)',
-            border: '1.5px solid rgba(245, 166, 35, 0.35)',
-            boxShadow: '0 8px 24px rgba(245, 166, 35, 0.12)',
+            background: 'linear-gradient(135deg, #FFFDF5 0%, #FFFFFF 50%, #F7F9FC 100%)',
+            border: '1.5px solid rgba(231, 195, 77, 0.35)',
+            boxShadow: '0 8px 24px rgba(231, 195, 77, 0.12)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             gap: 2.5,
             transition: 'all 0.3s ease',
             '&:hover': {
-              borderColor: 'rgba(245, 166, 35, 0.6)',
-              boxShadow: '0 12px 32px rgba(245, 166, 35, 0.18)',
+              borderColor: 'rgba(231, 195, 77, 0.6)',
+              boxShadow: '0 12px 32px rgba(231, 195, 77, 0.18)',
               transform: 'translateY(-2px)',
             },
           }}
@@ -78,14 +78,14 @@ export const AwardHeader = () => {
               width: 48,
               height: 48,
               borderRadius: '14px',
-              background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)',
-              color: '#D97706',
+              background: 'linear-gradient(135deg, #FDF3CF 0%, #FDE68A 100%)',
+              color: '#9E7A19',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               flexShrink: 0,
-              boxShadow: '0 4px 12px rgba(245, 158, 11, 0.2)',
-              border: '1px solid rgba(245, 158, 11, 0.3)',
+              boxShadow: '0 4px 12px rgba(231, 195, 77, 0.2)',
+              border: '1px solid rgba(231, 195, 77, 0.3)',
             }}
           >
             <InfoOutlinedIcon sx={{ fontSize: 24 }} />
@@ -96,7 +96,7 @@ export const AwardHeader = () => {
               sx={{
                 fontSize: '0.775rem',
                 fontWeight: 800,
-                color: '#65758B',
+                color: piccColors.slate[500],
                 textTransform: 'uppercase',
                 letterSpacing: '0.06em',
                 mb: 0.25,
@@ -108,7 +108,7 @@ export const AwardHeader = () => {
               sx={{
                 fontSize: { xs: '1.2rem', sm: '1.4rem' },
                 fontWeight: 800,
-                color: '#15375F',
+                color: piccColors.ptitNavy,
                 lineHeight: 1.25,
                 letterSpacing: '-0.01em',
               }}
@@ -118,7 +118,7 @@ export const AwardHeader = () => {
             <Typography
               sx={{
                 fontSize: '0.775rem',
-                color: '#D97706',
+                color: piccColors.amber[700],
                 fontWeight: 650,
                 mt: 0.3,
               }}

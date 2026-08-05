@@ -61,12 +61,12 @@ export const MobileStickyCta = () => {
             right: { xs: 14, sm: 20 },
             zIndex: 1050,
             display: { xs: 'block', md: 'none' },
-            bgcolor: 'rgba(255, 255, 255, 0.92)',
-            backdropFilter: 'blur(16px) saturate(180%)',
-            border: '1px solid rgba(226, 232, 240, 0.9)',
+            bgcolor: 'rgba(255, 255, 255, 0.94)',
+            backdropFilter: 'blur(16px) saturate(160%)',
+            border: '1px solid rgba(223, 230, 239, 0.92)',
             borderRadius: '22px',
             p: 1.25,
-            boxShadow: '0 12px 36px rgba(15, 23, 42, 0.16), 0 2px 6px rgba(15, 23, 42, 0.08)',
+            boxShadow: '0 12px 32px rgba(15, 42, 82, 0.14), 0 2px 6px rgba(15, 42, 82, 0.06)',
           }}
         >
           <Button
@@ -81,10 +81,10 @@ export const MobileStickyCta = () => {
               fontSize: '1rem',
               letterSpacing: '-0.01em',
               background: gradientMesh.ptitCta,
-              boxShadow: '0 4px 14px rgba(188, 38, 38, 0.35)',
+              boxShadow: '0 4px 14px rgba(225, 20, 20, 0.28)',
               textTransform: 'none',
               '&:hover': {
-                background: `linear-gradient(135deg, ${piccColors.ptitDarkRed} 0%, #821414 100%)`,
+                background: `linear-gradient(135deg, ${piccColors.ptitDarkRed} 0%, #7A0F0F 100%)`,
               },
             }}
           >

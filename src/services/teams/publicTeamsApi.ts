@@ -67,25 +67,40 @@ export const sanitizeAndFilterPublicTeams = (teams: PublicTeamProfile[]): Public
     });
 };
 
+interface PublicTeamListEnvelope {
+  success?: boolean;
+  data?: PublicTeamListResult;
+}
+
+interface PublicTeamDetailEnvelope {
+  success?: boolean;
+  data?: PublicTeamProfile;
+}
+
 export const fetchPublicTeams = async (
   params?: PublicTeamFilterParams,
 ): Promise<PublicTeamListResult> => {
   let sourceTeams: PublicTeamProfile[] = [];
+  let finalists: PublicTeamProfile[] = [];
+  let total = 0;
+  let hasMore = false;
 
   try {
-    const { data } = await httpClient.get<PublicTeamProfile[]>('/v1/public/teams', {
+    const { data } = await httpClient.get<PublicTeamListEnvelope>('/v1/public/teams', {
       params,
     });
-    if (Array.isArray(data)) {
-      sourceTeams = data;
+
+    if (data?.success && data.data) {
+      sourceTeams = Array.isArray(data.data.teams) ? data.data.teams : [];
+      finalists = Array.isArray(data.data.finalists) ? data.data.finalists : [];
+      total = typeof data.data.total === 'number' ? data.data.total : sourceTeams.length;
+      hasMore = Boolean(data.data.hasMore);
     }
   } catch {
     // In production, if backend API is not available yet, return empty list
     // In local development, fallback to MOCK_PUBLIC_TEAMS_FIXTURE for dev testing
     if (import.meta.env.DEV) {
       sourceTeams = MOCK_PUBLIC_TEAMS_FIXTURE;
-    } else {
-      sourceTeams = [];
     }
   }
 
@@ -114,13 +129,13 @@ export const fetchPublicTeams = async (
     );
   }
 
-  const finalists = filtered.filter((t) => t.competitionStatus === 'finalist' || t.competitionStatus === 'winner');
+  const nextFinalists = finalists.length > 0 ? sanitizeAndFilterPublicTeams(finalists) : filtered.filter((t) => t.competitionStatus === 'finalist' || t.competitionStatus === 'winner');
 
   return {
     teams: filtered,
-    total: filtered.length,
-    hasMore: false,
-    finalists,
+    total: total || filtered.length,
+    hasMore,
+    finalists: nextFinalists,
   };
 };
 
@@ -128,9 +143,9 @@ export const fetchPublicTeamBySlug = async (
   slug: string,
 ): Promise<PublicTeamProfile | null> => {
   try {
-    const { data } = await httpClient.get<PublicTeamProfile>(`/v1/public/teams/${slug}`);
-    if (data && data.publication?.status === 'published' && data.publication?.showTeamProfile) {
-      const sanitized = sanitizeAndFilterPublicTeams([data]);
+    const { data } = await httpClient.get<PublicTeamDetailEnvelope>(`/v1/public/teams/${slug}`);
+    if (data?.success && data.data && data.data.publication?.status === 'published' && data.data.publication?.showTeamProfile) {
+      const sanitized = sanitizeAndFilterPublicTeams([data.data]);
       return sanitized[0] || null;
     }
   } catch {

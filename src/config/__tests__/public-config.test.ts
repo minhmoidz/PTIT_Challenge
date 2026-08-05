@@ -44,6 +44,30 @@ describe('computeRegistrationStatus', () => {
     expect(computeRegistrationStatus(config)).toBe('manually_disabled');
   });
 
+  it('returns not_open when before openAt even if submissions disallowed server-side', () => {
+    const config = baseConfig({
+      serverTime: new Date('2026-08-18T12:00:00+07:00').toISOString(),
+      registration: { ...baseConfig().registration, allowSubmissions: false },
+    });
+    expect(computeRegistrationStatus(config)).toBe('not_open');
+  });
+
+  it('returns closed when after closeAt even if submissions disallowed server-side', () => {
+    const config = baseConfig({
+      serverTime: new Date('2026-09-16T12:00:00+07:00').toISOString(),
+      registration: { ...baseConfig().registration, allowSubmissions: false },
+    });
+    expect(computeRegistrationStatus(config)).toBe('closed');
+  });
+
+  it('returns manually_disabled when admin pauses inside the window', () => {
+    const config = baseConfig({
+      serverTime: new Date('2026-08-25T12:00:00+07:00').toISOString(),
+      registration: { ...baseConfig().registration, explicitlyDisabled: true, allowSubmissions: false },
+    });
+    expect(computeRegistrationStatus(config)).toBe('manually_disabled');
+  });
+
   it('returns not_open when before openAt', () => {
     const config = baseConfig({ serverTime: new Date('2026-08-18T23:59:00+07:00').toISOString() });
     expect(computeRegistrationStatus(config)).toBe('not_open');

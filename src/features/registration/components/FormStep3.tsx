@@ -4,6 +4,7 @@ import PublicRoundedIcon from '@mui/icons-material/PublicRounded';
 import { useFormContext } from 'react-hook-form';
 import type { RegistrationFormValues } from '@/types/registration';
 import { competitionData } from '@/data/competition';
+import { piccColors } from '@/theme/palette';
 
 interface Props {
   onEdit: (step: number) => void;
@@ -20,11 +21,11 @@ const SectionReview = ({
 }) => (
   <Box sx={{ mb: 3 }}>
     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
-      <Typography variant="body1" sx={{ fontWeight: 700, color: '#163A67' }}>
+      <Typography variant="body1" sx={{ fontWeight: 700, color: piccColors.ptitNavy }}>
         {title}
       </Typography>
       {onEdit && (
-        <Button size="small" onClick={onEdit} variant="text" sx={{ fontWeight: 700 }}>
+        <Button type="button" size="small" onClick={onEdit} variant="text" sx={{ fontWeight: 700 }}>
           Chỉnh sửa
         </Button>
       )}
@@ -39,7 +40,7 @@ const FieldReview = ({ label, value }: { label: string; value?: string | number 
     <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
       {label}
     </Typography>
-    <Typography variant="body2" sx={{ fontWeight: 600, color: '#1E293B' }}>
+    <Typography variant="body2" sx={{ fontWeight: 600, color: piccColors.slate[800] }}>
       {value ?? '—'}
     </Typography>
   </Grid>
@@ -51,7 +52,7 @@ export const FormStep3 = ({ onEdit }: Props) => {
 
   return (
     <Box>
-      <Typography variant="h3" component="h3" sx={{ fontSize: '1.15rem', fontWeight: 800, color: '#163A67', mb: 3 }}>
+      <Typography variant="h3" component="h3" sx={{ fontSize: '1.15rem', fontWeight: 800, color: piccColors.ptitNavy, mb: 3 }}>
         Phần III — Xác nhận &amp; Cam kết
       </Typography>
 
@@ -99,8 +100,8 @@ export const FormStep3 = ({ onEdit }: Props) => {
       ))}
 
       {/* ── Mandatory Commitments ── */}
-      <Box sx={{ mt: 3.5, p: 2.5, borderRadius: 3, bgcolor: '#F8FAFC', border: '1px solid #E2E8F0' }}>
-        <Typography variant="body1" sx={{ fontWeight: 800, color: '#163A67', mb: 2 }}>
+      <Box sx={{ mt: 3.5, p: 2.5, borderRadius: 3, bgcolor: piccColors.slate[50], border: `1px solid ${piccColors.slate[200]}` }}>
+        <Typography variant="body1" sx={{ fontWeight: 800, color: piccColors.ptitNavy, mb: 2 }}>
           Biểu Mẫu Cam Kết Đội Thi *
         </Typography>
 
@@ -113,7 +114,7 @@ export const FormStep3 = ({ onEdit }: Props) => {
               />
             }
             label={
-              <Typography sx={{ fontSize: '0.85rem', fontWeight: 600, color: '#334155' }}>
+              <Typography sx={{ fontSize: '0.85rem', fontWeight: 600, color: piccColors.slate[700] }}>
                 {competitionData.form.commitment.checkboxes[0]}
               </Typography>
             }
@@ -127,7 +128,7 @@ export const FormStep3 = ({ onEdit }: Props) => {
               />
             }
             label={
-              <Typography sx={{ fontSize: '0.85rem', fontWeight: 600, color: '#334155' }}>
+              <Typography sx={{ fontSize: '0.85rem', fontWeight: 600, color: piccColors.slate[700] }}>
                 {competitionData.form.commitment.checkboxes[1]}
               </Typography>
             }
@@ -141,8 +142,22 @@ export const FormStep3 = ({ onEdit }: Props) => {
               />
             }
             label={
-              <Typography sx={{ fontSize: '0.85rem', fontWeight: 600, color: '#334155' }}>
+              <Typography sx={{ fontSize: '0.85rem', fontWeight: 600, color: piccColors.slate[700] }}>
                 {competitionData.form.commitment.checkboxes[2]}
+              </Typography>
+            }
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                {...register('commitments.privacyAcknowledged')}
+                color="primary"
+              />
+            }
+            label={
+              <Typography sx={{ fontSize: '0.85rem', fontWeight: 600, color: piccColors.slate[700] }}>
+                {competitionData.form.commitment.checkboxes[3]}
               </Typography>
             }
           />
@@ -150,21 +165,21 @@ export const FormStep3 = ({ onEdit }: Props) => {
 
         {errors.commitments && (
           <Typography variant="caption" color="error" sx={{ mt: 1.5, display: 'block', fontWeight: 700 }}>
-            ⚠️ Vui lòng đánh dấu hoàn thành cả 03 cam kết bắt buộc để gửi biểu mẫu đăng ký.
+            ⚠️ Vui lòng đánh dấu hoàn thành đầy đủ các cam kết và xác nhận bảo mật bắt buộc để gửi biểu mẫu đăng ký.
           </Typography>
         )}
       </Box>
 
       {/* ── Granular Public Consent Section (Optional choices for public profile) ── */}
-      <Box sx={{ mt: 3, p: 2.5, borderRadius: 3, bgcolor: 'rgba(234, 242, 255, 0.7)', border: '1px solid rgba(57, 124, 232, 0.25)' }}>
+      <Box sx={{ mt: 3, p: 2.5, borderRadius: 3, bgcolor: 'rgba(241, 246, 254, 0.7)', border: '1px solid rgba(56, 130, 241, 0.25)' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-          <PublicRoundedIcon sx={{ color: '#397CE8', fontSize: 20 }} />
-          <Typography variant="body1" sx={{ fontWeight: 800, color: '#163A67' }}>
+          <PublicRoundedIcon sx={{ color: piccColors.blue[600], fontSize: 20 }} />
+          <Typography variant="body1" sx={{ fontWeight: 800, color: piccColors.ptitNavy }}>
             Quyền Hiển Thị Công Khai Hồ Sơ Đội Thi
           </Typography>
         </Box>
 
-        <Typography sx={{ fontSize: '0.8rem', color: '#475569', mb: 2, lineHeight: 1.5 }}>
+        <Typography sx={{ fontSize: '0.8rem', color: piccColors.slate[600], mb: 2, lineHeight: 1.5 }}>
           Lựa chọn thông tin đội đồng ý xuất bản trên trang danh sách công khai <strong>/doi-thi</strong>. Ban Tổ chức sẽ xác minh và phê duyệt trước khi công bố.
         </Typography>
 
@@ -172,7 +187,7 @@ export const FormStep3 = ({ onEdit }: Props) => {
           <FormControlLabel
             control={<Checkbox {...register('publicConsent.shareTeamProfile')} color="primary" defaultChecked={false} />}
             label={
-              <Typography sx={{ fontSize: '0.825rem', fontWeight: 600, color: '#334155' }}>
+              <Typography sx={{ fontSize: '0.825rem', fontWeight: 600, color: piccColors.slate[700] }}>
                 Chúng tôi đồng ý công khai tên đội, nhóm bài toán, quy mô đội và trạng thái cuộc thi trên website PICC 2026.
               </Typography>
             }
@@ -181,7 +196,7 @@ export const FormStep3 = ({ onEdit }: Props) => {
           <FormControlLabel
             control={<Checkbox {...register('publicConsent.shareMemberNames')} color="primary" defaultChecked={false} />}
             label={
-              <Typography sx={{ fontSize: '0.825rem', fontWeight: 600, color: '#334155' }}>
+              <Typography sx={{ fontSize: '0.825rem', fontWeight: 600, color: piccColors.slate[700] }}>
                 Chúng tôi đồng ý công khai tên các thành viên trong hồ sơ đội thi.
               </Typography>
             }
@@ -190,7 +205,7 @@ export const FormStep3 = ({ onEdit }: Props) => {
           <FormControlLabel
             control={<Checkbox {...register('publicConsent.shareLogoOrPhotos')} color="primary" defaultChecked={false} />}
             label={
-              <Typography sx={{ fontSize: '0.825rem', fontWeight: 600, color: '#334155' }}>
+              <Typography sx={{ fontSize: '0.825rem', fontWeight: 600, color: piccColors.slate[700] }}>
                 Chúng tôi đồng ý công khai ảnh hoặc logo đội do đội cung cấp.
               </Typography>
             }
@@ -199,7 +214,7 @@ export const FormStep3 = ({ onEdit }: Props) => {
           <FormControlLabel
             control={<Checkbox {...register('publicConsent.shareProjectSummary')} color="primary" defaultChecked={false} />}
             label={
-              <Typography sx={{ fontSize: '0.825rem', fontWeight: 600, color: '#334155' }}>
+              <Typography sx={{ fontSize: '0.825rem', fontWeight: 600, color: piccColors.slate[700] }}>
                 Chúng tôi đồng ý công khai phần giới thiệu ngắn và mô tả dự án sau khi được Ban Tổ chức phê duyệt.
               </Typography>
             }

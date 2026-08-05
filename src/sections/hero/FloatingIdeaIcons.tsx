@@ -28,18 +28,18 @@ interface Icon3DConfig {
 
 const icons: Icon3DConfig[] = [
   { Icon: LightbulbRounded, x: 70, y: 25, color: piccColors.yellow[300], depth: 1, rotate: true, size: 1.0 },
-  { Icon: RocketLaunchRounded, x: 80, y: 60, color: piccColors.pink[300], depth: 2, scale: true, size: 1.1 },
+  { Icon: RocketLaunchRounded, x: 80, y: 60, color: piccColors.red[300], depth: 2, scale: true, size: 1.1 },
   { Icon: AutoAwesomeRounded, x: 65, y: 40, color: piccColors.blue[300], depth: 0, rotate: true, size: 0.9 },
-  { Icon: TrendingUpRounded, x: 85, y: 75, color: piccColors.blue[300], depth: 2, scale: true, size: 1.0 },
-  { Icon: GroupsRounded, x: 15, y: 35, color: piccColors.emerald[300], depth: 1, translate: true, size: 1.1 },
-  { Icon: EmojiObjectsRounded, x: 20, y: 70, color: piccColors.pink[200], depth: 2, rotate: true, size: 0.9 },
+  { Icon: TrendingUpRounded, x: 85, y: 75, color: piccColors.ptitNavy, depth: 2, scale: true, size: 1.0 },
+  { Icon: GroupsRounded, x: 15, y: 35, color: piccColors.yellow[400], depth: 1, translate: true, size: 1.1 },
+  { Icon: EmojiObjectsRounded, x: 20, y: 70, color: piccColors.red[200], depth: 2, rotate: true, size: 0.9 },
 ];
 
 const particles = [
   { x: 55, y: 18, size: 7, color: piccColors.yellow[200], delay: 0, depth: 0 },
-  { x: 90, y: 45, size: 5, color: piccColors.pink[200], delay: 1.2, depth: 2 },
+  { x: 90, y: 45, size: 5, color: piccColors.red[200], delay: 1.2, depth: 2 },
   { x: 40, y: 80, size: 6, color: piccColors.blue[200], delay: 2.4, depth: 1 },
-  { x: 72, y: 90, size: 5, color: piccColors.emerald[300], delay: 0.8, depth: 2 },
+  { x: 72, y: 90, size: 5, color: piccColors.yellow[300], delay: 0.8, depth: 2 },
   { x: 30, y: 20, size: 6, color: piccColors.sky[200], delay: 3.6, depth: 0 },
 ];
 

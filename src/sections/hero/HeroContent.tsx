@@ -29,7 +29,7 @@ const getStatusBadge = (status: RegistrationStatus): string => {
 
 /* ─── Animation helpers ─── */
 const fadeUp = (delay: number) => ({
-  initial: { opacity: 1, y: 8 },
+  initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
   transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as number[], delay },
 });
@@ -52,26 +52,37 @@ export const HeroContent = ({ status }: Props) => {
             display: 'inline-flex',
             alignItems: 'center',
             gap: 0.75,
-            flexWrap: 'wrap',
-            border: `1px solid ${piccColors.ptitRed}`,
-            bgcolor: 'rgba(188, 38, 38, 0.06)',
+            border: '1px solid rgba(225, 20, 20, 0.22)',
+            bgcolor: 'rgba(225, 20, 20, 0.06)',
             borderRadius: '999px',
-            px: 1.75,
-            py: 0.6,
-            mb: 2,
+            px: 1.5,
+            py: 0.55,
+            mb: 2.5,
           }}
         >
+          {/* Lightning icon */}
+          <Box
+            component="svg"
+            aria-hidden="true"
+            viewBox="0 0 16 16"
+            fill="none"
+            sx={{ width: 14, height: 14, flexShrink: 0 }}
+          >
+            <path
+              d="M9.5 1L3 9.5h5L6.5 15l7.5-8.5H9L9.5 1z"
+              fill={piccColors.ptitRed}
+            />
+          </Box>
           <Typography
             component="span"
             sx={{
-              fontSize: '0.78rem',
-              fontWeight: 800,
-              color: piccColors.ptitRed,
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              color: piccColors.ptitNavy,
               letterSpacing: '0.02em',
-              fontFamily: '"Manrope", sans-serif',
             }}
           >
-            PTIT IEC · CASE STUDY CHALLENGE
+            {competitionData.meta.shortName} · Case Study Challenge
           </Typography>
           <Box
             sx={{
@@ -85,15 +96,16 @@ export const HeroContent = ({ status }: Props) => {
           <Typography
             component="span"
             sx={{
-              fontSize: '0.75rem',
-              fontWeight: 700,
+              fontSize: '0.72rem',
+              fontWeight: 600,
               color:
                 status === 'open'
                   ? piccColors.emerald[600]
                   : status === 'manually_disabled'
                     ? piccColors.amber[600]
-                    : piccColors.ptitRed,
-              fontFamily: '"Manrope", sans-serif',
+                    : status === 'closed'
+                      ? piccColors.slate[500]
+                      : piccColors.ptitRed,
             }}
           >
             {badgeLabel}
@@ -101,7 +113,7 @@ export const HeroContent = ({ status }: Props) => {
         </Box>
       </motion.div>
 
-      {/* ── Main Clean Heading ── */}
+      {/* ── Heading ── */}
       <motion.div {...fadeUp(0.13)}>
         <Typography
           variant="h1"
@@ -109,33 +121,46 @@ export const HeroContent = ({ status }: Props) => {
           sx={{
             mb: 1.5,
             fontSize: {
-              xs: '2rem',
-              sm: '2.6rem',
-              md: '3.15rem',
-              lg: '3.5rem',
+              xs: '2.4rem',
+              sm: '3.1rem',
+              md: '3.55rem',
+              lg: '4rem',
             },
-            lineHeight: 1.05,
-            letterSpacing: '-0.025em',
+            lineHeight: 1.03,
+            letterSpacing: '-0.032em',
             fontWeight: 800,
-            fontFamily: '"Manrope", sans-serif',
           }}
         >
-          <Box component="span" sx={{ color: piccColors.ptitNavy, display: 'block' }}>
-            PICC <Box component="span" sx={{ color: piccColors.ptitRed }}>2026</Box>
+          <Box component="span" sx={{ display: 'block', color: piccColors.ptitNavy }}>
+            PTIT Innovation
+          </Box>
+          <Box
+            component="span"
+            sx={{
+              display: 'block',
+              whiteSpace: 'nowrap',
+              background: 'linear-gradient(135deg, #E11414 0%, #B91212 45%, #0F2A52 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              fontSize: { xs: '0.82em', sm: '1em' },
+              lineHeight: 1.15,
+              pb: '0.12em',
+            }}
+          >
+            Catalyst Challenge
           </Box>
           <Box
             component="span"
             sx={{
               display: 'block',
               color: piccColors.ptitNavy,
-              fontSize: { xs: '0.62em', sm: '0.62em' },
-              letterSpacing: '-0.01em',
-              fontWeight: 800,
-              mt: 0.5,
-              textTransform: 'uppercase',
+              fontSize: '1.08em',
+              letterSpacing: '-0.04em',
+              fontWeight: 900,
             }}
           >
-            PTIT Innovation Catalyst Challenge
+            2026
           </Box>
         </Typography>
       </motion.div>
@@ -144,15 +169,14 @@ export const HeroContent = ({ status }: Props) => {
       <motion.div {...fadeUp(0.21)}>
         <Typography
           sx={{
-            mb: 2,
-            color: piccColors.ptitRed,
-            fontWeight: 700,
+            mb: 1.5,
+            color: piccColors.pink[600],
+            fontWeight: 750,
             fontSize: { xs: '1.1rem', md: '1.25rem' },
-            letterSpacing: '0.02em',
+            letterSpacing: '-0.01em',
             display: 'flex',
             alignItems: 'center',
             gap: 1,
-            fontFamily: '"Manrope", sans-serif',
           }}
         >
           {competitionData.meta.theme}
@@ -162,8 +186,9 @@ export const HeroContent = ({ status }: Props) => {
               display: 'inline-block',
               width: 36,
               height: 2,
-              background: `linear-gradient(90deg, ${piccColors.ptitRed}, transparent)`,
+              background: `linear-gradient(90deg, ${piccColors.pink[400]}, transparent)`,
               borderRadius: 1,
+              mb: 0.25,
             }}
           />
         </Typography>
@@ -173,16 +198,15 @@ export const HeroContent = ({ status }: Props) => {
       <motion.div {...fadeUp(0.28)}>
         <Typography
           sx={{
-            color: '#4e4f53',
-            mb: 3.5,
-            maxWidth: 520,
-            fontSize: { xs: '1.05rem', md: '1.125rem' },
+            color: piccColors.slate[600],
+            mb: 3.25,
+            maxWidth: 510,
+            fontSize: { xs: '0.95rem', md: '1.025rem' },
             lineHeight: 1.65,
             fontWeight: 450,
-            fontFamily: '"Manrope", sans-serif',
           }}
         >
-          Sân chơi giải Case Study cấp Học viện do Trung tâm Đổi mới Sáng tạo và Khởi nghiệp PTIT (IEC) tổ chức dành cho sinh viên liên ngành cùng doanh nghiệp nghiên cứu, phát triển giải pháp thực tế.
+          PICC 2026 — sân chơi Case Study cấp Học viện dành cho sinh viên PTIT, nơi tư duy liên ngành gặp gỡ những bài toán thực tế từ doanh nghiệp.
         </Typography>
       </motion.div>
 
@@ -191,7 +215,7 @@ export const HeroContent = ({ status }: Props) => {
         <Box sx={{ mb: 3.5 }}>
           {/* Action Buttons Row */}
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
-            {/* Primary Red CTA */}
+            {/* Primary CTA */}
             <Button
               component="a"
               href={ctaConfig.href.startsWith('/#') ? appHash(ctaConfig.href.slice(2)) : appPath(ctaConfig.href)}
@@ -205,24 +229,21 @@ export const HeroContent = ({ status }: Props) => {
                 )
               }
               sx={{
-                height: 50,
-                borderRadius: '50px',
-                px: { xs: 3, sm: 3.5 },
+                height: 52,
+                borderRadius: '999px',
+                px: { xs: 3, sm: 3.75 },
                 fontSize: '0.975rem',
-                fontWeight: 800,
-                letterSpacing: '0.02em',
-                fontFamily: '"Manrope", sans-serif',
+                fontWeight: 750,
                 color: '#FFFFFF',
                 background: gradientMesh.ptitCta,
-                boxShadow: '0 6px 20px rgba(188, 38, 38, 0.35)',
-                textTransform: 'uppercase',
-                whiteSpace: 'nowrap',
+                boxShadow: '0 8px 24px rgba(225, 20, 20, 0.30)',
+                textTransform: 'none',
                 position: 'relative',
                 overflow: 'hidden',
                 transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                 '&:hover': {
-                  background: 'linear-gradient(135deg, #a31c1c 0%, #821414 100%)',
-                  boxShadow: '0 8px 26px rgba(188, 38, 38, 0.5)',
+                  background: 'linear-gradient(135deg, #B91212 0%, #8E1010 100%)',
+                  boxShadow: '0 10px 30px rgba(225, 20, 20, 0.40)',
                   transform: 'translateY(-2px)',
                   '& .MuiButton-endIcon': {
                     transform: 'translateX(3px)',
@@ -230,6 +251,21 @@ export const HeroContent = ({ status }: Props) => {
                 },
                 '&:active': {
                   transform: 'translateY(0) scale(0.99)',
+                },
+                // One-time shimmer sweep animation on mount
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: '-100%',
+                  width: '50%',
+                  height: '100%',
+                  background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent)',
+                  animation: 'shimmerSweep 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s 1 normal forwards',
+                },
+                '@keyframes shimmerSweep': {
+                  '0%': { left: '-100%' },
+                  '100%': { left: '200%' },
                 },
               }}
             >
@@ -244,22 +280,21 @@ export const HeroContent = ({ status }: Props) => {
               size="large"
               startIcon={<MenuBookRoundedIcon sx={{ fontSize: '1rem !important' }} />}
               sx={{
-                height: 50,
-                borderRadius: '50px',
+                height: 52,
+                borderRadius: '999px',
                 px: 3,
-                fontSize: '0.975rem',
-                fontWeight: 700,
+                fontSize: '0.95rem',
+                fontWeight: 650,
                 textTransform: 'none',
-                whiteSpace: 'nowrap',
                 color: piccColors.ptitNavy,
-                borderColor: 'rgba(5, 26, 83, 0.28)',
-                bgcolor: '#FFFFFF',
+                borderColor: 'rgba(15, 42, 82, 0.24)',
+                bgcolor: 'rgba(255,255,255,0.85)',
+                backdropFilter: 'blur(8px)',
                 transition: 'all 0.25s ease',
                 '&:hover': {
                   borderColor: piccColors.ptitRed,
-                  color: piccColors.ptitRed,
-                  bgcolor: '#FFFFFF',
-                  boxShadow: '0 4px 16px rgba(188, 38, 38, 0.12)',
+                  bgcolor: piccColors.red[50],
+                  boxShadow: '0 4px 16px rgba(15, 42, 82, 0.10)',
                   transform: 'translateY(-2px)',
                 },
               }}
@@ -304,7 +339,7 @@ export const HeroContent = ({ status }: Props) => {
             bgcolor: 'rgba(255,255,255,0.88)',
             border: '1px solid rgba(226, 232, 240, 0.9)',
             borderRadius: '18px',
-            boxShadow: '0 2px 12px rgba(23,59,102,0.06)',
+            boxShadow: '0 2px 12px rgba(15,42,82,0.06)',
             backdropFilter: 'blur(12px)',
             overflow: 'hidden',
             maxWidth: 540,
@@ -313,20 +348,20 @@ export const HeroContent = ({ status }: Props) => {
           {[
             {
               Icon: SchoolRoundedIcon,
-              color: piccColors.blue[600],
-              bg: piccColors.blue[50],
-              value: 'Sinh viên PTIT',
+              color: piccColors.ptitRed,
+              bg: piccColors.red[50],
+              value: competitionData.eligibility.target,
             },
             {
               Icon: GroupsRoundedIcon,
-              color: piccColors.pink[500],
-              bg: piccColors.pink[50],
-              value: 'Đội 03–04 thành viên',
+              color: piccColors.blue[600],
+              bg: piccColors.blue[50],
+              value: `Đội ${competitionData.teamRules.size}`,
             },
             {
               Icon: FlagRoundedIcon,
-              color: piccColors.emerald[600],
-              bg: piccColors.emerald[50],
+              color: piccColors.amber[600],
+              bg: piccColors.amber[50],
               value: '04 giai đoạn chính',
             },
           ].map((item, i, arr) => (

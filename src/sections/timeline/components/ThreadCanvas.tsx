@@ -29,7 +29,7 @@ const FOOTSTEP_CLUSTERS = [
  */
 const FootprintPair = ({
   size = 11,
-  color = '#397CE8',
+  color = '#3882F1',
 }: {
   size?: number;
   color?: string;
@@ -78,9 +78,9 @@ export const ThreadCanvas = ({ hasEnteredViewport }: ThreadCanvasProps) => {
         <defs>
           {/* Thread Multi-stop Smooth Gradient */}
           <linearGradient id="threadGradientMain" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#397CE8" />
-            <stop offset="33%" stopColor="#E85B9F" />
-            <stop offset="66%" stopColor="#D97706" />
+            <stop offset="0%" stopColor="#3882F1" />
+            <stop offset="33%" stopColor="#D65890" />
+            <stop offset="66%" stopColor="#9E7A19" />
             <stop offset="100%" stopColor="#059669" />
           </linearGradient>
 
@@ -136,11 +136,11 @@ export const ThreadCanvas = ({ hasEnteredViewport }: ThreadCanvasProps) => {
 
         {/* ── Horizontal Tethers (Card to Thread Nodes) ── */}
         {/* Tether 01 */}
-        <line x1="360" y1="85" x2="390" y2="85" stroke="#397CE8" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
+        <line x1="360" y1="85" x2="390" y2="85" stroke="#3882F1" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
         {/* Tether 02 */}
-        <line x1="690" y1="265" x2="720" y2="265" stroke="#E85B9F" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
+        <line x1="690" y1="265" x2="720" y2="265" stroke="#D65890" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
         {/* Tether 03 */}
-        <line x1="360" y1="445" x2="390" y2="445" stroke="#D97706" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
+        <line x1="360" y1="445" x2="390" y2="445" stroke="#9E7A19" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
       </svg>
 
       {/* Subtle Footstep Clusters Along Curve */}
@@ -160,7 +160,7 @@ export const ThreadCanvas = ({ hasEnteredViewport }: ThreadCanvasProps) => {
             animate={hasEnteredViewport ? { opacity: step.opacity, scale: 1 } : { opacity: 0, scale: 0.6 }}
             transition={{ duration: 0.4, delay: step.delay }}
           >
-            <FootprintPair size={10} color="#397CE8" />
+            <FootprintPair size={10} color="#3882F1" />
           </motion.div>
         </Box>
       ))}

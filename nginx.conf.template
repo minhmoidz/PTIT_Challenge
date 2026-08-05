@@ -1,59 +1,147 @@
+# PICC 2026 — reverse proxy for the SPA and the API.
+#
+# Rendered at container start by docker-entrypoint.sh. ${APP_BASE_PATH} is the
+# public mount path on the UPSTREAM origin (e.g. "/" or "/cuocthi/"), so this
+# container can sit behind a third-party nginx at any prefix without a rebuild.
+#
+# TLS, HSTS and the public hostname belong to that upstream proxy; this server
+# speaks plain HTTP on one port and only serves the app.
+
+server_tokens off;
+
+# Rate limiting keyed on the real visitor IP (see set_real_ip_from below).
+limit_req_zone $binary_remote_addr zone=api_limit:10m rate=30r/s;
+limit_req_zone $binary_remote_addr zone=reg_limit:10m rate=5r/m;
+limit_req_zone $binary_remote_addr zone=auth_limit:10m rate=5r/m;
+# Rejected requests return 429 (Too Many Requests) instead of nginx's default 503.
+limit_req_status 429;
+
 server {
     listen 80;
     server_name _;
     root /usr/share/nginx/html;
     index index.html;
+    # Redirects must stay relative: this container knows neither the public
+    # scheme nor the hostname — only the upstream proxy does.
     absolute_redirect off;
+
+    # Recover the real visitor IP from the upstream proxy chain. Without this,
+    # every request appears to come from that proxy and all visitors share one
+    # rate-limit bucket, so the registration limit would lock out everyone after
+    # five submissions site-wide.
+    #
+    # Only the CIDRs in TRUSTED_PROXY_CIDRS may set the header, so a client that
+    # reaches this port directly cannot spoof its address.
+${REAL_IP_DIRECTIVES}    real_ip_header X-Forwarded-For;
+    real_ip_recursive on;
 
     client_max_body_size 50M;
 
+    # Resolve the backend per-request instead of once at start-up. Without this
+    # nginx refuses to boot while the API's DNS name is unresolvable, and caches
+    # the first address forever — so a recreated API container (new IP) would be
+    # unreachable until nginx itself restarted.
+    resolver ${DNS_RESOLVER} valid=10s ipv6=off;
+    set $backend "${BACKEND_URL}";
+
     gzip on;
-    gzip_types text/plain text/css application/json application/javascript image/svg+xml;
+    gzip_vary on;
+    gzip_comp_level 6;
     gzip_min_length 256;
+    gzip_types text/plain text/css application/json application/javascript application/xml image/svg+xml font/woff2;
 
-    # Canonical public entry point for the PICC application.
-    location = /cuocthi {
-        return 308 /cuocthi/;
+    # ── Security headers ──
+    # Strict-Transport-Security is deliberately absent: the upstream proxy
+    # terminates TLS and owns that policy for the whole domain.
+    # add_header is NOT inherited by locations that set their own, so the full
+    # set is repeated in the asset and SPA locations below.
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "DENY" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https://cloudflareinsights.com; base-uri 'self'; object-src 'none'; frame-ancestors 'none'" always;
+
+    # ── Shared proxy defaults ──
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header Connection "";
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_connect_timeout 10s;
+    proxy_send_timeout 60s;
+    proxy_read_timeout 60s;
+
+    # Bare prefix → canonical trailing-slash form. When mounted at the root this
+    # renders to a path nothing requests, since no redirect is needed there.
+    location = ${APP_BASE_BARE} {
+        return 308 ${APP_BASE_PATH};
     }
 
-    # Browser requests are public /cuocthi/api/*; the backend contract remains /api/*.
-    location ^~ /cuocthi/api/ {
-        rewrite ^/cuocthi/(.*)$ /$1 break;
-        proxy_pass ${BACKEND_URL};
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_connect_timeout 60s;
-        proxy_send_timeout 60s;
-        proxy_read_timeout 60s;
+    # Registration submission — the strictest app-level rate limit (5/min, burst 2).
+    location = ${APP_BASE_PATH}api/v1/public/registrations {
+        limit_req zone=reg_limit burst=2 nodelay;
+        rewrite ^${APP_BASE_PATH}(.*)$ /$1 break;
+        proxy_pass $backend$uri$is_args$args;
     }
 
-    location ^~ /cuocthi/assets/ {
+    # Admin login — brute-force protection (5/min, burst 1).
+    location = ${APP_BASE_PATH}api/v1/admin/auth/login {
+        limit_req zone=auth_limit burst=1 nodelay;
+        rewrite ^${APP_BASE_PATH}(.*)$ /$1 break;
+        proxy_pass $backend$uri$is_args$args;
+    }
+
+    # Browser requests are public <mount>/api/*; the backend contract stays /api/*.
+    location ^~ ${APP_BASE_PATH}api/ {
+        limit_req zone=api_limit burst=20 nodelay;
+        rewrite ^${APP_BASE_PATH}(.*)$ /$1 break;
+        proxy_pass $backend$uri$is_args$args;
+    }
+
+    # Hashed static assets — immutable cache.
+    location ^~ ${APP_BASE_PATH}assets/ {
         alias /usr/share/nginx/html/assets/;
         expires 1y;
-        add_header Cache-Control "public, immutable";
+        add_header Cache-Control "public, immutable" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header X-Frame-Options "DENY" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
     }
 
-    # Every remaining public path is a browser-router route. Static files and API
-    # calls are handled above, so always serve the PICC entry document here.
-    location ^~ /cuocthi/ {
+    # Container/orchestrator health checks. Never rate limited — throttling a
+    # health check into a false negative would restart a healthy container.
+    location = /health {
+        access_log off;
+        proxy_pass $backend$uri$is_args$args;
+    }
+
+    location = /health/ready {
+        access_log off;
+        proxy_pass $backend$uri$is_args$args;
+    }
+
+    # Every remaining path under the mount is a browser-router route. Serve the
+    # entry document uncached so content updates propagate immediately.
+    location ^~ ${APP_BASE_PATH} {
         try_files /index.html =404;
-        add_header Cache-Control "no-cache";
+        add_header Cache-Control "no-cache, no-store, must-revalidate" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header X-Frame-Options "DENY" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
+        add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https://cloudflareinsights.com; base-uri 'self'; object-src 'none'; frame-ancestors 'none'" always;
     }
 
-    # Keep container health checks available without taking ownership of the public root domain.
-    location /health {
-        proxy_pass ${BACKEND_URL};
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-
-    location / {
+    # Anything outside the mount is not ours. Returning 404 rather than
+    # redirecting keeps this container from interfering with the rest of the
+    # upstream site if it is ever proxied more broadly than intended.
+    #
+    # When mounted at the root there is no "outside", and this would collide
+    # with the SPA location above, so the entrypoint renders it to a path that
+    # is never requested.
+    location ${APP_OUTSIDE_LOCATION} {
         return 404;
     }
 }

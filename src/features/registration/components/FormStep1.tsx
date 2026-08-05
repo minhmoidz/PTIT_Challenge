@@ -2,12 +2,13 @@ import { Grid, TextField, MenuItem, Typography, Box } from '@mui/material';
 import { useFormContext, useWatch, Controller } from 'react-hook-form';
 import type { RegistrationFormValues } from '@/types/registration';
 import { competitionData } from '@/data/competition';
+import { piccColors } from '@/theme/palette';
 
 const CHALLENGE_OPTIONS = [
   { value: 'business', label: 'Kinh tế và Kinh doanh' },
   { value: 'technology', label: 'Công nghệ' },
   { value: 'marketing', label: 'Marketing' },
-  { value: 'media', label: 'Truyền thông' },
+  { value: 'communications', label: 'Truyền thông' },
   { value: 'other', label: 'Khác' },
 ];
 
@@ -20,9 +21,11 @@ const EXPERIENCE_OPTIONS = [
 interface FormStep1Props {
   teamMin: number;
   teamMax: number;
+  challengeMode?: 'single' | 'multiple' | null;
+  maxSelections?: number;
 }
 
-export const FormStep1 = ({ teamMin, teamMax }: FormStep1Props) => {
+export const FormStep1 = ({ teamMin, teamMax, challengeMode = 'multiple', maxSelections }: FormStep1Props) => {
   const {
     register,
     formState: { errors },
@@ -34,7 +37,7 @@ export const FormStep1 = ({ teamMin, teamMax }: FormStep1Props) => {
 
   return (
     <Box>
-      <Typography variant="h3" component="h3" sx={{ fontSize: '1.15rem', fontWeight: 800, color: '#163A67', mb: 3 }}>
+      <Typography variant="h3" component="h3" sx={{ fontSize: '1.15rem', fontWeight: 800, color: piccColors.ptitNavy, mb: 3 }}>
         Phần I — Thông tin đội thi
       </Typography>
 
@@ -44,12 +47,12 @@ export const FormStep1 = ({ teamMin, teamMax }: FormStep1Props) => {
           p: 1.75,
           px: 2.25,
           borderRadius: 3,
-          bgcolor: '#EFF6FF',
-          border: '1px solid rgba(59, 130, 246, 0.3)',
+          bgcolor: piccColors.blue[50],
+          border: '1px solid rgba(56, 130, 241, 0.3)',
           mb: 3,
         }}
       >
-        <Typography sx={{ fontSize: '0.825rem', color: '#1E40AF', fontWeight: 650, lineHeight: 1.5 }}>
+        <Typography sx={{ fontSize: '0.825rem', color: piccColors.blue[800], fontWeight: 650, lineHeight: 1.5 }}>
           📌 Rule Lưu ý: {competitionData.teamRules.warning}
         </Typography>
       </Box>
@@ -102,12 +105,24 @@ export const FormStep1 = ({ teamMin, teamMax }: FormStep1Props) => {
                 select
                 label="Nhóm bài toán muốn tham gia *"
                 error={!!errors.challengeCategories}
-                helperText={errors.challengeCategories?.message || 'Chọn nhóm bài toán đội quan tâm'}
+                helperText={
+                  errors.challengeCategories?.message ||
+                  (challengeMode === 'single'
+                    ? 'Chọn 01 nhóm bài toán theo cấu hình hiện tại'
+                    : typeof maxSelections === 'number'
+                      ? `Chọn tối đa ${maxSelections} nhóm bài toán đội quan tâm`
+                      : 'Chọn nhóm bài toán đội quan tâm')
+                }
                 SelectProps={{
-                  multiple: true,
+                  multiple: challengeMode !== 'single',
                   value: Array.isArray(field.value) ? field.value : [],
                   onChange: (e) => {
                     const val = e.target.value;
+                    if (challengeMode === 'single') {
+                      const nextValue = typeof val === 'string' ? [val] : Array.isArray(val) ? val.slice(-1) : [];
+                      field.onChange(nextValue);
+                      return;
+                    }
                     field.onChange(typeof val === 'string' ? val.split(',') : val);
                   },
                 }}
@@ -193,7 +208,7 @@ export const FormStep1 = ({ teamMin, teamMax }: FormStep1Props) => {
         </Grid>
       </Grid>
 
-      <Typography variant="h3" component="h3" sx={{ fontSize: '1.15rem', fontWeight: 800, color: '#163A67', mb: 3, mt: 4 }}>
+      <Typography variant="h3" component="h3" sx={{ fontSize: '1.15rem', fontWeight: 800, color: piccColors.ptitNavy, mb: 3, mt: 4 }}>
         Kinh nghiệm và Kỳ vọng
       </Typography>
 

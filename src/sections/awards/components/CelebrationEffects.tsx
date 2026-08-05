@@ -15,7 +15,7 @@ export const CelebrationEffects = ({ sectionRef }: CelebrationEffectsProps) => {
     }
 
     const isMobile = window.innerWidth < 768;
-    const colors = ['#F5A623', '#15375F', '#367BEA', '#74839A', '#C96825', '#FFFFFF', '#93C5FD'];
+    const colors = ['#E7C34D', '#0F2A52', '#E11414', '#FF8D8D', '#9E7A19', '#FFFFFF', '#FFD4D4'];
 
     // Stage 1: Left & Right bursts towards Champion card center
     confetti({
@@ -44,7 +44,7 @@ export const CelebrationEffects = ({ sectionRef }: CelebrationEffectsProps) => {
         particleCount: isMobile ? 22 : 45,
         spread: 75,
         origin: { x: 0.5, y: 0.4 },
-        colors: ['#F5A623', '#FBBF24', '#FFFDF2', '#FFFFFF'],
+        colors: ['#E7C34D', '#E7C34D', '#FFFDF2', '#FFFFFF'],
         zIndex: 20,
         disableForReducedMotion: true,
       });
@@ -82,6 +82,7 @@ export const CelebrationEffects = ({ sectionRef }: CelebrationEffectsProps) => {
     const observer = new IntersectionObserver(
       (entries) => {
         const [entry] = entries;
+        if (!entry) return;
 
         if (entry.isIntersecting) {
           // First time entering viewport: run initial confetti celebration

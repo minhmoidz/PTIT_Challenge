@@ -14,6 +14,10 @@ export const AwardPodium = () => {
   const p2 = competitionData.prizes.find((p) => p.rank === 2) || competitionData.prizes[1];
   const p3 = competitionData.prizes.find((p) => p.rank === 3) || competitionData.prizes[2];
 
+  // The podium is meaningless without all three ranks; render nothing rather
+  // than a half-built layout if the prize data is incomplete.
+  if (!p1 || !p2 || !p3) return null;
+
   return (
     <Box
       component={motion.div}

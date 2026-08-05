@@ -1,14 +1,18 @@
 /**
- * SkyBackground — Sky World Design System Config
+ * Section surfaces.
  *
- * Variants:
- *   hero        — rich multi-layer sky for Hero section
- *   clear       — bright open sky for Introduction / Rules
- *   journey     — atmospheric journey sky for Timeline / Roadmap
- *   celebration — golden celebration sky for Awards
- *   calm        — near-white quiet sky for FAQ
- *   sunset      — deep-sky / dusk tone for Footer
+ * Two supplied colour-swab images give the site its background:
+ *   - maunen2.jpg  a soft sky-blue vertical gradient — painted once on the
+ *     page layout (`LandingLayout`) so it runs seamlessly under everything
+ *   - maunen1.jpg  a blue-to-pink pastel gradient — reserved for the Hero band
+ *
+ * The `clear` / `journey` / `celebration` / `calm` surfaces are left
+ * transparent so the layout's single maunen2 layer shows through the whole page
+ * without seams where full-width sections abut. Each image keeps a flat colour
+ * fallback for the moment before it loads.
  */
+
+import { assetPath } from '@/config/paths';
 
 export type SkyVariant =
   | 'hero'
@@ -18,7 +22,7 @@ export type SkyVariant =
   | 'calm'
   | 'sunset';
 
-interface CloudConfig {
+export interface CloudConfig {
   x: number;
   y: number;
   depth: 0 | 1 | 2;
@@ -31,7 +35,7 @@ interface CloudConfig {
   desktopOnly?: boolean;
 }
 
-interface SkyVariantConfig {
+export interface SkyVariantConfig {
   background: string;
   glows: Array<{
     top?: string;
@@ -48,206 +52,187 @@ interface SkyVariantConfig {
 }
 
 export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
+  /**
+   * Hero — vibrant pastel mesh combining maunen1.jpg with warm PTIT Red,
+   * Golden Amber & Sky Blue atmospheric glows.
+   */
   hero: {
-    background:
-      'linear-gradient(180deg, #EAF5FF 0%, #F5FBFF 55%, #FFFFFF 100%)',
+    background: `linear-gradient(135deg, rgba(235, 243, 255, 0.65) 0%, rgba(255, 235, 238, 0.7) 45%, rgba(254, 243, 199, 0.55) 100%), url(${assetPath('maunen1.jpg')}) no-repeat center / cover`,
     glows: [
       {
-        top: '-10%',
-        left: '-6%',
-        w: '48%',
-        h: '55%',
-        color: 'rgba(57,124,232,0.13)',
-        blur: '70px',
-      },
-      {
-        top: '0%',
-        right: '-4%',
-        w: '42%',
-        h: '48%',
-        color: 'rgba(232,91,159,0.09)',
-        blur: '80px',
-      },
-      {
-        bottom: '-8%',
-        right: '18%',
-        w: '38%',
-        h: '38%',
-        color: 'rgba(99,102,241,0.06)',
+        top: '-12%',
+        right: '-5%',
+        w: '680px',
+        h: '680px',
+        color: 'radial-gradient(circle, rgba(225, 20, 20, 0.22) 0%, rgba(255, 182, 193, 0.14) 45%, transparent 70%)',
         blur: '60px',
+      },
+      {
+        top: '10%',
+        left: '-8%',
+        w: '580px',
+        h: '580px',
+        color: 'radial-gradient(circle, rgba(245, 158, 11, 0.22) 0%, rgba(251, 191, 36, 0.1) 50%, transparent 70%)',
+        blur: '50px',
+      },
+      {
+        bottom: '-5%',
+        left: '25%',
+        w: '750px',
+        h: '450px',
+        color: 'radial-gradient(circle, rgba(56, 130, 241, 0.2) 0%, rgba(147, 197, 253, 0.1) 55%, transparent 70%)',
+        blur: '70px',
       },
     ],
     clouds: [
-      { x: 52, y: 8, depth: 0, baseW: 420, travel: 60, dur: 72, delay: 0, opacity: 0.14, desktopOnly: true },
-      { x: 75, y: 58, depth: 0, baseW: 380, travel: -50, dur: 80, delay: 14, opacity: 0.12, desktopOnly: true },
-      { x: 58, y: 22, depth: 1, baseW: 300, travel: 45, dur: 56, delay: 6, opacity: 0.18, desktopOnly: true },
-      { x: 82, y: 72, depth: 1, baseW: 260, travel: -40, dur: 62, delay: 22, opacity: 0.16, desktopOnly: true, flipX: true },
-      { x: 60, y: 88, depth: 2, baseW: 240, travel: 30, dur: 44, delay: 4, opacity: 0.13 },
-      { x: 88, y: 80, depth: 2, baseW: 200, travel: -28, dur: 40, delay: 18, opacity: 0.11, flipX: true },
+      { x: 5, y: 12, depth: 0, baseW: 160, travel: 40, dur: 28, delay: 0, opacity: 0.65 },
+      { x: 72, y: 18, depth: 1, baseW: 210, travel: -35, dur: 34, delay: 4, opacity: 0.75, flipX: true },
+      { x: 40, y: 65, depth: 2, baseW: 260, travel: 50, dur: 40, delay: 2, opacity: 0.85, desktopOnly: true },
     ],
     gridOpacity: 0.45,
   },
 
+  /**
+   * Clear — Introduction & Rules sections with warm red & blue atmospheric light fields.
+   */
   clear: {
-    background:
-      'linear-gradient(180deg, #F7FBFF 0%, #FFFFFF 70%)',
+    background: `linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(240, 247, 255, 0.65) 50%, rgba(255, 245, 245, 0.5) 100%), url(${assetPath('maunen2.jpg')}) no-repeat center / cover`,
     glows: [
       {
-        top: '-5%',
-        left: '-8%',
-        w: '36%',
-        h: '42%',
-        color: 'rgba(57,124,232,0.07)',
-        blur: '60px',
+        top: '15%',
+        left: '-6%',
+        w: '550px',
+        h: '550px',
+        color: 'radial-gradient(circle, rgba(225, 20, 20, 0.14) 0%, transparent 70%)',
+        blur: '55px',
       },
       {
-        top: '-5%',
-        right: '-8%',
-        w: '36%',
-        h: '42%',
-        color: 'rgba(57,124,232,0.06)',
+        bottom: '10%',
+        right: '-6%',
+        w: '600px',
+        h: '600px',
+        color: 'radial-gradient(circle, rgba(56, 130, 241, 0.18) 0%, transparent 70%)',
         blur: '60px',
       },
     ],
     clouds: [
-      { x: -2, y: 15, depth: 0, baseW: 360, travel: 50, dur: 78, delay: 0, opacity: 0.10, desktopOnly: true },
-      { x: 90, y: 55, depth: 0, baseW: 320, travel: -45, dur: 84, delay: 20, opacity: 0.09, desktopOnly: true, flipX: true },
-      { x: -4, y: 65, depth: 1, baseW: 260, travel: 38, dur: 60, delay: 10, opacity: 0.12, desktopOnly: true },
-      { x: 88, y: 10, depth: 1, baseW: 240, travel: -36, dur: 65, delay: 30, opacity: 0.11, desktopOnly: true, flipX: true },
-    ],
-    gridOpacity: 0.25,
-  },
-
-  journey: {
-    background:
-      'linear-gradient(180deg, #EFF8FF 0%, #F5FBFF 40%, #F0F8FF 100%)',
-    glows: [
-      {
-        top: '10%',
-        left: '0%',
-        w: '35%',
-        h: '45%',
-        color: 'rgba(57,124,232,0.09)',
-        blur: '65px',
-      },
-      {
-        top: '45%',
-        right: '0%',
-        w: '35%',
-        h: '45%',
-        color: 'rgba(99,102,241,0.07)',
-        blur: '70px',
-      },
-      {
-        bottom: '5%',
-        left: '25%',
-        w: '50%',
-        h: '30%',
-        color: 'rgba(99,102,241,0.05)',
-        blur: '60px',
-      },
-    ],
-    clouds: [
-      { x: 15, y: 12, depth: 0, baseW: 360, travel: 55, dur: 80, delay: 0, opacity: 0.12, desktopOnly: true },
-      { x: 85, y: 60, depth: 0, baseW: 340, travel: -50, dur: 85, delay: 18, opacity: 0.10, desktopOnly: true, flipX: true },
-      { x: 20, y: 70, depth: 1, baseW: 280, travel: 40, dur: 62, delay: 8, opacity: 0.14, desktopOnly: true },
-      { x: 80, y: 20, depth: 1, baseW: 240, travel: -35, dur: 68, delay: 25, opacity: 0.12, desktopOnly: true, flipX: true },
+      { x: 80, y: 25, depth: 0, baseW: 180, travel: -30, dur: 32, delay: 1, opacity: 0.55 },
+      { x: 12, y: 60, depth: 1, baseW: 220, travel: 45, dur: 38, delay: 5, opacity: 0.65, desktopOnly: true },
     ],
     gridOpacity: 0.35,
   },
 
-  celebration: {
-    background:
-      'linear-gradient(180deg, #FFFBE8 0%, #FFF8E1 40%, #FFF3C4 100%)',
+  /**
+   * Journey — Timeline section with atmospheric deep indigo & rose glows.
+   */
+  journey: {
+    background: `linear-gradient(180deg, rgba(208, 231, 254, 0.85) 0%, rgba(224, 231, 255, 0.8) 50%, rgba(238, 242, 255, 0.85) 100%), url(${assetPath('maunen2.jpg')}) no-repeat center / cover`,
     glows: [
       {
-        top: '-5%',
-        left: '0%',
-        w: '40%',
-        h: '50%',
-        color: 'rgba(245,158,11,0.12)',
-        blur: '70px',
+        top: '20%',
+        left: '-10%',
+        w: '650px',
+        h: '650px',
+        color: 'radial-gradient(circle, rgba(79, 70, 229, 0.16) 0%, rgba(99, 102, 241, 0.08) 50%, transparent 70%)',
+        blur: '60px',
       },
       {
-        top: '35%',
-        right: '0%',
-        w: '40%',
-        h: '45%',
-        color: 'rgba(251,191,36,0.10)',
-        blur: '75px',
-      },
-      {
-        bottom: '0%',
-        left: '20%',
-        w: '55%',
-        h: '35%',
-        color: 'rgba(245,158,11,0.08)',
-        blur: '65px',
+        bottom: '20%',
+        right: '-10%',
+        w: '600px',
+        h: '600px',
+        color: 'radial-gradient(circle, rgba(225, 20, 20, 0.15) 0%, rgba(244, 63, 94, 0.08) 50%, transparent 70%)',
+        blur: '60px',
       },
     ],
     clouds: [
-      { x: 10, y: 8, depth: 0, baseW: 400, travel: 60, dur: 70, delay: 0, opacity: 0.15, desktopOnly: true },
-      { x: 80, y: 55, depth: 0, baseW: 360, travel: -55, dur: 75, delay: 15, opacity: 0.13, desktopOnly: true, flipX: true },
-      { x: 15, y: 68, depth: 1, baseW: 300, travel: 45, dur: 58, delay: 5, opacity: 0.16, desktopOnly: true },
-      { x: 85, y: 15, depth: 1, baseW: 260, travel: -40, dur: 64, delay: 20, opacity: 0.14, desktopOnly: true, flipX: true },
-      { x: 30, y: 90, depth: 2, baseW: 220, travel: 30, dur: 45, delay: 3, opacity: 0.12 },
+      { x: 15, y: 20, depth: 1, baseW: 190, travel: 35, dur: 36, delay: 0, opacity: 0.6 },
+      { x: 65, y: 55, depth: 0, baseW: 170, travel: -25, dur: 30, delay: 3, opacity: 0.5 },
     ],
     gridOpacity: 0.4,
   },
 
-  calm: {
-    background:
-      'linear-gradient(180deg, #FAFCFF 0%, #FFFFFF 80%)',
+  /**
+   * Celebration — Awards section with rich Golden Champion & Crimson lighting.
+   */
+  celebration: {
+    background: `linear-gradient(135deg, rgba(254, 243, 199, 0.75) 0%, rgba(255, 237, 213, 0.65) 40%, rgba(255, 228, 230, 0.7) 100%), url(${assetPath('maunen1.jpg')}) no-repeat center / cover`,
     glows: [
       {
-        top: '-3%',
-        left: '-5%',
-        w: '30%',
-        h: '35%',
-        color: 'rgba(57,124,232,0.05)',
+        top: '10%',
+        left: '25%',
+        w: '750px',
+        h: '550px',
+        color: 'radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, rgba(251, 191, 36, 0.12) 55%, transparent 75%)',
+        blur: '50px',
+      },
+      {
+        bottom: '-5%',
+        right: '5%',
+        w: '600px',
+        h: '600px',
+        color: 'radial-gradient(circle, rgba(225, 20, 20, 0.18) 0%, transparent 70%)',
         blur: '55px',
       },
+      {
+        top: '40%',
+        left: '-5%',
+        w: '500px',
+        h: '500px',
+        color: 'radial-gradient(circle, rgba(234, 179, 8, 0.18) 0%, transparent 70%)',
+        blur: '45px',
+      },
     ],
     clouds: [
-      { x: 5, y: 10, depth: 0, baseW: 340, travel: 40, dur: 85, delay: 0, opacity: 0.08, desktopOnly: true },
-      { x: 95, y: 50, depth: 0, baseW: 300, travel: -35, dur: 90, delay: 25, opacity: 0.07, desktopOnly: true, flipX: true },
-      { x: 8, y: 70, depth: 1, baseW: 240, travel: 30, dur: 65, delay: 12, opacity: 0.10, desktopOnly: true },
-      { x: 92, y: 15, depth: 1, baseW: 220, travel: -28, dur: 70, delay: 35, opacity: 0.09, desktopOnly: true, flipX: true },
+      { x: 8, y: 15, depth: 2, baseW: 240, travel: 40, dur: 35, delay: 2, opacity: 0.75 },
+      { x: 75, y: 60, depth: 1, baseW: 200, travel: -30, dur: 32, delay: 0, opacity: 0.65, flipX: true },
     ],
-    gridOpacity: 0.15,
+    gridOpacity: 0.45,
   },
 
-  sunset: {
-    background:
-      'linear-gradient(180deg, #1E3A5F 0%, #2D4A6B 50%, #1A2E42 100%)',
+  /**
+   * Calm — Quiet sky atmosphere for FAQ and team details.
+   */
+  calm: {
+    background: `linear-gradient(180deg, rgba(255, 255, 255, 0.75) 0%, rgba(241, 245, 249, 0.85) 100%), url(${assetPath('maunen2.jpg')}) no-repeat center / cover`,
     glows: [
       {
-        top: '-15%',
-        left: '0%',
-        w: '50%',
-        h: '60%',
-        color: 'rgba(245,158,11,0.15)',
-        blur: '80px',
-      },
-      {
-        bottom: '-10%',
-        right: '0%',
-        w: '45%',
-        h: '50%',
-        color: 'rgba(232,91,159,0.12)',
-        blur: '85px',
+        top: '20%',
+        right: '10%',
+        w: '500px',
+        h: '500px',
+        color: 'radial-gradient(circle, rgba(56, 130, 241, 0.12) 0%, transparent 70%)',
+        blur: '50px',
       },
     ],
     clouds: [
-      { x: 20, y: 12, depth: 0, baseW: 400, travel: 70, dur: 65, delay: 0, opacity: 0.18, desktopOnly: true },
-      { x: 80, y: 58, depth: 0, baseW: 360, travel: -60, dur: 70, delay: 10, opacity: 0.16, desktopOnly: true, flipX: true },
-      { x: 25, y: 75, depth: 1, baseW: 320, travel: 50, dur: 55, delay: 5, opacity: 0.20, desktopOnly: true },
-      { x: 75, y: 22, depth: 1, baseW: 280, travel: -45, dur: 60, delay: 20, opacity: 0.18, desktopOnly: true, flipX: true },
+      { x: 50, y: 30, depth: 0, baseW: 160, travel: 25, dur: 30, delay: 1, opacity: 0.45 },
     ],
-    gridOpacity: 0.5,
+    gridOpacity: 0.25,
+  },
+
+  /**
+   * Sunset — Footer section with deep dusk navy & glowing horizon.
+   */
+  sunset: {
+    background: 'linear-gradient(180deg, #091A36 0%, #0F2A52 60%, #1A0E2E 100%)',
+    glows: [
+      {
+        top: '0%',
+        left: '30%',
+        w: '700px',
+        h: '350px',
+        color: 'radial-gradient(circle, rgba(225, 20, 20, 0.25) 0%, rgba(245, 158, 11, 0.15) 50%, transparent 75%)',
+        blur: '60px',
+      },
+    ],
+    clouds: [],
+    gridOpacity: 0.2,
   },
 };
 
 export const getSkyBackground = (variant: SkyVariant): string => {
   return VARIANTS[variant].background;
 };
+
+

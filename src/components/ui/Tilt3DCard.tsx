@@ -31,7 +31,7 @@ export const Tilt3DCard = ({
   shimmer = true,
   depthShadow = true,
   borderGlow = true,
-  borderGlowColor = 'rgba(79, 143, 234, 0.3)',
+  borderGlowColor = 'rgba(225, 20, 20, 0.24)',
   interactive = false,
   sx,
   ...rest
@@ -74,7 +74,7 @@ export const Tilt3DCard = ({
   const borderGlowBackground = useTransform(
     [borderGlowX, borderGlowY, borderGlowSpreadVal] as const,
     ([gx, gy, spread]: number[]) =>
-      `radial-gradient(circle at ${gx}% ${gy}%, ${borderGlowColor}, transparent ${60 + spread}%)`
+      `radial-gradient(circle at ${gx}% ${gy}%, ${borderGlowColor}, transparent ${60 + (spread ?? 0)}%)`
   );
 
   // Shimmer sweep position (background position uses string)
@@ -136,7 +136,7 @@ export const Tilt3DCard = ({
             position: 'absolute',
             inset: 0,
             borderRadius: 'inherit',
-            background: `rgba(23, 59, 102, 0.08)`,
+            background: `rgba(15, 42, 82, 0.08)`,
             x: shadowX,
             y: shadowY,
             filter: `blur(${shadowBlur}px)`,

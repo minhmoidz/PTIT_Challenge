@@ -51,6 +51,7 @@ enum ConsentType {
   INFORMATION_ACCURACY
   MEDIA_USE
   RULES_ACCEPTANCE
+  PRIVACY_ACKNOWLEDGEMENT
   PUBLIC_TEAM_PROFILE
   PUBLIC_MEMBER_NAMES
   PUBLIC_MEMBER_PHOTOS
@@ -191,6 +192,7 @@ model Registration {
   captainPhone           String
   challengeCategory      ChallengeCategory
   challengeCategoryOther String?
+  challengeCategories   String[]  @default([])
   previousCompetitions   String?
   notableProject         String
   expectations           String

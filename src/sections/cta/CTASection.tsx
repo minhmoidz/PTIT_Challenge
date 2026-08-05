@@ -52,7 +52,7 @@ export const CTASection = () => {
       component="section"
       id="final-cta"
       sx={{
-        py: { xs: 6, sm: 7, md: 8, lg: 10 },
+        py: { xs: 7, sm: 8, md: 10 },
         background: getSkyBackground('clear'),
         position: 'relative',
         overflow: 'hidden',
@@ -76,10 +76,10 @@ export const CTASection = () => {
               p: { xs: 4, sm: 6, md: 7 },
               borderRadius: '28px',
               background:
-                'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(238, 246, 255, 0.95) 50%, rgba(255, 255, 255, 0.95) 100%)',
+                'linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(252, 249, 241, 0.95) 54%, rgba(255, 255, 255, 0.96) 100%)',
               backdropFilter: 'blur(20px)',
-              border: '1.5px solid rgba(57, 124, 232, 0.25)',
-              boxShadow: '0 16px 48px rgba(22, 58, 103, 0.06)',
+              border: '1.5px solid rgba(225, 20, 20, 0.14)',
+              boxShadow: '0 16px 48px rgba(15, 42, 82, 0.06)',
               textAlign: 'center',
               position: 'relative',
               overflow: 'hidden',
@@ -94,7 +94,7 @@ export const CTASection = () => {
                 right: 0,
                 height: 4,
                 background:
-                  'linear-gradient(90deg, #397CE8 0%, #E85B9F 50%, #059669 100%)',
+                  'linear-gradient(90deg, #E11414 0%, #0F2A52 56%, #E7C34D 100%)',
               }}
             />
 
@@ -117,15 +117,15 @@ export const CTASection = () => {
                   }
                   label={ctaConfig.helperText}
                   sx={{
-                    bgcolor: 'rgba(234, 242, 255, 0.9)',
+                    bgcolor: 'rgba(255, 245, 245, 0.9)',
                     backdropFilter: 'blur(8px)',
-                    color: piccColors.blue[800],
+                    color: piccColors.ptitNavy,
                     fontWeight: 800,
                     fontSize: '0.825rem',
                     px: 1.5,
                     py: 0.5,
-                    border: '1px solid rgba(57, 124, 232, 0.25)',
-                    boxShadow: '0 4px 12px rgba(57, 124, 232, 0.08)',
+                    border: '1px solid rgba(225, 20, 20, 0.14)',
+                    boxShadow: '0 4px 12px rgba(15, 42, 82, 0.06)',
                   }}
                 />
               </Box>
@@ -140,9 +140,10 @@ export const CTASection = () => {
                   mb: 1.75,
                   fontWeight: 850,
                   color: piccColors.ink,
-                  fontSize: { xs: '1.85rem', sm: '2.4rem', md: '3rem' },
+                  fontSize: { xs: '1.9rem', sm: '2.4rem', md: '2.8rem' },
                   letterSpacing: '-0.025em',
                   lineHeight: 1.15,
+                  fontFamily: '"Manrope", sans-serif',
                 }}
               >
                 {getFinalCtaTitle()}
@@ -197,14 +198,14 @@ export const CTASection = () => {
                     fontFamily: '"Manrope", sans-serif',
                     background: gradientMesh.ptitCta,
                     color: '#FFFFFF',
-                    boxShadow: '0 8px 24px rgba(188, 38, 38, 0.35)',
+                    boxShadow: '0 8px 24px rgba(225, 20, 20, 0.28)',
                     textTransform: 'uppercase',
                     width: { xs: '100%', sm: 'auto' },
                     transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                     '&:hover': {
-                      background: 'linear-gradient(135deg, #a31c1c 0%, #821414 100%)',
+                      background: 'linear-gradient(135deg, #B91212 0%, #7A0F0F 100%)',
                       transform: 'translateY(-2px)',
-                      boxShadow: '0 12px 32px rgba(188, 38, 38, 0.45)',
+                      boxShadow: '0 12px 32px rgba(225, 20, 20, 0.34)',
                     },
                   }}
                 >
@@ -224,14 +225,14 @@ export const CTASection = () => {
                     py: 1.35,
                     fontWeight: 750,
                     fontSize: '0.95rem',
-                    borderColor: 'rgba(57, 124, 232, 0.35)',
-                    color: piccColors.blue[800],
+                    borderColor: 'rgba(15, 42, 82, 0.18)',
+                    color: piccColors.ptitNavy,
                     bgcolor: 'rgba(255, 255, 255, 0.8)',
                     width: { xs: '100%', sm: 'auto' },
                     transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                     '&:hover': {
-                      bgcolor: 'rgba(234, 242, 255, 0.9)',
-                      borderColor: piccColors.blue[500],
+                      bgcolor: 'rgba(255, 241, 241, 0.92)',
+                      borderColor: piccColors.ptitRed,
                       transform: 'translateY(-2px)',
                     },
                   }}
@@ -252,7 +253,7 @@ export const CTASection = () => {
                   gap: 0.75,
                 }}
               >
-                <AutoAwesomeRoundedIcon sx={{ fontSize: 14, color: piccColors.blue[600] }} />
+                <AutoAwesomeRoundedIcon sx={{ fontSize: 14, color: piccColors.yellow[600] }} />
                 PICC 2026 — Innovation Catalyst Challenge • Rise Beyond Limits
               </Typography>
             </Box>

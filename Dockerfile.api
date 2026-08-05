@@ -7,7 +7,8 @@ COPY . .
 
 FROM node:22-alpine AS runner
 WORKDIR /app
-RUN npm install -g pnpm@11
+# Prisma's query engine requires OpenSSL on Alpine.
+RUN apk add --no-cache openssl
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/server ./server
@@ -17,9 +18,15 @@ COPY --from=builder /app/prisma ./prisma
 
 COPY --from=builder /app/tsconfig.json ./tsconfig.json
 COPY --from=builder /app/tsconfig.node.json ./tsconfig.node.json
+COPY --from=builder /app/scripts/db-push.sh ./scripts/db-push.sh
 RUN npx prisma generate || true
-RUN mkdir -p /app/data
-VOLUME /app/data
+# Run as non-root. Registrations live in Postgres, so no writable data dir is
+# needed inside the container.
+RUN chown -R node:node /app
+USER node
 EXPOSE 3001
 ENV NODE_ENV=production
-CMD ["npx", "tsx", "server/index.ts"]
+# Apply schema changes before serving so a stale DB can never take
+# registrations down silently. `db push` refuses destructive changes unless
+# --accept-data-loss is passed, so it is safe to run on every boot.
+CMD ["sh", "/app/scripts/db-push.sh"]

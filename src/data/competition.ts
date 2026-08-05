@@ -301,7 +301,7 @@ export const competitionData: CompetitionData = {
         "Đội trưởng (bắt buộc)",
         "Thành viên 2 (bắt buộc)",
         "Thành viên 3 (bắt buộc)",
-        "Thành viên 4 (hiển thị khi quy mô đội là 4)"
+        "Thành viên 4 (hiển thị khi quy mô đội từ 4)"
       ],
       validation: [
         "Không cho trùng mã sinh viên",
@@ -313,9 +313,10 @@ export const competitionData: CompetitionData = {
       checkboxes: [
         "Chúng tôi cam kết mọi thông tin cung cấp trong biểu mẫu là chính xác và trung thực.",
         "Chúng tôi đồng ý để Ban Tổ chức sử dụng hình ảnh, video và các tư liệu liên quan trong quá trình tham gia cuộc thi phục vụ cho mục đích truyền thông và quảng bá.",
-        "Chúng tôi đã đọc, hiểu và đồng ý tuân thủ Thể lệ cuộc thi PTIT Innovation Catalyst Challenge 2026."
+        "Chúng tôi đã đọc, hiểu và đồng ý tuân thủ Thể lệ cuộc thi PTIT Innovation Catalyst Challenge 2026.",
+        "Chúng tôi xác nhận đã đọc, hiểu và đồng ý với Chính sách Bảo mật và cách Ban Tổ chức thu thập, xử lý dữ liệu cá nhân của đội."
       ]
-    }
+    },
   },
   contact: {
     email: "iec@ptit.edu.vn",

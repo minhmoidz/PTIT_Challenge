@@ -3,7 +3,6 @@ import AppRegistrationRoundedIcon from '@mui/icons-material/AppRegistrationRound
 import { useRegistrationStatus } from '@/features/registration/hooks';
 import { RegistrationForm } from '@/features/registration/components/RegistrationForm';
 import { piccColors } from '@/theme/palette';
-import { Cloud3DSection } from '@/components/ui/Cloud3DSection';
 
 export const RegistrationSection = () => {
   const { status } = useRegistrationStatus();
@@ -16,27 +15,24 @@ export const RegistrationSection = () => {
       id="dang-ky"
       sx={{
         py: { xs: 10, md: 15 },
-        bgcolor: piccColors.sky[50],
+        bgcolor: piccColors.semantic.pageWarm,
         position: 'relative',
         overflow: 'hidden',
       }}
     >
-      {/* Floating 3D Cloud Background */}
-      <Cloud3DSection density="dense" colorTheme="sky" opacityMultiplier={0.9} />
-
       <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
         <Box sx={{ textAlign: 'center', mb: { xs: 5, md: 8 } }}>
           <Chip
-            icon={<AppRegistrationRoundedIcon sx={{ fontSize: 16, color: `${piccColors.blue[700]} !important` }} />}
+            icon={<AppRegistrationRoundedIcon sx={{ fontSize: 16, color: `${piccColors.ptitRed} !important` }} />}
             label="Cổng Đăng Ký Trực Tuyến"
             sx={{
-              bgcolor: piccColors.blue[50],
-              color: piccColors.blue[700],
+              bgcolor: piccColors.red[50],
+              color: piccColors.ptitRed,
               fontWeight: 700,
               mb: 2,
               px: 1.5,
-              border: '1px solid rgba(36, 95, 168, 0.2)',
-              boxShadow: '0 4px 12px rgba(36, 95, 168, 0.1)',
+              border: '1px solid rgba(225, 20, 20, 0.12)',
+              boxShadow: '0 4px 12px rgba(15, 42, 82, 0.06)',
             }}
           />
           <Typography
@@ -46,7 +42,10 @@ export const RegistrationSection = () => {
               mb: 2,
               color: piccColors.ink,
               fontWeight: 800,
-              fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+              fontSize: { xs: '2rem', sm: '2.5rem', md: '2.8rem' },
+              letterSpacing: '-0.025em',
+              lineHeight: 1.15,
+              fontFamily: '"Manrope", sans-serif',
             }}
           >
             Đăng Ký Tham Gia PICC 2026
@@ -54,11 +53,12 @@ export const RegistrationSection = () => {
           <Typography
             sx={{
               textAlign: 'center',
-              color: piccColors.neutral[600],
+              color: piccColors.slate[600],
               maxWidth: 620,
               mx: 'auto',
-              fontSize: { xs: '0.95rem', md: '1.05rem' },
-              lineHeight: 1.6,
+              fontSize: { xs: '1rem', md: '1.075rem' },
+              lineHeight: 1.7,
+              fontFamily: '"Manrope", sans-serif',
             }}
           >
             Vui lòng hoàn thành 3 bước đăng ký bên dưới. Dữ liệu sẽ tự động được lưu tạm an toàn trong phiên làm việc.

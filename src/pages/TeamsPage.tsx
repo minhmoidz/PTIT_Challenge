@@ -20,7 +20,7 @@ import { Top6Section } from '@/sections/teams/Top6Section';
 import { piccColors } from '@/theme/palette';
 import { SkyBackground } from '@/components/ui/SkyBackground';
 import { getSkyBackground } from '@/components/ui/skyBackgroundConfig';
-import { appHash } from '@/config/paths';
+import { appHash, appPath } from '@/config/paths';
 
 export const TeamsPage = () => {
   const { status } = useRegistrationStatus();
@@ -73,14 +73,14 @@ export const TeamsPage = () => {
       id="teams-page"
       sx={{
         py: { xs: 10, md: 14 },
-        background: getSkyBackground('hero'),
+        background: getSkyBackground('clear'),
         position: 'relative',
         minHeight: '100vh',
         overflow: 'hidden',
       }}
     >
       {/* Sky World Ambient Background */}
-      <SkyBackground variant="hero" />
+      <SkyBackground variant="clear" />
 
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
         {/* Back to Home Navigation */}
@@ -92,7 +92,7 @@ export const TeamsPage = () => {
               color: piccColors.blue[800],
               fontWeight: 700,
               fontSize: '0.875rem',
-              '&:hover': { bgcolor: 'rgba(57, 124, 232, 0.08)' },
+              '&:hover': { bgcolor: 'rgba(56, 130, 241, 0.08)' },
             }}
           >
             Quay lại trang chủ
@@ -105,15 +105,15 @@ export const TeamsPage = () => {
             icon={<GroupsRoundedIcon sx={{ fontSize: 16, color: `${piccColors.blue[700]} !important` }} />}
             label="Cộng đồng PICC 2026"
             sx={{
-              bgcolor: 'rgba(234, 242, 255, 0.9)',
+              bgcolor: piccColors.blue[50],
               color: piccColors.blue[700],
               fontWeight: 800,
               fontSize: '0.825rem',
               mb: 2,
               px: 1.5,
               py: 0.5,
-              border: '1px solid rgba(57, 124, 232, 0.25)',
-              boxShadow: '0 4px 12px rgba(57, 124, 232, 0.08)',
+              border: '1px solid rgba(56, 130, 241, 0.25)',
+              boxShadow: '0 4px 12px rgba(56, 130, 241, 0.08)',
             }}
           />
 
@@ -158,7 +158,7 @@ export const TeamsPage = () => {
                   textAlign: 'center',
                   borderRadius: 4,
                   bgcolor: 'rgba(255, 255, 255, 0.9)',
-                  border: '1px solid rgba(226, 232, 240, 0.9)',
+                  border: '1px solid rgba(223, 230, 239, 0.9)',
                 }}
               >
                 <Typography sx={{ fontSize: '2.1rem', fontWeight: 850, color: piccColors.blue[700], lineHeight: 1 }}>
@@ -178,10 +178,10 @@ export const TeamsPage = () => {
                   textAlign: 'center',
                   borderRadius: 4,
                   bgcolor: 'rgba(255, 255, 255, 0.9)',
-                  border: '1px solid rgba(226, 232, 240, 0.9)',
+                  border: '1px solid rgba(223, 230, 239, 0.9)',
                 }}
               >
-                <Typography sx={{ fontSize: '2.1rem', fontWeight: 850, color: '#8B5CF6', lineHeight: 1 }}>
+                <Typography sx={{ fontSize: '2.1rem', fontWeight: 850, color: piccColors.indigo[500], lineHeight: 1 }}>
                   {teams.filter((t) => t.competitionStatus === 'semifinalist').length || '18'}
                 </Typography>
                 <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: piccColors.slate[600], mt: 0.5 }}>
@@ -198,10 +198,10 @@ export const TeamsPage = () => {
                   textAlign: 'center',
                   borderRadius: 4,
                   bgcolor: 'rgba(255, 255, 255, 0.9)',
-                  border: '1px solid rgba(226, 232, 240, 0.9)',
+                  border: '1px solid rgba(223, 230, 239, 0.9)',
                 }}
               >
-                <Typography sx={{ fontSize: '2.1rem', fontWeight: 850, color: '#10B981', lineHeight: 1 }}>
+                <Typography sx={{ fontSize: '2.1rem', fontWeight: 850, color: piccColors.emerald[500], lineHeight: 1 }}>
                   {finalists.length || '06'}
                 </Typography>
                 <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: piccColors.slate[600], mt: 0.5 }}>
@@ -251,7 +251,7 @@ export const TeamsPage = () => {
               textAlign: 'center',
               borderRadius: '24px',
               bgcolor: 'rgba(255, 255, 255, 0.92)',
-              border: '1.5px dashed rgba(57, 124, 232, 0.3)',
+              border: '1.5px dashed rgba(56, 130, 241, 0.3)',
               my: 4,
             }}
           >
@@ -260,7 +260,7 @@ export const TeamsPage = () => {
                 width: 64,
                 height: 64,
                 borderRadius: '50%',
-                bgcolor: 'rgba(234, 242, 255, 0.9)',
+                bgcolor: piccColors.blue[50],
                 color: piccColors.blue[600],
                 display: 'flex',
                 alignItems: 'center',
@@ -272,7 +272,7 @@ export const TeamsPage = () => {
               <RocketLaunchRoundedIcon sx={{ fontSize: 32 }} />
             </Box>
 
-            <Typography variant="h3" component="h3" sx={{ fontSize: '1.4rem', fontWeight: 800, color: '#163A67', mb: 1 }}>
+            <Typography variant="h3" component="h3" sx={{ fontSize: '1.4rem', fontWeight: 800, color: piccColors.ptitNavy, mb: 1 }}>
               {isFiltering ? 'Không tìm thấy đội thi phù hợp' : 'Danh sách đội thi đang được cập nhật'}
             </Typography>
 
@@ -306,15 +306,15 @@ export const TeamsPage = () => {
             ) : (
               <Button
                 variant="contained"
-                href={status === 'open' ? '/dang-ky' : '/#lo-trinh'}
+                href={status === 'open' ? appPath('/dang-ky') : appHash('lo-trinh')}
                 endIcon={<AutoAwesomeRoundedIcon />}
                 sx={{
                   borderRadius: 999,
                   px: 4,
                   py: 1.2,
                   fontWeight: 800,
-                  bgcolor: piccColors.blue[600],
-                  '&:hover': { bgcolor: piccColors.blue[800] },
+                  bgcolor: piccColors.ptitRed,
+                  '&:hover': { bgcolor: piccColors.ptitDarkRed },
                 }}
               >
                 {status === 'open' ? 'Đăng ký tham gia' : 'Xem lộ trình cuộc thi'}

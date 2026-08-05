@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { LandingLayout } from '@/layouts/LandingLayout';
 import { AdminLayout } from '@/layouts/AdminLayout';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
+import { appBasePath } from '@/config/paths';
 
 const LandingPage = lazy(() => import('@/pages/LandingPage').then((m) => ({ default: m.LandingPage })));
 const RegistrationPage = lazy(() => import('@/pages/RegistrationPage').then((m) => ({ default: m.RegistrationPage })));
@@ -35,6 +36,9 @@ const router = createBrowserRouter([
     element: <AdminLayout />,
     children: [
       { path: 'admin/dashboard', element: <AdminDashboardPage /> },
+      { path: 'admin/registrations', element: <AdminDashboardPage section="registrations" /> },
+      { path: 'admin/teams', element: <AdminDashboardPage section="teams" /> },
+      { path: 'admin/settings', element: <AdminDashboardPage section="settings" /> },
     ],
   },
   // ── 404
@@ -42,7 +46,7 @@ const router = createBrowserRouter([
     path: '*',
     element: <NotFoundPage />,
   },
-], { basename: import.meta.env.BASE_URL });
+], { basename: appBasePath });
 
 export const AppRouter = () => (
   <Suspense fallback={<LoadingScreen />}>

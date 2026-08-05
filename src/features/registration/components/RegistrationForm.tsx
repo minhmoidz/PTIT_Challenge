@@ -5,10 +5,10 @@ import {
 } from '@mui/material';
 import { FormProvider, useForm, type FieldPath } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { RegistrationFormValues } from '@/types/registration';
+import type { RegistrationFormValues, TeamMember } from '@/types/registration';
 import { useRegistrationStatus } from '@/features/registration/hooks';
 import { createRegistrationSchema } from '@/features/registration/model/schema';
-import { piccColors } from '@/theme/palette';
+import { piccColors, gradientMesh } from '@/theme/palette';
 import { FormStep1 } from './FormStep1';
 import { FormStep2 } from './FormStep2';
 import { FormStep3 } from './FormStep3';
@@ -143,10 +143,21 @@ export const RegistrationForm = () => {
       const selectedSize = typeof values.teamSize === 'number' ? values.teamSize : teamMin;
       const normalizedSize = Math.min(Math.max(selectedSize, teamMin), teamMax);
       const currentMembers = Array.isArray(values.members) ? values.members : [];
-      const members = Array.from({ length: normalizedSize }, (_, index) => ({
-        ...(currentMembers[index] ?? createMember(index === 0 ? 'leader' : 'member')),
-        role: index === 0 ? 'leader' as const : 'member' as const,
-      }));
+      // `watch()` hands back a deep-partial, so every field is merged over a
+      // fully-populated default rather than spread straight through.
+      const members: TeamMember[] = Array.from({ length: normalizedSize }, (_, index) => {
+        const role = index === 0 ? ('leader' as const) : ('member' as const);
+        const base = createMember(role);
+        const existing = currentMembers[index];
+        return {
+          role,
+          fullName: existing?.fullName ?? base.fullName,
+          studentId: existing?.studentId ?? base.studentId,
+          major: existing?.major ?? base.major,
+          email: existing?.email ?? base.email,
+          phone: existing?.phone ?? base.phone,
+        };
+      });
 
       if (selectedSize !== normalizedSize) {
         setValue('teamSize', normalizedSize, { shouldValidate: true });
@@ -164,12 +175,14 @@ export const RegistrationForm = () => {
   }, [methods]);
 
   const handleNext = useCallback(async () => {
+    const categories = getValues('challengeCategories') || [];
     const fieldsToValidate: FieldPath<RegistrationFormValues>[] = activeStep === 0
       ? [
           'teamName', 'teamSize', 'challengeCategories', 'featuredProject',
           'expectations', 'companyExperience',
           'members.0.email', 'members.0.phone', 'members.0.fullName',
           'members.0.studentId', 'members.0.major',
+          ...(categories.includes('other') ? ['otherChallengeCategory' as FieldPath<RegistrationFormValues>] : []),
         ]
       : activeStep === 1
         ? (() => {
@@ -208,12 +221,19 @@ export const RegistrationForm = () => {
       setSubmitError(null);
       try {
         const { submitRegistration } = await import('@/services/registrations/api');
+        const cleanedMembers = Array.isArray(data.members) ? data.members.slice(0, data.teamSize) : [];
+        const payload: RegistrationFormValues = {
+          ...data,
+          members: cleanedMembers,
+          companyExperience: data.companyExperience,
+        };
         const result = await submitRegistration(
-          { ...data, companyExperience: data.companyExperience },
+          payload,
           idempotencyKey,
         );
         if (result.success) {
           clearDraft();
+          sessionStorage.setItem('picc-registration-result', JSON.stringify(result.data));
           navigate('/dang-ky/thanh-cong', { replace: true });
         }
       } catch (err: unknown) {
@@ -223,20 +243,51 @@ export const RegistrationForm = () => {
           setSubmitError('Đăng ký đã kết thúc. Vui lòng liên hệ Ban Tổ chức.');
         } else if (apiErr?.code === 'VALIDATION_ERROR') {
           const fieldErrors = apiErr.fieldErrors;
-          if (fieldErrors && typeof fieldErrors === 'object') {
+          if (fieldErrors && typeof fieldErrors === 'object' && Object.keys(fieldErrors).length > 0) {
+            let targetStep = 2;
+            const firstErrorField = Object.keys(fieldErrors)[0];
             Object.entries(fieldErrors).forEach(([field, message]) => {
               methods.setError(field as FieldPath<RegistrationFormValues>, { message: message as string });
             });
-            setSubmitError('Vui lòng kiểm tra lại các trường có lỗi.');
+
+            if (firstErrorField) {
+              if (
+                firstErrorField.startsWith('teamName') ||
+                firstErrorField.startsWith('teamSize') ||
+                firstErrorField.startsWith('challengeCategories') ||
+                firstErrorField.startsWith('otherChallengeCategory') ||
+                firstErrorField.startsWith('featuredProject') ||
+                firstErrorField.startsWith('expectations') ||
+                firstErrorField.startsWith('companyExperience') ||
+                firstErrorField.startsWith('members.0')
+              ) {
+                targetStep = 0;
+              } else if (firstErrorField.startsWith('members.')) {
+                targetStep = 1;
+              } else if (firstErrorField.startsWith('commitments')) {
+                targetStep = 2;
+              }
+            }
+            setActiveStep(targetStep);
+            setSubmitError(apiErr.message ? `Dữ liệu chưa hợp lệ: ${apiErr.message}` : 'Vui lòng kiểm tra lại các trường có lỗi.');
           } else {
             setSubmitError(apiErr.message || 'Dữ liệu chưa hợp lệ.');
           }
+        } else if (apiErr?.code === 'DUPLICATE_STUDENT_ID' || apiErr?.code === 'DUPLICATE_MEMBER_EMAIL') {
+          setActiveStep(1);
+          setSubmitError(apiErr.message || 'Mã sinh viên hoặc email giữa các thành viên trong đội bị trùng lặp.');
         } else if (apiErr?.code === 'DUPLICATE_REGISTRATION') {
-          setSubmitError('Đội của bạn đã đăng ký trước đó. Vui lòng liên hệ BTC nếu cần hỗ trợ.');
+          setSubmitError(apiErr.message || 'Đội của bạn hoặc thông tin thành viên đã được đăng ký trước đó. Vui lòng liên hệ BTC nếu cần hỗ trợ.');
+        } else if (apiErr?.code === 'CONSENT_REQUIRED') {
+          setActiveStep(2);
+          setSubmitError(apiErr.message || 'Vui lòng xác nhận đầy đủ các cam kết bắt buộc.');
+        } else if (apiErr?.code === 'INVALID_TEAM_SIZE') {
+          setActiveStep(0);
+          setSubmitError(apiErr.message || 'Quy mô đội thi phải từ 03 đến 04 thành viên.');
         } else if (apiErr?.code === 'RATE_LIMITED') {
-          setSubmitError('Vui lòng đợi một lát trước khi thử lại.');
+          setSubmitError('Bạn đã gửi đơn quá nhiều lần liên tiếp. Vui lòng đợi 1 phút trước khi thử lại.');
         } else {
-          setSubmitError('Hệ thống tiếp nhận đăng ký trực tuyến đang được cấu hình. Vui lòng thử lại sau.');
+          setSubmitError(apiErr?.message || 'Có lỗi xảy ra khi nộp đăng ký. Vui lòng kiểm tra lại thông tin và thử lại sau.');
         }
       } finally {
         setIsSubmitting(false);
@@ -253,7 +304,15 @@ export const RegistrationForm = () => {
 
   const renderStepContent = () => {
     switch (activeStep) {
-      case 0: return <FormStep1 teamMin={teamMin} teamMax={teamMax} />;
+      case 0:
+        return (
+          <FormStep1
+            teamMin={teamMin}
+            teamMax={teamMax}
+            challengeMode={config.challengeSelection.mode}
+            maxSelections={config.challengeSelection.maxSelections}
+          />
+        );
       case 1: return <FormStep2 teamMin={teamMin} teamMax={teamMax} />;
       case 2: return <FormStep3 onEdit={(step) => setActiveStep(step)} />;
       default: return null;
@@ -268,8 +327,8 @@ export const RegistrationForm = () => {
       sx={{
         p: { xs: 2.25, sm: 4, md: 6 },
         borderRadius: 6,
-        border: '1px solid rgba(226, 232, 240, 0.9)',
-        boxShadow: '0 20px 60px rgba(23, 59, 102, 0.12)',
+        border: '1px solid rgba(223, 230, 239, 0.9)',
+        boxShadow: '0 20px 60px rgba(15, 42, 82, 0.12)',
         bgcolor: 'rgba(255, 255, 255, 0.95)',
         backdropFilter: 'blur(20px)',
       }}
@@ -309,7 +368,20 @@ export const RegistrationForm = () => {
       </Stepper>
 
       <FormProvider {...methods}>
-        <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+        <Box
+          component="form"
+          onSubmit={handleSubmit(onSubmit)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && activeStep < 2) {
+              const target = e.target as HTMLElement;
+              // Allow enter inside multiline textareas without advancing step
+              if (target.tagName === 'TEXTAREA') return;
+              e.preventDefault();
+              void handleNext();
+            }
+          }}
+          noValidate
+        >
           {submitError && (
             <Alert severity="error" sx={{ mb: 4, borderRadius: 3, fontWeight: 600 }}>
               {submitError}
@@ -327,12 +399,13 @@ export const RegistrationForm = () => {
               gap: 2,
               mt: 6,
               pt: 4,
-              borderTop: '1px solid rgba(226,232,240,0.8)',
+              borderTop: '1px solid rgba(223, 230, 239,0.8)',
             }}
           >
             <Box sx={{ display: 'flex', gap: 1, order: { xs: 2, sm: 1 } }}>
               {activeStep > 0 && (
                 <Button
+                  type="button"
                   onClick={handleBack}
                   variant="outlined"
                   disabled={isSubmitting}
@@ -350,6 +423,7 @@ export const RegistrationForm = () => {
 
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column-reverse', sm: 'row' }, gap: 1.5, alignItems: { xs: 'stretch', sm: 'center' }, justifyContent: 'flex-end', order: { xs: 1, sm: 2 } }}>
               <Button
+                type="button"
                 onClick={handleClearDraft}
                 variant="text"
                 color="inherit"
@@ -359,44 +433,45 @@ export const RegistrationForm = () => {
                 Xóa dữ liệu đã nhập
               </Button>
               {activeStep < 2 ? (
-                <Button
-                  onClick={handleNext}
-                  variant="contained"
-                  sx={{
-                    borderRadius: 999,
-                    width: { xs: '100%', sm: 'auto' },
-                    px: 4,
-                    py: 1.2,
-                    fontWeight: 700,
-                    fontSize: '0.95rem',
-                    background: `linear-gradient(135deg, ${piccColors.blue[700]} 0%, ${piccColors.blue[500]} 100%)`,
-                    boxShadow: '0 4px 14px rgba(36, 95, 168, 0.35)',
-                    '&:hover': {
-                      boxShadow: '0 6px 20px rgba(36, 95, 168, 0.45)',
-                    },
-                  }}
-                >
+                  <Button
+                    type="button"
+                    onClick={handleNext}
+                    variant="contained"
+                    sx={{
+                      borderRadius: 999,
+                      width: { xs: '100%', sm: 'auto' },
+                      px: 4,
+                      py: 1.2,
+                      fontWeight: 700,
+                      fontSize: '0.95rem',
+                      background: gradientMesh.ptitCta,
+                      boxShadow: '0 4px 14px rgba(255, 31, 31, 0.3)',
+                      '&:hover': {
+                        boxShadow: '0 6px 20px rgba(255, 31, 31, 0.4)',
+                      },
+                    }}
+                  >
                   Tiếp tục
                 </Button>
               ) : isFormOpen ? (
-                <Button
-                  type="submit"
-                  variant="contained"
-                  disabled={isSubmitting}
-                  sx={{
-                    borderRadius: 999,
-                    width: { xs: '100%', sm: 'auto' },
-                    px: 4.5,
-                    py: 1.3,
-                    fontWeight: 800,
-                    fontSize: '1rem',
-                    background: `linear-gradient(135deg, ${piccColors.pink[500]} 0%, ${piccColors.pink[700]} 100%)`,
-                    boxShadow: '0 6px 20px rgba(232, 91, 159, 0.35)',
-                    '&:hover': {
-                      boxShadow: '0 8px 24px rgba(232, 91, 159, 0.5)',
-                    },
-                  }}
-                >
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    disabled={isSubmitting}
+                    sx={{
+                      borderRadius: 999,
+                      width: { xs: '100%', sm: 'auto' },
+                      px: 4.5,
+                      py: 1.3,
+                      fontWeight: 800,
+                      fontSize: '1rem',
+                      background: gradientMesh.ptitCta,
+                      boxShadow: '0 6px 20px rgba(255, 31, 31, 0.35)',
+                      '&:hover': {
+                        boxShadow: '0 8px 24px rgba(255, 31, 31, 0.5)',
+                      },
+                    }}
+                  >
                   {isSubmitting ? 'Đang gửi hồ sơ...' : 'Gửi Đăng Ký Tranh Tài'}
                 </Button>
               ) : (

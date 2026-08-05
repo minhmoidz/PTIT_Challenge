@@ -28,12 +28,12 @@ export const cardHover = {
   rest: {
     y: 0,
     scale: 1,
-    boxShadow: 'inset -2px -2px 8px rgba(255,255,255,0.6), 8px 8px 24px rgba(23,59,102,0.1)',
+    boxShadow: 'inset -2px -2px 8px rgba(255,255,255,0.6), 8px 8px 24px rgba(15, 42, 82,0.1)',
   },
   hover: {
     y: -6,
     scale: 1.02,
-    boxShadow: 'inset -2px -2px 8px rgba(255,255,255,0.6), 12px 12px 32px rgba(23,59,102,0.18)',
+    boxShadow: 'inset -2px -2px 8px rgba(255,255,255,0.6), 12px 12px 32px rgba(15, 42, 82,0.18)',
     transition: { duration: 0.2, ease: motionTokens.easingStandard },
   },
 };

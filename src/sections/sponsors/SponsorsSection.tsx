@@ -27,7 +27,7 @@ export const SponsorsSection = ({ sponsors = competitionData.partners }: Props) 
       component="section"
       id="sponsors"
       sx={{
-        py: { xs: 9, md: 14 },
+        py: { xs: 8, sm: 10, md: 12 },
         background: getSkyBackground('clear'),
         position: 'relative',
         overflow: 'hidden',
@@ -65,11 +65,11 @@ export const SponsorsSection = ({ sponsors = competitionData.partners }: Props) 
           </Typography>
           <Typography
             sx={{
-              color: '#4e4f53',
+              color: piccColors.slate[600],
               maxWidth: 680,
               mx: 'auto',
-              fontSize: { xs: '0.95rem', md: '1.05rem' },
-              lineHeight: 1.65,
+              fontSize: { xs: '1rem', md: '1.075rem' },
+              lineHeight: 1.7,
               fontWeight: 450,
               fontFamily: '"Manrope", sans-serif',
             }}
@@ -117,18 +117,18 @@ export const SponsorsSection = ({ sponsors = competitionData.partners }: Props) 
               ].map((item, idx) => (
                 <Grid size={{ xs: 12, sm: 4 }} key={idx}>
                   <motion.div variants={fadeInUp}>
-                    <Tilt3DCard maxTilt={5} scale={1.01} glareColor="rgba(57,124,232,0.1)">
+                    <Tilt3DCard maxTilt={5} scale={1.01} glareColor="rgba(225, 20, 20,0.08)">
                       <Card
                         sx={{
                           p: 3,
                           borderRadius: '20px',
-                          border: '1.5px dashed rgba(57, 124, 232, 0.3)',
+                          border: '1.5px dashed rgba(225, 20, 20, 0.18)',
                           bgcolor: 'rgba(255, 255, 255, 0.85)',
                           backdropFilter: 'blur(12px)',
                           textAlign: 'center',
                           transition: 'all 0.3s ease',
                           '&:hover': {
-                            borderColor: '#397CE8',
+                            borderColor: piccColors.ptitRed,
                             bgcolor: '#FFFFFF',
                           },
                         }}
@@ -139,8 +139,8 @@ export const SponsorsSection = ({ sponsors = competitionData.partners }: Props) 
                               width: 48,
                               height: 48,
                               borderRadius: '50%',
-                              bgcolor: 'rgba(57, 124, 232, 0.08)',
-                              color: '#397CE8',
+                              bgcolor: 'rgba(225, 20, 20, 0.08)',
+                              color: piccColors.ptitRed,
                               display: 'inline-flex',
                               alignItems: 'center',
                               justifyContent: 'center',
@@ -149,15 +149,15 @@ export const SponsorsSection = ({ sponsors = competitionData.partners }: Props) 
                           >
                             <BusinessRoundedIcon sx={{ fontSize: 24 }} />
                           </Box>
-                          <Typography sx={{ fontWeight: 750, color: '#163A67', fontSize: '0.95rem', mb: 0.5 }}>
+                          <Typography sx={{ fontWeight: 750, color: piccColors.ptitNavy, fontSize: '0.95rem', mb: 0.5 }}>
                             {item.title}
                           </Typography>
                           <Chip
                             label={item.sub}
                             size="small"
                             sx={{
-                              bgcolor: '#F1F5F9',
-                              color: '#64748B',
+                              bgcolor: piccColors.slate[100],
+                              color: piccColors.slate[500],
                               fontWeight: 700,
                               fontSize: '0.675rem',
                             }}

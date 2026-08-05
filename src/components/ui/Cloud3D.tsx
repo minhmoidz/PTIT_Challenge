@@ -88,7 +88,7 @@ const COLOR_SCHEMES: Record<string, { colors: string[]; bgColors: string[] }> = 
 };
 
 const generateClouds = (count: number, scheme: string): CloudPuff[] => {
-  const schemeColors = COLOR_SCHEMES[scheme] ?? COLOR_SCHEMES['sky'];
+  const schemeColors = COLOR_SCHEMES[scheme] ?? COLOR_SCHEMES['sky']!;
   const colors = schemeColors.colors;
   const puffs: CloudPuff[] = [];
   const attemptsPerPuff = 10;

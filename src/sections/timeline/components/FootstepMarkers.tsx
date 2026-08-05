@@ -6,7 +6,7 @@ import { motion } from 'motion/react';
  */
 export const FootprintPairSvg = ({
   size = 14,
-  color = '#397CE8',
+  color = '#3882F1',
   opacity = 0.45,
 }: {
   size?: number;

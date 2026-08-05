@@ -4,6 +4,7 @@ import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import { motion } from 'motion/react';
 import { fadeInUp } from '@/motion/variants';
 import { competitionData } from '@/data/competition';
+import { piccColors } from '@/theme/palette';
 
 const CONDITIONS = [
   competitionData.eligibility.target,
@@ -19,14 +20,14 @@ export const ParticipantCard = () => {
           height: '100%',
           borderRadius: 4,
           bgcolor: '#FFFFFF',
-          border: '1px solid #DDE6F1',
-          boxShadow: '0 8px 30px rgba(22, 58, 103, 0.05)',
+          border: '1px solid #DFE6EF',
+          boxShadow: '0 8px 30px rgba(15, 42, 82, 0.05)',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           '&:hover': {
-            boxShadow: '0 14px 40px rgba(22, 58, 103, 0.1)',
+            boxShadow: '0 14px 40px rgba(15, 42, 82, 0.1)',
             transform: 'translateY(-3px)',
           },
         }}
@@ -39,8 +40,8 @@ export const ParticipantCard = () => {
                 width: 36,
                 height: 36,
                 borderRadius: '10px',
-                bgcolor: '#EAF2FF',
-                color: '#397CE8',
+                bgcolor: '#DFEBFD',
+                color: '#3882F1',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -49,10 +50,10 @@ export const ParticipantCard = () => {
               <SchoolRoundedIcon sx={{ fontSize: 19 }} />
             </Box>
             <Box>
-              <Typography sx={{ fontSize: '0.675rem', fontWeight: 800, color: '#397CE8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              <Typography sx={{ fontSize: '0.675rem', fontWeight: 800, color: '#3882F1', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                 Đội Thi & Quy Mô
               </Typography>
-              <Typography sx={{ fontSize: { xs: '1.1rem', md: '1.2rem' }, fontWeight: 800, color: '#163A67', lineHeight: 1.2 }}>
+              <Typography sx={{ fontSize: { xs: '1.1rem', md: '1.2rem' }, fontWeight: 800, color: '#0F2A52', lineHeight: 1.2 }}>
                 Đối Tượng Tham Gia
               </Typography>
             </Box>
@@ -64,8 +65,8 @@ export const ParticipantCard = () => {
               p: 1.5,
               px: 2,
               borderRadius: 3,
-              bgcolor: '#F4F8FD',
-              border: '1px solid rgba(57, 124, 232, 0.2)',
+              bgcolor: '#F7F9FC',
+              border: '1px solid rgba(56, 130, 241, 0.2)',
               mb: 1.75,
               display: 'flex',
               alignItems: 'center',
@@ -77,14 +78,14 @@ export const ParticipantCard = () => {
                 sx={{
                   fontSize: { xs: '2rem', sm: '2.35rem' },
                   fontWeight: 800,
-                  color: '#397CE8',
+                  color: '#3882F1',
                   lineHeight: 1,
                   letterSpacing: '-0.03em',
                 }}
               >
                 {competitionData.teamRules.size.replace(' thành viên', '')}
               </Typography>
-              <Typography sx={{ fontSize: '0.775rem', fontWeight: 700, color: '#163A67', mt: 0.4 }}>
+              <Typography sx={{ fontSize: '0.775rem', fontWeight: 700, color: '#0F2A52', mt: 0.4 }}>
                 Thành viên / đội
               </Typography>
             </Box>
@@ -92,10 +93,10 @@ export const ParticipantCard = () => {
             {/* Abstract SVG Avatars */}
             <Box sx={{ display: 'flex', alignItems: 'center', ml: -1 }}>
               {[
-                { bg: '#397CE8', opacity: 0.95 },
-                { bg: '#7457E8', opacity: 0.85 },
-                { bg: '#1B9B72', opacity: 0.75 },
-                { bg: '#E8599A', opacity: 0.65 },
+                { bg: piccColors.ptitRed, opacity: 0.95 },
+                { bg: piccColors.blue[700], opacity: 0.85 },
+                { bg: piccColors.yellow[600], opacity: 0.8 },
+                { bg: piccColors.slate[500], opacity: 0.7 },
               ].map((av, idx) => (
                 <Box
                   key={idx}
@@ -118,8 +119,8 @@ export const ParticipantCard = () => {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             {CONDITIONS.map((item, i) => (
               <Box key={i} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.25 }}>
-                <CheckCircleRoundedIcon sx={{ fontSize: 16, color: '#1B9B72', flexShrink: 0, mt: '2px' }} />
-                <Typography sx={{ fontSize: '0.8125rem', color: '#66768C', lineHeight: 1.4, fontWeight: 600 }}>
+                <CheckCircleRoundedIcon sx={{ fontSize: 16, color: piccColors.ptitRed, flexShrink: 0, mt: '2px' }} />
+                <Typography sx={{ fontSize: '0.8125rem', color: '#67788F', lineHeight: 1.4, fontWeight: 600 }}>
                   {item}
                 </Typography>
               </Box>

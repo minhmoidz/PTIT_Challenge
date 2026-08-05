@@ -29,12 +29,12 @@ interface ParticleFieldProps {
 }
 
 const DEFAULT_COLORS = [
-  'rgba(79, 143, 234, 0.6)',  // PICC blue
-  'rgba(232, 91, 159, 0.5)',  // PICC pink
-  'rgba(253, 209, 102, 0.5)', // PICC yellow
-  'rgba(79, 143, 234, 0.3)',  // light blue
-  'rgba(232, 91, 159, 0.3)',  // light pink
-  'rgba(165, 180, 252, 0.4)', // indigo
+  'rgba(225, 20, 20, 0.55)',  // PTIT red
+  'rgba(217, 67, 67, 0.45)',  // rose red
+  'rgba(231, 195, 77, 0.5)',  // gold
+  'rgba(15, 42, 82, 0.42)',   // navy
+  'rgba(225, 20, 20, 0.28)',  // light red
+  'rgba(53, 84, 126, 0.42)',  // navy blue
 ];
 
 const generateParticles = (count: number, colors: string[]): Particle[] =>
@@ -48,7 +48,7 @@ const generateParticles = (count: number, colors: string[]): Particle[] =>
       y: Math.random() * 100,
       size: baseSize + sizeVariation,
       depth,
-      color: colors[i % colors.length] ?? DEFAULT_COLORS[0],
+      color: colors[i % colors.length] ?? DEFAULT_COLORS[0]!,
       opacity: depth === 0 ? 0.15 + Math.random() * 0.2 : depth === 1 ? 0.2 + Math.random() * 0.3 : 0.3 + Math.random() * 0.4,
       blur: depth === 0 ? 1.5 : depth === 1 ? 0.5 : 0,
       driftX: (Math.random() - 0.5) * 4,

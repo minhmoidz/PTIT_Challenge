@@ -2,6 +2,7 @@ import { Box, Typography, Grid, Chip } from '@mui/material';
 import EmojiEventsRoundedIcon from '@mui/icons-material/EmojiEventsRounded';
 import type { PublicTeamProfile } from '@/types/publicTeam';
 import { TeamCard } from './TeamCard';
+import { piccColors } from '@/theme/palette';
 
 interface Props {
   finalists: PublicTeamProfile[];
@@ -17,7 +18,7 @@ export const Top6Section = ({ finalists }: Props) => {
         p: { xs: 3, sm: 4.5 },
         borderRadius: '28px',
         background:
-          'linear-gradient(135deg, rgba(234, 242, 255, 0.9) 0%, rgba(240, 253, 244, 0.9) 100%)',
+          'linear-gradient(135deg, rgba(241, 246, 254, 0.9) 0%, rgba(240, 253, 244, 0.9) 100%)',
         border: '1.5px solid rgba(16, 185, 129, 0.3)',
         boxShadow: '0 12px 36px rgba(16, 185, 129, 0.08)',
         position: 'relative',
@@ -26,12 +27,12 @@ export const Top6Section = ({ finalists }: Props) => {
     >
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
         <Chip
-          icon={<EmojiEventsRoundedIcon sx={{ fontSize: '16px !important', color: '#047857 !important' }} />}
+          icon={<EmojiEventsRoundedIcon sx={{ fontSize: '16px !important', color: `${piccColors.emerald[700]} !important` }} />}
           label="CHUNG KẾT PICC 2026"
           size="small"
           sx={{
             bgcolor: 'rgba(16, 185, 129, 0.15)',
-            color: '#047857',
+            color: piccColors.emerald[700],
             fontWeight: 850,
             fontSize: '0.725rem',
             letterSpacing: '0.06em',
@@ -46,7 +47,7 @@ export const Top6Section = ({ finalists }: Props) => {
         sx={{
           fontSize: { xs: '1.5rem', sm: '1.85rem' },
           fontWeight: 850,
-          color: '#163A67',
+          color: piccColors.ptitNavy,
           mb: 1,
           letterSpacing: '-0.02em',
         }}
@@ -56,7 +57,7 @@ export const Top6Section = ({ finalists }: Props) => {
 
       <Typography
         sx={{
-          color: '#475569',
+          color: piccColors.slate[600],
           fontSize: '0.925rem',
           mb: 3.5,
           maxWidth: 680,

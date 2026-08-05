@@ -76,13 +76,13 @@ export const TeamFilter = ({
                   borderRadius: '999px',
                   bgcolor: isSelected ? piccColors.blue[600] : '#FFFFFF',
                   color: isSelected ? '#FFFFFF' : piccColors.slate[700],
-                  border: isSelected ? '1px solid transparent' : '1px solid #E2E8F0',
+                  border: isSelected ? '1px solid transparent' : `1px solid ${piccColors.slate[200]}`,
                   boxShadow: isSelected
-                    ? '0 4px 14px rgba(57, 124, 232, 0.35)'
-                    : '0 2px 6px rgba(22, 58, 103, 0.03)',
+                    ? '0 4px 14px rgba(56, 130, 241, 0.35)'
+                    : '0 2px 6px rgba(15, 42, 82, 0.03)',
                   transition: 'all 0.2s ease',
                   '&:hover': {
-                    bgcolor: isSelected ? piccColors.blue[700] : 'rgba(234, 242, 255, 0.8)',
+                    bgcolor: isSelected ? piccColors.blue[700] : 'rgba(241, 246, 254, 0.8)',
                     color: isSelected ? '#FFFFFF' : piccColors.blue[700],
                   },
                 }}

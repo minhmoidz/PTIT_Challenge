@@ -12,3 +12,14 @@ playwright-report/
 # Auto-generated data backup
 data/*.json
 data/*.tmp
+
+# TypeScript incremental build cache
+*.tsbuildinfo
+
+# Local agent/editor workspace
+.claude/
+
+# Local scratch scripts — keep credentials and one-off probes out of the repo
+tmp-*.mjs
+tmp-*.ts
+backups/
