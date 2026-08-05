@@ -106,13 +106,13 @@ useEffect(() => {
       id="team-detail-page"
       sx={{
         py: { xs: 10, md: 14 },
-        background: getSkyBackground('hero'),
+        background: getSkyBackground('clear'),
         position: 'relative',
         minHeight: '100vh',
         overflow: 'hidden',
       }}
     >
-      <SkyBackground variant="hero" />
+      <SkyBackground variant="clear" />
 
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
         {/* Breadcrumb Navigation */}

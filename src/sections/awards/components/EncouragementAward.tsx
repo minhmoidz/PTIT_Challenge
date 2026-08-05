@@ -3,56 +3,44 @@ import StarsRoundedIcon from '@mui/icons-material/StarsRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import CardGiftcardRoundedIcon from '@mui/icons-material/CardGiftcardRounded';
 import WorkOutlineRoundedIcon from '@mui/icons-material/WorkOutlineRounded';
+import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import { motion } from 'motion/react';
 import { fadeInUp } from '@/motion/variants';
 import { Tilt3DCard } from '@/components/ui/Tilt3DCard';
 import { competitionData } from '@/data/competition';
+import { piccColors } from '@/theme/palette';
 
 export const EncouragementAward = () => {
   const p4 = competitionData.prizes.find((p) => p.rank === 4) ?? competitionData.prizes[3];
   if (!p4) return null;
 
-  const style = {
-    bg: '#FFFFFF',
-    borderColor: 'rgba(54, 123, 234, 0.3)',
-    borderGradient: 'linear-gradient(135deg, #367BEA 0%, #7457E8 100%)',
-    shadow: '0 12px 32px rgba(54, 123, 234, 0.14)',
-    hoverShadow: '0 20px 45px rgba(54, 123, 234, 0.22)',
-    badgeBg: '#F0F6FF',
-    badgeColor: '#367BEA',
-    iconColor: '#367BEA',
-    iconBg: '#F5F9FF',
-    iconBorder: '3px solid rgba(54, 123, 234, 0.3)',
-    prizeColor: '#15375F',
-    watermarkColor: 'rgba(54, 123, 234, 0.05)',
-  };
-
   return (
     <motion.div variants={fadeInUp}>
-      <Tilt3DCard maxTilt={4} scale={1.01} glareColor={style.borderColor}>
+      <Tilt3DCard maxTilt={4} scale={1.01} glareColor="rgba(54, 123, 234, 0.25)">
         <Card
           sx={{
             mt: 4,
-            borderRadius: 6,
-            bgcolor: style.bg,
-            border: '1px solid',
-            borderColor: style.borderColor,
-            boxShadow: style.shadow,
+            borderRadius: '24px',
+            bgcolor: 'rgba(255, 255, 255, 0.94)',
+            backdropFilter: 'blur(16px)',
+            border: '1.5px solid rgba(54, 123, 234, 0.25)',
+            boxShadow: '0 12px 36px rgba(15, 42, 82, 0.07)',
             position: 'relative',
             overflow: 'hidden',
             display: 'flex',
             flexDirection: 'column',
             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             '&:hover': {
-              boxShadow: style.hoverShadow,
+              boxShadow: '0 20px 48px rgba(54, 123, 234, 0.18)',
+              borderColor: 'rgba(54, 123, 234, 0.45)',
               transform: 'translateY(-4px)',
               '& .award-main-icon': {
-                transform: 'scale(1.08) rotate(3deg)',
+                transform: 'scale(1.08) rotate(4deg)',
               },
             },
           }}
         >
-          {/* Top Accent Stripe */}
+          {/* Top Accent Gradient Bar (Smoothly Clipped by Border Radius) */}
           <Box
             sx={{
               position: 'absolute',
@@ -60,18 +48,35 @@ export const EncouragementAward = () => {
               left: 0,
               right: 0,
               height: 4,
-              background: style.borderGradient,
+              background: 'linear-gradient(90deg, #367BEA 0%, #6366F1 50%, #7457E8 100%)',
+              zIndex: 2,
             }}
           />
 
-          {/* Semi-transparent Background Watermark Icon */}
+          {/* Soft Radial Ambient Background Glow */}
+          <Box
+            aria-hidden="true"
+            sx={{
+              position: 'absolute',
+              top: -40,
+              right: -40,
+              width: 260,
+              height: 260,
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%)',
+              pointerEvents: 'none',
+              zIndex: 0,
+            }}
+          />
+
+          {/* Decorative Subtle Star Icon */}
           <StarsRoundedIcon
             sx={{
               position: 'absolute',
-              top: -20,
-              right: -20,
-              fontSize: '12rem',
-              color: style.watermarkColor,
+              bottom: -15,
+              right: -15,
+              fontSize: '8.5rem',
+              color: 'rgba(54, 123, 234, 0.05)',
               userSelect: 'none',
               pointerEvents: 'none',
               zIndex: 0,
@@ -81,86 +86,144 @@ export const EncouragementAward = () => {
           <CardContent
             sx={{
               p: { xs: 3, sm: 4 },
-              pt: { xs: 4, sm: 4 },
+              pt: { xs: 3.5, sm: 4 },
               display: 'flex',
               flexDirection: { xs: 'column', md: 'row' },
               alignItems: { xs: 'flex-start', md: 'center' },
-              gap: { xs: 3, md: 5 },
+              justifyContent: 'space-between',
+              gap: { xs: 3, md: 4 },
               position: 'relative',
               zIndex: 1,
             }}
           >
-            {/* Area 1: Icon and Title */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+            {/* Area 1: Badge, 3D Icon and Title */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
               <Chip
+                icon={<AutoAwesomeRoundedIcon sx={{ fontSize: '13px !important', color: '#2A55D3 !important' }} />}
                 label="GIẢI KHUYẾN KHÍCH"
                 sx={{
-                  background: style.badgeBg,
-                  color: style.badgeColor,
+                  background: 'linear-gradient(135deg, rgba(54, 123, 234, 0.12) 0%, rgba(99, 102, 241, 0.12) 100%)',
+                  color: '#2A55D3',
                   fontWeight: 800,
                   fontSize: '0.725rem',
                   letterSpacing: '0.08em',
                   textTransform: 'uppercase',
                   height: 28,
                   alignSelf: 'flex-start',
-                  mb: 2.5,
+                  mb: 2.25,
                   px: 1,
-                  border: '1px solid rgba(0,0,0,0.06)',
+                  border: '1px solid rgba(54, 123, 234, 0.25)',
                 }}
               />
+
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5 }}>
                 <Box
                   className="award-main-icon"
                   sx={{
-                    width: 64,
-                    height: 64,
-                    borderRadius: '50%',
-                    bgcolor: style.iconBg,
-                    color: style.iconColor,
+                    width: 62,
+                    height: 62,
+                    borderRadius: '18px',
+                    background: 'linear-gradient(135deg, #367BEA 0%, #6366F1 100%)',
+                    color: '#FFFFFF',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexShrink: 0,
-                    boxShadow: `0 8px 24px ${style.watermarkColor}`,
-                    border: style.iconBorder,
+                    boxShadow: '0 8px 22px rgba(54, 123, 234, 0.3)',
                     transition: 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
                   }}
                 >
-                  <StarsRoundedIcon sx={{ fontSize: 32 }} />
+                  <StarsRoundedIcon sx={{ fontSize: 34 }} />
                 </Box>
-                <Box>
-                  <Typography sx={{ fontSize: '1.25rem', fontWeight: 800, color: '#15375F', mb: 0.5 }}>
+
+                <Box sx={{ minWidth: 0 }}>
+                  <Typography
+                    sx={{
+                      fontSize: { xs: '1.2rem', sm: '1.35rem' },
+                      fontWeight: 850,
+                      color: piccColors.ptitNavy,
+                      mb: 0.5,
+                      lineHeight: 1.25,
+                    }}
+                  >
                     03 {p4.title}
                   </Typography>
-                  <Typography sx={{ fontSize: '0.9rem', fontWeight: 600, color: '#367BEA', lineHeight: 1.4 }}>
+                  <Typography
+                    sx={{
+                      fontSize: '0.9rem',
+                      fontWeight: 600,
+                      color: piccColors.slate[600],
+                      lineHeight: 1.45,
+                    }}
+                  >
                     {p4.value}
                   </Typography>
                 </Box>
               </Box>
             </Box>
 
-            {/* Area 2: Perks */}
+            {/* Area 2: Perks List */}
             <Box
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: 1.75,
-                flex: 1,
-                borderLeft: { xs: 'none', md: '1px dashed rgba(54, 123, 234, 0.2)' },
-                pl: { xs: 0, md: 5 },
-                pt: { xs: 2, md: 0 },
-                borderTop: { xs: '1px dashed rgba(54, 123, 234, 0.2)', md: 'none' },
+                gap: 1.5,
+                flex: 1.1,
+                borderLeft: { xs: 'none', md: '1px dashed rgba(54, 123, 234, 0.22)' },
+                pl: { xs: 0, md: 4 },
+                pt: { xs: 2.5, md: 0 },
+                borderTop: { xs: '1px dashed rgba(54, 123, 234, 0.22)', md: 'none' },
                 width: { xs: '100%', md: 'auto' },
               }}
             >
               {[
-                { icon: CheckCircleRoundedIcon, text: 'Bằng khen & Chứng nhận PICC' },
-                { icon: CardGiftcardRoundedIcon, text: 'Phần thưởng & Quà tặng từ BTC' },
-                { icon: WorkOutlineRoundedIcon, text: 'Cơ hội kết nối doanh nghiệp' },
+                { icon: CheckCircleRoundedIcon, color: piccColors.blue[600], bg: piccColors.blue[50], text: 'Bằng khen & Chứng nhận PICC' },
+                { icon: CardGiftcardRoundedIcon, color: piccColors.indigo[600], bg: piccColors.indigo[50], text: 'Phần thưởng & Quà tặng từ BTC' },
+                { icon: WorkOutlineRoundedIcon, color: piccColors.emerald[600], bg: piccColors.emerald[50], text: 'Cơ hội kết nối doanh nghiệp & Mentor' },
               ].map((perk, idx) => (
-                <Box key={idx} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.25 }}>
-                  <perk.icon sx={{ fontSize: 18, color: '#367BEA', flexShrink: 0, mt: 0.1 }} />
-                  <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: '#15375F', lineHeight: 1.45 }}>
+                <Box
+                  key={idx}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1.5,
+                    p: 1.25,
+                    px: 1.75,
+                    borderRadius: '14px',
+                    bgcolor: 'rgba(245, 248, 255, 0.7)',
+                    border: '1px solid rgba(226, 232, 240, 0.8)',
+                    transition: 'all 0.2s ease',
+                    '&:hover': {
+                      bgcolor: '#FFFFFF',
+                      borderColor: perk.color,
+                      transform: 'translateX(3px)',
+                    },
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: 30,
+                      height: 30,
+                      borderRadius: '10px',
+                      bgcolor: perk.bg,
+                      color: perk.color,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                    }}
+                  >
+                    <perk.icon sx={{ fontSize: 18 }} />
+                  </Box>
+
+                  <Typography
+                    sx={{
+                      fontSize: '0.885rem',
+                      fontWeight: 700,
+                      color: piccColors.ptitNavy,
+                      lineHeight: 1.4,
+                    }}
+                  >
                     {perk.text}
                   </Typography>
                 </Box>

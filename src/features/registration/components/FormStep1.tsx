@@ -8,7 +8,7 @@ const CHALLENGE_OPTIONS = [
   { value: 'business', label: 'Kinh tế và Kinh doanh' },
   { value: 'technology', label: 'Công nghệ' },
   { value: 'marketing', label: 'Marketing' },
-  { value: 'media', label: 'Truyền thông' },
+  { value: 'communications', label: 'Truyền thông' },
   { value: 'other', label: 'Khác' },
 ];
 

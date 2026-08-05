@@ -111,7 +111,8 @@ export const IntroductionSection = () => {
               fontWeight: 800,
               fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
               letterSpacing: '-0.025em',
-              lineHeight: 1.15,
+              lineHeight: 1.25,
+              pb: '0.15em',
               backgroundImage: `linear-gradient(120deg, ${piccColors.ptitRed} 0%, #E7C34D 55%, ${piccColors.ptitNavy} 100%)`,
               backgroundSize: '200% auto',
               backgroundClip: 'text',
@@ -123,7 +124,7 @@ export const IntroductionSection = () => {
             <motion.span
               animate={prefersReducedMotion ? undefined : { backgroundPosition: ['0% center', '100% center', '0% center'] }}
               transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-              style={{ display: 'inline-block' }}
+              style={{ display: 'inline-block', paddingBottom: '0.12em' }}
             >
               Hành Trình Khai Phóng Đổi Mới &amp; Sáng Tạo
             </motion.span>

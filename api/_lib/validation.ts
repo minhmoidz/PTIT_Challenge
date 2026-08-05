@@ -7,13 +7,16 @@ export const MemberSchema = z.object({
   studentId: z.string().trim().min(1),
   major: z.string().trim().min(1),
   email: z.string().trim().email(),
-  phone: z.string().trim().min(1),
+  phone: z
+    .string()
+    .trim()
+    .regex(/^(0[3|5|7|8|9])[0-9]{8}$/, 'Số điện thoại không đúng định dạng'),
 });
 
 export const RegistrationSchema = z.object({
   teamName: z.string().trim().min(2).max(80),
   teamSize: z.number().int().min(competitionData.teamRules.min).max(competitionData.teamRules.max),
-  challengeCategories: z.array(z.string()).min(1),
+  challengeCategories: z.array(z.string()).min(1).max(5),
   otherChallengeCategory: z.string().optional(),
   previousCompetitions: z.string().max(500).optional(),
   featuredProject: z.string().trim().min(1).max(1500),

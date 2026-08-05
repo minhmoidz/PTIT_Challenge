@@ -13,7 +13,7 @@ export const NotFoundPage = () => (
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      bgcolor: getSkyBackground('hero'),
+      background: getSkyBackground('hero'),
       position: 'relative',
       overflow: 'hidden',
     }}
@@ -27,7 +27,8 @@ export const NotFoundPage = () => (
         sx={{
           fontSize: { xs: '6rem', sm: '8rem' },
           fontWeight: 900,
-          lineHeight: 1,
+          lineHeight: 1.1,
+          pb: '0.1em',
           letterSpacing: '-0.04em',
           background: gradientMesh.ptitCta,
           WebkitBackgroundClip: 'text',

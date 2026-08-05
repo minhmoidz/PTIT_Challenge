@@ -31,6 +31,15 @@ const setIdempotencyResult = (key: string, result: unknown): void => {
   idempotencyStore.set(key, { result, expiresAt: Date.now() + IDEMPOTENCY_TTL });
 };
 
+// Unbounded in-memory stores: sweep expired entries periodically so a long
+// running competition server does not leak memory one visitor bucket at a time.
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, entry] of idempotencyStore) {
+    if (now > entry.expiresAt) idempotencyStore.delete(key);
+  }
+}, 60 * 60 * 1000).unref();
+
 const app = express();
 const PORT = serverEnv.PORT || 3001;
 
@@ -52,17 +61,24 @@ const allowedOrigins = [
   ...(serverEnv.CORS_ORIGIN ? serverEnv.CORS_ORIGIN.split(',').map((o) => o.trim()) : []),
 ].filter(Boolean);
 
-app.use(
+app.use((req, res, next) => {
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
+      // nginx serves the SPA and the API from one public origin, so a request
+      // whose Origin matches the Host it arrived on is same-origin and must be
+      // let through no matter which domain the partner mounts the app at.
+      // Browsers set Origin themselves, so an attacker's page can never match.
+      const scheme = req.headers['x-forwarded-proto'] ?? req.protocol;
+      const host = req.headers.host;
+      if (host && `${scheme}://${host}` === origin) return callback(null, true);
       const isAllowed = allowedOrigins.some((o) => o === '*' || origin === o);
       if (isAllowed) return callback(null, true);
       callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
-  }),
-);
+  })(req, res, next);
+});
 
 app.use(express.json({ limit: '128kb' }));
 app.use(cookieParser());
@@ -83,6 +99,17 @@ const rateLimit = (windowMs: number, max: number) => (req: express.Request, res:
   rateLimitBuckets.set(key, hits);
   next();
 };
+
+// Periodically forget buckets that have fallen out of every window, otherwise
+// each distinct visitor IP keeps an array in memory for the life of the process.
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, hits] of rateLimitBuckets) {
+    const remaining = hits.filter((t) => now - t < 60_000);
+    if (remaining.length === 0) rateLimitBuckets.delete(key);
+    else rateLimitBuckets.set(key, remaining);
+  }
+}, 5 * 60 * 1000).unref();
 
 /* ── Admin auth guard ── */
 declare global {
@@ -499,8 +526,6 @@ const handleRegistrationSubmit = async (req: express.Request, res: express.Respo
 const registrationRateLimit = rateLimit(60_000, 5);
 
 app.post('/api/v1/public/registrations', registrationRateLimit, handleRegistrationSubmit);
-// Legacy backward compatibility endpoint for registration submit
-app.post('/api/registrations', registrationRateLimit, handleRegistrationSubmit);
 
 /* ── 4. ADMIN-READY ENDPOINTS (/api/v1/admin/*) ── */
 
@@ -613,6 +638,21 @@ app.patch('/api/v1/admin/registrations/:id/status', requireAdminAuth, requireAdm
   }
 
   res.json({ success: true, data: updated });
+});
+
+// 4.3d Admin Delete Registration Endpoint
+app.delete('/api/v1/admin/registrations/:id', requireAdminAuth, requireAdminPermission('registration.review'), async (req, res) => {
+  const registrationId = String(req.params.id);
+  const success = await dbStore.deleteRegistration(registrationId, req.adminUser!.id);
+
+  if (!success) {
+    return res.status(404).json({
+      success: false,
+      error: { code: 'NOT_FOUND', message: 'Không tìm thấy hồ sơ đăng ký để xóa.' },
+    });
+  }
+
+  res.json({ success: true, data: { deletedId: registrationId } });
 });
 
 // 4.3c Admin Team Profiles — every profile, not just the published ones
@@ -748,6 +788,7 @@ const start = async () => {
   await assertDatabaseReachable();
   await CompetitionStatusService.hydrate();
   await AuthService.bootstrapFromEnv();
+  await dbStore.syncAllVerifiedProfiles().catch((err) => console.error('[Startup] Failed to sync public profiles:', err));
 
   app.listen(PORT, () => {
     console.log(`\n==================================================`);

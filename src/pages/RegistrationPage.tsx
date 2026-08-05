@@ -39,23 +39,23 @@ const CountdownCell = ({ value, label }: { value: number; label: string }) => (
   <Box
     sx={{
       textAlign: 'center',
-      minWidth: { xs: 58, sm: 72 },
-      py: 1.25,
-      px: 1,
+      minWidth: { xs: 72, sm: 92 },
+      py: { xs: 1.5, sm: 1.75 },
+      px: { xs: 1, sm: 1.5 },
       bgcolor: '#FFFFFF',
-      borderRadius: '16px',
-      border: '1px solid rgba(15, 42, 82, 0.16)',
-      boxShadow: '0 4px 14px rgba(15, 42, 82, 0.05)',
+      borderRadius: '20px',
+      border: '1.5px solid rgba(15, 42, 82, 0.18)',
+      boxShadow: '0 6px 18px rgba(15, 42, 82, 0.08)',
     }}
   >
     <Typography
       sx={{
         fontVariantNumeric: 'tabular-nums',
-        fontSize: { xs: '1.6rem', sm: '2.1rem' },
-        fontWeight: 850,
+        fontSize: { xs: '2.2rem', sm: '2.8rem' },
+        fontWeight: 900,
         color: piccColors.ptitNavy,
         lineHeight: 1,
-        letterSpacing: '-0.02em',
+        letterSpacing: '-0.03em',
       }}
     >
       <motion.span
@@ -69,12 +69,12 @@ const CountdownCell = ({ value, label }: { value: number; label: string }) => (
     </Typography>
     <Typography
       sx={{
-        fontSize: '0.65rem',
-        fontWeight: 750,
+        fontSize: { xs: '0.68rem', sm: '0.75rem' },
+        fontWeight: 800,
         color: piccColors.slate[500],
         textTransform: 'uppercase',
         letterSpacing: '0.08em',
-        mt: 0.4,
+        mt: 0.6,
       }}
     >
       {label}
@@ -250,14 +250,14 @@ export const RegistrationPage = () => {
       id="registration-page"
       sx={{
         py: { xs: 10, md: 14 },
-        background: getSkyBackground('hero'),
+        background: getSkyBackground('clear'),
         position: 'relative',
         minHeight: '100vh',
         overflow: 'hidden',
       }}
     >
       {/* Sky World Ambient Background */}
-      <SkyBackground variant="hero" />
+      <SkyBackground variant="clear" />
 
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
         {/* Back to Home Link */}

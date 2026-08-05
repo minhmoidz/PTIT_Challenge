@@ -14,7 +14,7 @@
  * aria-hidden + pointer-events:none on all decorative elements.
  */
 
-import { useMemo } from 'react';
+import { useId, useMemo } from 'react';
 import { Box } from '@mui/material';
 import { motion, useReducedMotion } from 'motion/react';
 import { VARIANTS, type SkyVariant, type SkyVariantConfig, type CloudConfig } from './skyBackgroundConfig';
@@ -67,9 +67,9 @@ const DotGrid = ({ opacity }: { opacity: number }) => (
 );
 
 /* ────────────────────────────────────────────────
-   Cloud shape (SVG-based puff cluster)
+   Realistic Volumetric Cloud with Fractal Vapor Noise
 ───────────────────────────────────────────────── */
-const CloudPuff = ({
+const RealisticCloud = ({
   width,
   opacity,
   flipX,
@@ -80,13 +80,14 @@ const CloudPuff = ({
   flipX?: boolean;
   depth: 0 | 1 | 2;
 }) => {
-  const blurPx = depth === 0 ? 6 : depth === 1 ? 3 : 1;
-  const height = width * 0.42;
+  const blurPx = depth === 0 ? 4 : depth === 1 ? 2 : 0;
+  const height = width * 0.46;
+  const idSuffix = useId().replace(/[^a-zA-Z0-9_-]/g, '');
 
   return (
     <svg
       aria-hidden="true"
-      viewBox="0 0 200 84"
+      viewBox="0 0 320 150"
       xmlns="http://www.w3.org/2000/svg"
       style={{
         width,
@@ -98,15 +99,49 @@ const CloudPuff = ({
         flexShrink: 0,
       }}
     >
-      {/* Multi-ellipse cloud shape */}
-      <ellipse cx="100" cy="62" rx="95" ry="22" fill="white" fillOpacity="0.9" />
-      <ellipse cx="72" cy="50" rx="55" ry="32" fill="white" fillOpacity="0.85" />
-      <ellipse cx="100" cy="44" rx="50" ry="36" fill="white" fillOpacity="0.9" />
-      <ellipse cx="130" cy="50" rx="50" ry="30" fill="white" fillOpacity="0.85" />
-      <ellipse cx="155" cy="58" rx="40" ry="22" fill="white" fillOpacity="0.80" />
-      <ellipse cx="45" cy="60" rx="38" ry="20" fill="white" fillOpacity="0.78" />
-      {/* Subtle inner shading for depth */}
-      <ellipse cx="100" cy="48" rx="38" ry="22" fill="rgba(200,220,245,0.25)" />
+      <defs>
+        {/* Organic Water Vapor Noise Distortion Filter */}
+        <filter id={`cloudOrganic_${idSuffix}`} x="-20%" y="-20%" width="140%" height="140%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="4" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="22" xChannelSelector="R" yChannelSelector="G" result="displaced" />
+          <feGaussianBlur in="displaced" stdDeviation="3.5" result="blurred" />
+          <feDropShadow dx="0" dy="8" stdDeviation="10" floodColor="#0F2A52" floodOpacity="0.08" />
+        </filter>
+
+        {/* Sunlight Scattered Vapor Gradient */}
+        <linearGradient id={`cloudHighlight_${idSuffix}`} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.98" />
+          <stop offset="50%" stopColor="#F1F6FF" stopOpacity="0.9" />
+          <stop offset="100%" stopColor="#D7E6FA" stopOpacity="0.8" />
+        </linearGradient>
+
+        {/* Deep Atmosphere Base Shadow */}
+        <linearGradient id={`cloudBase_${idSuffix}`} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#D4E4F9" stopOpacity="0.7" />
+          <stop offset="100%" stopColor="#ACCBEF" stopOpacity="0.85" />
+        </linearGradient>
+      </defs>
+
+      <g filter={`url(#cloudOrganic_${idSuffix})`}>
+        {/* Soft Volumetric Vapor Base */}
+        <path
+          d="M 45 115 Q 30 115 22 98 Q 15 80 40 72 Q 60 40 105 45 Q 125 18 180 20 Q 230 8 265 32 Q 300 25 310 60 Q 325 80 310 102 Q 315 118 280 120 Z"
+          fill={`url(#cloudBase_${idSuffix})`}
+        />
+
+        {/* Main Fluffy Vapor Body */}
+        <ellipse cx="160" cy="100" rx="135" ry="32" fill={`url(#cloudHighlight_${idSuffix})`} />
+        <circle cx="95" cy="80" r="46" fill={`url(#cloudHighlight_${idSuffix})`} />
+        <circle cx="155" cy="58" r="58" fill={`url(#cloudHighlight_${idSuffix})`} />
+        <circle cx="220" cy="68" r="50" fill={`url(#cloudHighlight_${idSuffix})`} />
+        <circle cx="270" cy="85" r="38" fill={`url(#cloudHighlight_${idSuffix})`} />
+        <circle cx="55" cy="88" r="34" fill={`url(#cloudHighlight_${idSuffix})`} />
+
+        {/* Top Sunlight Volumetric Puffs */}
+        <circle cx="150" cy="48" r="40" fill="#FFFFFF" fillOpacity="0.98" />
+        <circle cx="212" cy="56" r="36" fill="#FFFFFF" fillOpacity="0.95" />
+        <circle cx="90" cy="68" r="30" fill="#FFFFFF" fillOpacity="0.95" />
+      </g>
     </svg>
   );
 };
@@ -148,7 +183,7 @@ const AnimatedCloud = ({ cfg }: { cfg: CloudConfig }) => {
               }
         }
       >
-        <CloudPuff
+        <RealisticCloud
           width={width}
           opacity={cfg.opacity}
           flipX={cfg.flipX}

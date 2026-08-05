@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { dbStore } from '../db/store';
 import { CompetitionStatusService } from './competitionStatus';
 import { sendRegistrationConfirmation } from './emailService';
@@ -13,10 +14,13 @@ export interface RegistrationSubmissionResult {
   };
 }
 
+const hashIp = (ip: string): string =>
+  crypto.createHash('sha256').update(ip.trim() || 'unknown').digest('hex');
+
 export class RegistrationService {
   public static async processRegistration(
     payload: RegistrationFormValues,
-    _clientIp: string,
+    clientIp: string,
   ): Promise<RegistrationSubmissionResult> {
     const statusInfo = CompetitionStatusService.getStatus();
 
@@ -107,7 +111,7 @@ export class RegistrationService {
     }
 
     // 9. Process Submission & Save Transactionally
-    const result = await dbStore.saveRegistration(payload);
+    const result = await dbStore.saveRegistration(payload, hashIp(clientIp));
 
     // Fire-and-forget confirmation email. Never blocks or fails the submission.
     const leader = payload.members.find((m) => m.role === 'leader') ?? payload.members[0];

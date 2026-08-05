@@ -175,12 +175,14 @@ export const RegistrationForm = () => {
   }, [methods]);
 
   const handleNext = useCallback(async () => {
+    const categories = getValues('challengeCategories') || [];
     const fieldsToValidate: FieldPath<RegistrationFormValues>[] = activeStep === 0
       ? [
           'teamName', 'teamSize', 'challengeCategories', 'featuredProject',
           'expectations', 'companyExperience',
           'members.0.email', 'members.0.phone', 'members.0.fullName',
           'members.0.studentId', 'members.0.major',
+          ...(categories.includes('other') ? ['otherChallengeCategory' as FieldPath<RegistrationFormValues>] : []),
         ]
       : activeStep === 1
         ? (() => {
@@ -219,8 +221,14 @@ export const RegistrationForm = () => {
       setSubmitError(null);
       try {
         const { submitRegistration } = await import('@/services/registrations/api');
+        const cleanedMembers = Array.isArray(data.members) ? data.members.slice(0, data.teamSize) : [];
+        const payload: RegistrationFormValues = {
+          ...data,
+          members: cleanedMembers,
+          companyExperience: data.companyExperience,
+        };
         const result = await submitRegistration(
-          { ...data, companyExperience: data.companyExperience },
+          payload,
           idempotencyKey,
         );
         if (result.success) {
@@ -235,20 +243,51 @@ export const RegistrationForm = () => {
           setSubmitError('Đăng ký đã kết thúc. Vui lòng liên hệ Ban Tổ chức.');
         } else if (apiErr?.code === 'VALIDATION_ERROR') {
           const fieldErrors = apiErr.fieldErrors;
-          if (fieldErrors && typeof fieldErrors === 'object') {
+          if (fieldErrors && typeof fieldErrors === 'object' && Object.keys(fieldErrors).length > 0) {
+            let targetStep = 2;
+            const firstErrorField = Object.keys(fieldErrors)[0];
             Object.entries(fieldErrors).forEach(([field, message]) => {
               methods.setError(field as FieldPath<RegistrationFormValues>, { message: message as string });
             });
-            setSubmitError('Vui lòng kiểm tra lại các trường có lỗi.');
+
+            if (firstErrorField) {
+              if (
+                firstErrorField.startsWith('teamName') ||
+                firstErrorField.startsWith('teamSize') ||
+                firstErrorField.startsWith('challengeCategories') ||
+                firstErrorField.startsWith('otherChallengeCategory') ||
+                firstErrorField.startsWith('featuredProject') ||
+                firstErrorField.startsWith('expectations') ||
+                firstErrorField.startsWith('companyExperience') ||
+                firstErrorField.startsWith('members.0')
+              ) {
+                targetStep = 0;
+              } else if (firstErrorField.startsWith('members.')) {
+                targetStep = 1;
+              } else if (firstErrorField.startsWith('commitments')) {
+                targetStep = 2;
+              }
+            }
+            setActiveStep(targetStep);
+            setSubmitError(apiErr.message ? `Dữ liệu chưa hợp lệ: ${apiErr.message}` : 'Vui lòng kiểm tra lại các trường có lỗi.');
           } else {
             setSubmitError(apiErr.message || 'Dữ liệu chưa hợp lệ.');
           }
+        } else if (apiErr?.code === 'DUPLICATE_STUDENT_ID' || apiErr?.code === 'DUPLICATE_MEMBER_EMAIL') {
+          setActiveStep(1);
+          setSubmitError(apiErr.message || 'Mã sinh viên hoặc email giữa các thành viên trong đội bị trùng lặp.');
         } else if (apiErr?.code === 'DUPLICATE_REGISTRATION') {
-          setSubmitError('Đội của bạn đã đăng ký trước đó. Vui lòng liên hệ BTC nếu cần hỗ trợ.');
+          setSubmitError(apiErr.message || 'Đội của bạn hoặc thông tin thành viên đã được đăng ký trước đó. Vui lòng liên hệ BTC nếu cần hỗ trợ.');
+        } else if (apiErr?.code === 'CONSENT_REQUIRED') {
+          setActiveStep(2);
+          setSubmitError(apiErr.message || 'Vui lòng xác nhận đầy đủ các cam kết bắt buộc.');
+        } else if (apiErr?.code === 'INVALID_TEAM_SIZE') {
+          setActiveStep(0);
+          setSubmitError(apiErr.message || 'Quy mô đội thi phải từ 03 đến 04 thành viên.');
         } else if (apiErr?.code === 'RATE_LIMITED') {
-          setSubmitError('Vui lòng đợi một lát trước khi thử lại.');
+          setSubmitError('Bạn đã gửi đơn quá nhiều lần liên tiếp. Vui lòng đợi 1 phút trước khi thử lại.');
         } else {
-          setSubmitError('Hệ thống tiếp nhận đăng ký trực tuyến đang được cấu hình. Vui lòng thử lại sau.');
+          setSubmitError(apiErr?.message || 'Có lỗi xảy ra khi nộp đăng ký. Vui lòng kiểm tra lại thông tin và thử lại sau.');
         }
       } finally {
         setIsSubmitting(false);
@@ -329,7 +368,20 @@ export const RegistrationForm = () => {
       </Stepper>
 
       <FormProvider {...methods}>
-        <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+        <Box
+          component="form"
+          onSubmit={handleSubmit(onSubmit)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && activeStep < 2) {
+              const target = e.target as HTMLElement;
+              // Allow enter inside multiline textareas without advancing step
+              if (target.tagName === 'TEXTAREA') return;
+              e.preventDefault();
+              void handleNext();
+            }
+          }}
+          noValidate
+        >
           {submitError && (
             <Alert severity="error" sx={{ mb: 4, borderRadius: 3, fontWeight: 600 }}>
               {submitError}
@@ -353,6 +405,7 @@ export const RegistrationForm = () => {
             <Box sx={{ display: 'flex', gap: 1, order: { xs: 2, sm: 1 } }}>
               {activeStep > 0 && (
                 <Button
+                  type="button"
                   onClick={handleBack}
                   variant="outlined"
                   disabled={isSubmitting}
@@ -370,6 +423,7 @@ export const RegistrationForm = () => {
 
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column-reverse', sm: 'row' }, gap: 1.5, alignItems: { xs: 'stretch', sm: 'center' }, justifyContent: 'flex-end', order: { xs: 1, sm: 2 } }}>
               <Button
+                type="button"
                 onClick={handleClearDraft}
                 variant="text"
                 color="inherit"
@@ -380,6 +434,7 @@ export const RegistrationForm = () => {
               </Button>
               {activeStep < 2 ? (
                   <Button
+                    type="button"
                     onClick={handleNext}
                     variant="contained"
                     sx={{

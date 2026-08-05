@@ -1,30 +1,17 @@
 import { useState } from 'react';
-import {
-  Box, Typography, TextField, Button, Alert, InputAdornment, IconButton, Divider, Link,
-} from '@mui/material';
-import LockRoundedIcon from '@mui/icons-material/LockRounded';
-import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
-import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
-import VisibilityOffRoundedIcon from '@mui/icons-material/VisibilityOffRounded';
-import ShieldRoundedIcon from '@mui/icons-material/ShieldRounded';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { adminColors, adminRadius, adminShadow } from '@/theme/adminTokens';
+import { Card, Form, Input, Button, Alert, Typography, ConfigProvider } from 'antd';
+import { UserOutlined, LockOutlined, SafetyCertificateOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import { env } from '@/config/env';
+
+const { Title, Text } = Typography;
 
 export const AdminLoginPage = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim() || !password.trim()) {
-      setError('Vui lòng nhập đầy đủ email và mật khẩu.');
-      return;
-    }
+  const handleSubmit = async (values: { email: string; password: string }) => {
     setError('');
     setLoading(true);
 
@@ -33,7 +20,7 @@ export const AdminLoginPage = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ email: email.trim().toLowerCase(), password: password }),
+        body: JSON.stringify({ email: values.email.trim().toLowerCase(), password: values.password }),
       });
 
       const data = await res.json();
@@ -61,267 +48,116 @@ export const AdminLoginPage = () => {
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        bgcolor: adminColors.bg,
-        backgroundImage: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(56, 130, 241, 0.12), transparent)',
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: '#D9232D',
+          borderRadius: 10,
+          fontFamily: 'Outfit, system-ui, -apple-system, sans-serif',
+        },
       }}
     >
-      {/* Left Branding Panel */}
-      <Box
-        sx={{
-          display: { xs: 'none', md: 'flex' },
-          width: '42%',
-          maxWidth: 520,
-          bgcolor: adminColors.sidebar,
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          p: 5,
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        {/* Subtle grid overlay */}
-        <Box
-          sx={{
-            position: 'absolute',
-            inset: 0,
-            backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
-            backgroundSize: '32px 32px',
-          }}
-        />
-
-        {/* Brand */}
-        <Box sx={{ position: 'relative', zIndex: 1 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 6 }}>
-            <Box
-              sx={{
-                width: 38,
-                height: 38,
-                borderRadius: '11px',
-                bgcolor: adminColors.primary,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <ShieldRoundedIcon sx={{ fontSize: 20, color: '#FFFFFF' }} />
-            </Box>
-            <Box>
-              <Typography sx={{ fontWeight: 800, fontSize: '1rem', color: '#FFFFFF', letterSpacing: '-0.01em' }}>PICC Admin</Typography>
-              <Typography sx={{ fontSize: '0.6875rem', color: 'rgba(154, 195, 249, 0.9)', letterSpacing: '0.04em' }}>Command Center</Typography>
-            </Box>
-          </Box>
-
-          <Typography
-            variant="h2"
-            sx={{
-              fontWeight: 800,
-              fontSize: { md: '2rem', lg: '2.375rem' },
-              color: '#FFFFFF',
-              letterSpacing: '-0.03em',
-              lineHeight: 1.15,
-              mb: 2,
-            }}
-          >
-            Quản trị toàn diện<br />
-            <Box component="span" sx={{ color: 'rgba(100, 180, 250, 0.9)' }}>PICC 2026</Box>
-          </Typography>
-
-          <Typography sx={{ color: 'rgba(154, 195, 249, 0.9)', fontSize: '0.9375rem', lineHeight: 1.65, maxWidth: 340 }}>
-            Hệ thống quản trị dành cho Ban Tổ chức PTIT Innovation Catalyst Challenge. Truy cập bằng tài khoản được cấp quyền.
-          </Typography>
-        </Box>
-
-        {/* Security note */}
-        <Box
-          sx={{
-            position: 'relative',
-            zIndex: 1,
-            bgcolor: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: '12px',
-            p: 2,
-          }}
-        >
-          <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(154, 195, 249, 0.85)', lineHeight: 1.6 }}>
-            Chỉ dành cho thành viên Ban Tổ chức được cấp quyền. Mọi truy cập trái phép sẽ bị ghi nhận và xử lý theo quy định.
-          </Typography>
-        </Box>
-      </Box>
-
-      {/* Right Login Form */}
-      <Box
-        sx={{
-          flex: 1,
+      <div
+        style={{
+          minHeight: '100vh',
           display: 'flex',
-          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          p: { xs: 2, sm: 4 },
+          background: 'linear-gradient(135deg, #0F2A52 0%, #1E3A8A 50%, #0F172A 100%)',
+          padding: 24,
         }}
       >
-        {/* Mobile brand mark */}
-        <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', gap: 1.5, mb: 4 }}>
-          <Box sx={{ width: 36, height: 36, borderRadius: '10px', bgcolor: adminColors.primary, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <ShieldRoundedIcon sx={{ fontSize: 18, color: '#FFFFFF' }} />
-          </Box>
-          <Typography sx={{ fontWeight: 800, fontSize: '1rem', color: adminColors.text }}>PICC Admin Portal</Typography>
-        </Box>
-
-        <Box
-          sx={{
+        <Card
+          style={{
             width: '100%',
-            maxWidth: 440,
-            bgcolor: adminColors.surface,
-            borderRadius: adminRadius.modal,
-            border: `1px solid ${adminColors.border}`,
-            boxShadow: adminShadow.modal,
-            p: { xs: 3, sm: 4 },
+            maxWidth: 420,
+            borderRadius: 16,
+            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.3)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
           }}
         >
-          <Typography
-            variant="h1"
-            sx={{ fontWeight: 800, fontSize: '1.5rem', color: adminColors.text, letterSpacing: '-0.02em', mb: 0.75 }}
-          >
-            Đăng nhập
-          </Typography>
-          <Typography sx={{ fontSize: '0.875rem', color: adminColors.textMuted, mb: 3 }}>
-            Nhập thông tin tài khoản quản trị của bạn.
-          </Typography>
+          {/* Header */}
+          <div style={{ textAlign: 'center', marginBottom: 28 }}>
+            <div
+              style={{
+                width: 52,
+                height: 52,
+                borderRadius: 14,
+                background: '#D9232D',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#FFFFFF',
+                fontSize: 26,
+                marginBottom: 12,
+                boxShadow: '0 8px 20px rgba(217, 35, 45, 0.4)',
+              }}
+            >
+              <SafetyCertificateOutlined />
+            </div>
+            <Title level={3} style={{ margin: 0, color: '#0F2A52', fontWeight: 800 }}>
+              PICC 2026 Admin
+            </Title>
+            <Text type="secondary" style={{ fontSize: 13 }}>
+              Đăng nhập trung tâm điều hành cuộc thi
+            </Text>
+          </div>
 
           {error && (
-            <Alert
-              severity="error"
-              sx={{ mb: 2.5, borderRadius: '10px', fontSize: '0.825rem', bgcolor: adminColors.dangerBg, color: adminColors.danger, border: `1px solid ${adminColors.dangerBorder}`, '& .MuiAlert-icon': { color: adminColors.danger } }}
-            >
-              {error}
-            </Alert>
+            <Alert message={error} type="error" showIcon style={{ marginBottom: 20, borderRadius: 8 }} />
           )}
 
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <TextField
-              label="Email"
-              type="email"
-              fullWidth
-              required
-              value={email}
-              onChange={(e) => { setEmail(e.target.value); setError(''); }}
-              autoComplete="username"
-              inputProps={{ 'aria-label': 'Email đăng nhập' }}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: adminRadius.input,
-                  '& fieldset': { borderColor: adminColors.border },
-                  '&:hover fieldset': { borderColor: adminColors.primary },
-                  '&.Mui-focused fieldset': { borderColor: adminColors.primary, borderWidth: '1.5px' },
-                },
-                '& .MuiInputLabel-root': { fontSize: '0.875rem', color: adminColors.textMuted },
-                '& .MuiInputLabel-root.Mui-focused': { color: adminColors.primary },
-              }}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <EmailRoundedIcon sx={{ fontSize: 18, color: adminColors.textMuted }} />
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
-
-            <TextField
-              label="Mật khẩu"
-              type={showPassword ? 'text' : 'password'}
-              fullWidth
-              required
-              value={password}
-              onChange={(e) => { setPassword(e.target.value); setError(''); }}
-              autoComplete="current-password"
-              inputProps={{ 'aria-label': 'Mật khẩu' }}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: adminRadius.input,
-                  '& fieldset': { borderColor: adminColors.border },
-                  '&:hover fieldset': { borderColor: adminColors.primary },
-                  '&.Mui-focused fieldset': { borderColor: adminColors.primary, borderWidth: '1.5px' },
-                },
-                '& .MuiInputLabel-root': { fontSize: '0.875rem', color: adminColors.textMuted },
-                '& .MuiInputLabel-root.Mui-focused': { color: adminColors.primary },
-              }}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockRoundedIcon sx={{ fontSize: 18, color: adminColors.textMuted }} />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
-                        onClick={() => setShowPassword(!showPassword)}
-                        edge="end"
-                        size="small"
-                        sx={{ color: adminColors.textMuted }}
-                      >
-                        {showPassword
-                          ? <VisibilityOffRoundedIcon sx={{ fontSize: 18 }} />
-                          : <VisibilityRoundedIcon sx={{ fontSize: 18 }} />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
-
-            <Button
-              type="submit"
-              variant="contained"
-              fullWidth
-              disabled={loading}
-              sx={{
-                height: 44,
-                borderRadius: adminRadius.button,
-                fontWeight: 700,
-                fontSize: '0.9375rem',
-                bgcolor: adminColors.primary,
-                color: '#FFFFFF',
-                textTransform: 'none',
-                boxShadow: 'none',
-                mt: 0.5,
-                '&:hover': {
-                  bgcolor: adminColors.primaryHover,
-                  boxShadow: '0 4px 12px rgba(56, 130, 241, 0.3)',
-                },
-                '&:disabled': { opacity: 0.65 },
-              }}
+          <Form layout="vertical" onFinish={handleSubmit} requiredMark={false}>
+            <Form.Item
+              label={<Text style={{ fontWeight: 700 }}>Email quản trị</Text>}
+              name="email"
+              rules={[
+                { required: true, message: 'Vui lòng nhập email!' },
+                { type: 'email', message: 'Email không hợp lệ!' },
+              ]}
             >
-              {loading ? 'Đang xác thực...' : 'Đăng nhập'}
-            </Button>
-          </Box>
+              <Input
+                size="large"
+                prefix={<UserOutlined style={{ color: '#8C8C8C' }} />}
+                placeholder="admin@ptit.edu.vn"
+              />
+            </Form.Item>
 
-          <Divider sx={{ my: 3, borderColor: adminColors.border }} />
-
-          <Box sx={{ textAlign: 'center' }}>
-            <Link
-              component={RouterLink}
-              to="/"
-              sx={{
-                fontSize: '0.8125rem',
-                color: adminColors.textMuted,
-                textDecoration: 'none',
-                '&:hover': { color: adminColors.primary },
-              }}
+            <Form.Item
+              label={<Text style={{ fontWeight: 700 }}>Mật khẩu</Text>}
+              name="password"
+              rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
             >
-              Quay lại website công khai
-            </Link>
-          </Box>
-        </Box>
-      </Box>
-    </Box>
+              <Input.Password
+                size="large"
+                prefix={<LockOutlined style={{ color: '#8C8C8C' }} />}
+                placeholder="••••••••"
+              />
+            </Form.Item>
+
+            <Form.Item style={{ marginTop: 24 }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                size="large"
+                block
+                loading={loading}
+                style={{
+                  height: 46,
+                  fontWeight: 800,
+                  fontSize: 15,
+                  borderRadius: 10,
+                  background: 'linear-gradient(135deg, #D9232D 0%, #E11D48 100%)',
+                  boxShadow: '0 6px 20px rgba(217, 35, 45, 0.35)',
+                }}
+              >
+                Đăng Nhập Quản Trị
+              </Button>
+            </Form.Item>
+          </Form>
+        </Card>
+      </div>
+    </ConfigProvider>
   );
 };
 

@@ -32,8 +32,14 @@ const envSchema = z.object({
   /** Signs admin session tokens. Rotating it invalidates every active session. */
   JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters.'),
   /** Optional: seeds the first SUPER_ADMIN when the users table is empty. */
-  PICC_ADMIN_EMAIL: z.string().email().optional(),
-  PICC_ADMIN_PASSWORD: z.string().min(12, 'PICC_ADMIN_PASSWORD must be at least 12 characters.').optional(),
+  PICC_ADMIN_EMAIL: z.preprocess(
+    (val) => (typeof val === 'string' && val.trim() === '' ? undefined : val),
+    z.string().email().optional(),
+  ),
+  PICC_ADMIN_PASSWORD: z.preprocess(
+    (val) => (typeof val === 'string' && val.trim() === '' ? undefined : val),
+    z.string().min(12, 'PICC_ADMIN_PASSWORD must be at least 12 characters.').optional(),
+  ),
   JWT_EXPIRES_IN: z.string().default('1d'),
   REFRESH_TOKEN_EXPIRES_IN: z.string().default('7d'),
   STORAGE_PROVIDER: z.enum(['local', 's3']).default('local'),

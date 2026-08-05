@@ -71,9 +71,9 @@ describe('PICC 2026 Production Backend Security & Business Rules', () => {
       teamName: 'No Consent Team',
       teamSize: 3,
       members: [
-        { role: 'leader', fullName: 'Leader', studentId: 'B20DCCN001', major: 'IT', email: 'l@ptit.edu.vn', phone: '0912345678' },
-        { role: 'member', fullName: 'Member 1', studentId: 'B20DCCN002', major: 'IT', email: 'm1@ptit.edu.vn', phone: '0912345679' },
-        { role: 'member', fullName: 'Member 2', studentId: 'B20DCCN003', major: 'IT', email: 'm2@ptit.edu.vn', phone: '0912345680' },
+        { role: 'leader', fullName: 'Leader', studentId: 'B99DCCN001', major: 'IT', email: 'no_consent_l@ptit.edu.vn', phone: '0912345678' },
+        { role: 'member', fullName: 'Member 1', studentId: 'B99DCCN002', major: 'IT', email: 'no_consent_m1@ptit.edu.vn', phone: '0912345679' },
+        { role: 'member', fullName: 'Member 2', studentId: 'B99DCCN003', major: 'IT', email: 'no_consent_m2@ptit.edu.vn', phone: '0912345680' },
       ],
       commitments: { truthfulInformation: true, mediaConsent: false, rulesAccepted: true, privacyAcknowledged: true },
     };

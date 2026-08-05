@@ -25,7 +25,7 @@ export const HeroSection = () => {
       {/* ── Sky World Background ── */}
       <SkyBackground variant="hero" />
 
-      {/* ── Bottom fade to white ── */}
+      {/* ── Bottom fade into the body page gradient (maunen2) ── */}
       <Box
         aria-hidden="true"
         sx={{
@@ -33,8 +33,8 @@ export const HeroSection = () => {
           bottom: 0,
           left: 0,
           right: 0,
-          height: 100,
-          background: 'linear-gradient(to top, #FFFFFF 10%, transparent)',
+          height: 140,
+          background: 'linear-gradient(to bottom, rgba(207, 224, 247, 0) 0%, rgba(208, 231, 254, 0.4) 60%, rgba(208, 231, 254, 0.95) 100%)',
           zIndex: 2,
           pointerEvents: 'none',
         }}

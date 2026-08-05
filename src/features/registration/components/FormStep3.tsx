@@ -25,7 +25,7 @@ const SectionReview = ({
         {title}
       </Typography>
       {onEdit && (
-        <Button size="small" onClick={onEdit} variant="text" sx={{ fontWeight: 700 }}>
+        <Button type="button" size="small" onClick={onEdit} variant="text" sx={{ fontWeight: 700 }}>
           Chỉnh sửa
         </Button>
       )}

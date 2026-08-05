@@ -24,6 +24,34 @@ export const AwardsSection = () => {
       {/* Sky World Background — celebration variant */}
       <SkyBackground variant="celebration" />
 
+      {/* Top & Bottom Smooth Transition Blend Masks */}
+      <Box
+        aria-hidden="true"
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 90,
+          background: 'linear-gradient(to bottom, rgba(208, 231, 254, 0.9), transparent)',
+          zIndex: 1,
+          pointerEvents: 'none',
+        }}
+      />
+      <Box
+        aria-hidden="true"
+        sx={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 90,
+          background: 'linear-gradient(to top, rgba(208, 231, 254, 0.9), transparent)',
+          zIndex: 1,
+          pointerEvents: 'none',
+        }}
+      />
+
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
         {/* Section Header with Total Cash Prize Highlight Card */}
         <AwardHeader />

@@ -85,4 +85,13 @@ export const createRegistrationSchema = (config: {
         return memberCount === data.teamSize;
       },
       { message: 'Số lượng thành viên phải bằng teamSize' },
-    );
+    )
+    .superRefine((data, ctx) => {
+      if (data.challengeCategories?.includes('other') && !data.otherChallengeCategory?.trim()) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['otherChallengeCategory'],
+          message: 'Vui lòng nhập rõ nhóm bài toán khác',
+        });
+      }
+    });

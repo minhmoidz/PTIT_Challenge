@@ -49,6 +49,15 @@ const OVERRIDE_FROM_DB: Record<CompetitionStatusOverride, StatusOverride> = {
   COMPLETED: 'completed',
 };
 
+/** YYYY-MM-DD in Vietnam time. The stored value is an ISO instant (often UTC
+ *  after a round-trip through Postgres), so slicing the string directly would
+ *  show the previous day for any +07:00 boundary. */
+const formatDateInVn = (iso: string): string => {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso.slice(0, 10);
+  return d.toLocaleDateString('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' });
+};
+
 export class CompetitionStatusService {
   /** Loads persisted config into the cache. Call once during startup. */
   public static async hydrate(): Promise<void> {
@@ -140,19 +149,19 @@ export class CompetitionStatusService {
 
     const statusMessage =
       currentStatus === 'upcoming'
-        ? `Cổng đăng ký mở từ ${openAtStr.slice(0, 10)} đến ${closeAtStr.slice(0, 10)}.`
+        ? `Cổng đăng ký mở từ ${formatDateInVn(openAtStr)} đến ${formatDateInVn(closeAtStr)}.`
         : currentStatus === 'open'
           ? 'Cổng đăng ký đang mở. Vui lòng hoàn thành biểu mẫu nộp hồ sơ.'
           : currentStatus === 'live'
             ? 'Cuộc thi đang diễn ra! Theo dõi thông báo mới nhất.'
             : currentStatus === 'paused'
               ? 'Đăng ký đang tạm dừng. Theo dõi thông báo mới nhất.'
-              : `Cổng đăng ký đã khép lại vào ${closeAtStr.slice(0, 10)}.`;
+              : `Cổng đăng ký đã khép lại vào ${formatDateInVn(closeAtStr)}.`;
 
     const nextMilestone =
       now < openAt
-        ? { title: 'Mở Cổng Đăng Ký Trực Tuyến', dateLabel: openAtStr.slice(0, 10), startAt: openAtStr }
-        : { title: 'Hạn Cuối Nộp Hồ Sơ Đăng Ký', dateLabel: closeAtStr.slice(0, 10), startAt: closeAtStr };
+        ? { title: 'Mở Cổng Đăng Ký Trực Tuyến', dateLabel: formatDateInVn(openAtStr), startAt: openAtStr }
+        : { title: 'Hạn Cuối Nộp Hồ Sơ Đăng Ký', dateLabel: formatDateInVn(closeAtStr), startAt: closeAtStr };
 
     return {
       currentStatus,

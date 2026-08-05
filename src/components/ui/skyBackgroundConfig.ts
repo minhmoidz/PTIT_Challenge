@@ -1,15 +1,18 @@
 /**
  * Section surfaces.
  *
- * The page is deliberately quiet: white is the default, with two tinted bands
- * used sparingly to mark structure. Colour is spent on the brand red — the
- * header rule, the buttons and the footer — not on the backgrounds, so the
- * content stays the thing you look at.
+ * Two supplied colour-swab images give the site its background:
+ *   - maunen2.jpg  a soft sky-blue vertical gradient — painted once on the
+ *     page layout (`LandingLayout`) so it runs seamlessly under everything
+ *   - maunen1.jpg  a blue-to-pink pastel gradient — reserved for the Hero band
  *
- * The decorative layers this file used to carry (drifting clouds, blurred
- * colour glows, a dot grid) were removed; `SkyBackground` now renders nothing
- * and stays only so sections can keep calling it while the markup is tidied up.
+ * The `clear` / `journey` / `celebration` / `calm` surfaces are left
+ * transparent so the layout's single maunen2 layer shows through the whole page
+ * without seams where full-width sections abut. Each image keeps a flat colour
+ * fallback for the moment before it loads.
  */
+
+import { assetPath } from '@/config/paths';
 
 export type SkyVariant =
   | 'hero'
@@ -48,33 +51,188 @@ export interface SkyVariantConfig {
   gridOpacity: number;
 }
 
-const surface = (background: string): SkyVariantConfig => ({
-  background,
-  glows: [],
-  clouds: [],
-  gridOpacity: 0,
-});
-
 export const VARIANTS: Record<SkyVariant, SkyVariantConfig> = {
-  /** Hero — a barely-there warm wash that settles into white. */
-  hero: surface('linear-gradient(180deg, #FCFAF7 0%, #FFFFFF 78%)'),
+  /**
+   * Hero — vibrant pastel mesh combining maunen1.jpg with warm PTIT Red,
+   * Golden Amber & Sky Blue atmospheric glows.
+   */
+  hero: {
+    background: `linear-gradient(135deg, rgba(235, 243, 255, 0.65) 0%, rgba(255, 235, 238, 0.7) 45%, rgba(254, 243, 199, 0.55) 100%), url(${assetPath('maunen1.jpg')}) no-repeat center / cover`,
+    glows: [
+      {
+        top: '-12%',
+        right: '-5%',
+        w: '680px',
+        h: '680px',
+        color: 'radial-gradient(circle, rgba(225, 20, 20, 0.22) 0%, rgba(255, 182, 193, 0.14) 45%, transparent 70%)',
+        blur: '60px',
+      },
+      {
+        top: '10%',
+        left: '-8%',
+        w: '580px',
+        h: '580px',
+        color: 'radial-gradient(circle, rgba(245, 158, 11, 0.22) 0%, rgba(251, 191, 36, 0.1) 50%, transparent 70%)',
+        blur: '50px',
+      },
+      {
+        bottom: '-5%',
+        left: '25%',
+        w: '750px',
+        h: '450px',
+        color: 'radial-gradient(circle, rgba(56, 130, 241, 0.2) 0%, rgba(147, 197, 253, 0.1) 55%, transparent 70%)',
+        blur: '70px',
+      },
+    ],
+    clouds: [
+      { x: 5, y: 12, depth: 0, baseW: 160, travel: 40, dur: 28, delay: 0, opacity: 0.65 },
+      { x: 72, y: 18, depth: 1, baseW: 210, travel: -35, dur: 34, delay: 4, opacity: 0.75, flipX: true },
+      { x: 40, y: 65, depth: 2, baseW: 260, travel: 50, dur: 40, delay: 2, opacity: 0.85, desktopOnly: true },
+    ],
+    gridOpacity: 0.45,
+  },
 
-  /** The default page surface. */
-  clear: surface('#FFFFFF'),
+  /**
+   * Clear — Introduction & Rules sections with warm red & blue atmospheric light fields.
+   */
+  clear: {
+    background: `linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(240, 247, 255, 0.65) 50%, rgba(255, 245, 245, 0.5) 100%), url(${assetPath('maunen2.jpg')}) no-repeat center / cover`,
+    glows: [
+      {
+        top: '15%',
+        left: '-6%',
+        w: '550px',
+        h: '550px',
+        color: 'radial-gradient(circle, rgba(225, 20, 20, 0.14) 0%, transparent 70%)',
+        blur: '55px',
+      },
+      {
+        bottom: '10%',
+        right: '-6%',
+        w: '600px',
+        h: '600px',
+        color: 'radial-gradient(circle, rgba(56, 130, 241, 0.18) 0%, transparent 70%)',
+        blur: '60px',
+      },
+    ],
+    clouds: [
+      { x: 80, y: 25, depth: 0, baseW: 180, travel: -30, dur: 32, delay: 1, opacity: 0.55 },
+      { x: 12, y: 60, depth: 1, baseW: 220, travel: 45, dur: 38, delay: 5, opacity: 0.65, desktopOnly: true },
+    ],
+    gridOpacity: 0.35,
+  },
 
-  /** Timeline — a quiet grey band so a long section reads as one block. */
-  journey: surface('#F8F9FB'),
+  /**
+   * Journey — Timeline section with atmospheric deep indigo & rose glows.
+   */
+  journey: {
+    background: `linear-gradient(180deg, rgba(208, 231, 254, 0.85) 0%, rgba(224, 231, 255, 0.8) 50%, rgba(238, 242, 255, 0.85) 100%), url(${assetPath('maunen2.jpg')}) no-repeat center / cover`,
+    glows: [
+      {
+        top: '20%',
+        left: '-10%',
+        w: '650px',
+        h: '650px',
+        color: 'radial-gradient(circle, rgba(79, 70, 229, 0.16) 0%, rgba(99, 102, 241, 0.08) 50%, transparent 70%)',
+        blur: '60px',
+      },
+      {
+        bottom: '20%',
+        right: '-10%',
+        w: '600px',
+        h: '600px',
+        color: 'radial-gradient(circle, rgba(225, 20, 20, 0.15) 0%, rgba(244, 63, 94, 0.08) 50%, transparent 70%)',
+        blur: '60px',
+      },
+    ],
+    clouds: [
+      { x: 15, y: 20, depth: 1, baseW: 190, travel: 35, dur: 36, delay: 0, opacity: 0.6 },
+      { x: 65, y: 55, depth: 0, baseW: 170, travel: -25, dur: 30, delay: 3, opacity: 0.5 },
+    ],
+    gridOpacity: 0.4,
+  },
 
-  /** Awards — the one warm moment on the page. */
-  celebration: surface('#FFF9EC'),
+  /**
+   * Celebration — Awards section with rich Golden Champion & Crimson lighting.
+   */
+  celebration: {
+    background: `linear-gradient(135deg, rgba(254, 243, 199, 0.75) 0%, rgba(255, 237, 213, 0.65) 40%, rgba(255, 228, 230, 0.7) 100%), url(${assetPath('maunen1.jpg')}) no-repeat center / cover`,
+    glows: [
+      {
+        top: '10%',
+        left: '25%',
+        w: '750px',
+        h: '550px',
+        color: 'radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, rgba(251, 191, 36, 0.12) 55%, transparent 75%)',
+        blur: '50px',
+      },
+      {
+        bottom: '-5%',
+        right: '5%',
+        w: '600px',
+        h: '600px',
+        color: 'radial-gradient(circle, rgba(225, 20, 20, 0.18) 0%, transparent 70%)',
+        blur: '55px',
+      },
+      {
+        top: '40%',
+        left: '-5%',
+        w: '500px',
+        h: '500px',
+        color: 'radial-gradient(circle, rgba(234, 179, 8, 0.18) 0%, transparent 70%)',
+        blur: '45px',
+      },
+    ],
+    clouds: [
+      { x: 8, y: 15, depth: 2, baseW: 240, travel: 40, dur: 35, delay: 2, opacity: 0.75 },
+      { x: 75, y: 60, depth: 1, baseW: 200, travel: -30, dur: 32, delay: 0, opacity: 0.65, flipX: true },
+    ],
+    gridOpacity: 0.45,
+  },
 
-  /** A whisper of cool tint, for sections that sit between two white ones. */
-  calm: surface('#FBFCFE'),
+  /**
+   * Calm — Quiet sky atmosphere for FAQ and team details.
+   */
+  calm: {
+    background: `linear-gradient(180deg, rgba(255, 255, 255, 0.75) 0%, rgba(241, 245, 249, 0.85) 100%), url(${assetPath('maunen2.jpg')}) no-repeat center / cover`,
+    glows: [
+      {
+        top: '20%',
+        right: '10%',
+        w: '500px',
+        h: '500px',
+        color: 'radial-gradient(circle, rgba(56, 130, 241, 0.12) 0%, transparent 70%)',
+        blur: '50px',
+      },
+    ],
+    clouds: [
+      { x: 50, y: 30, depth: 0, baseW: 160, travel: 25, dur: 30, delay: 1, opacity: 0.45 },
+    ],
+    gridOpacity: 0.25,
+  },
 
-  /** Dark surface, kept for compatibility. The footer paints its own red. */
-  sunset: surface('#0C2145'),
+  /**
+   * Sunset — Footer section with deep dusk navy & glowing horizon.
+   */
+  sunset: {
+    background: 'linear-gradient(180deg, #091A36 0%, #0F2A52 60%, #1A0E2E 100%)',
+    glows: [
+      {
+        top: '0%',
+        left: '30%',
+        w: '700px',
+        h: '350px',
+        color: 'radial-gradient(circle, rgba(225, 20, 20, 0.25) 0%, rgba(245, 158, 11, 0.15) 50%, transparent 75%)',
+        blur: '60px',
+      },
+    ],
+    clouds: [],
+    gridOpacity: 0.2,
+  },
 };
 
 export const getSkyBackground = (variant: SkyVariant): string => {
   return VARIANTS[variant].background;
 };
+
+

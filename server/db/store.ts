@@ -1,4 +1,4 @@
-import type { PublicationStatus, PublicTeamProfile as DbPublicTeam, Prisma, RegistrationStatus, TeamCompetitionStatus } from '@prisma/client';
+import type { ConsentType, PublicationStatus, PublicTeamProfile as DbPublicTeam, Prisma, RegistrationStatus, TeamCompetitionStatus } from '@prisma/client';
 import type { PublicTeamProfile } from '../../src/types/publicTeam';
 import type { RegistrationFormValues } from '../../src/types/registration';
 import { CATEGORY_LABEL_MAP, TEAM_STATUS_MAP } from '../../src/types/publicTeam';
@@ -174,6 +174,9 @@ class DBStore {
                 captainEmail: captain.email.trim().toLowerCase(),
                 captainPhone: captain.phone.trim(),
                 challengeCategory: toDbCategory(values.challengeCategories?.[0]),
+                challengeCategories: (values.challengeCategories ?? [])
+                  .map((c) => String(c).trim().toLowerCase())
+                  .filter(Boolean),
                 challengeCategoryOther: values.otherChallengeCategory?.trim() || null,
                 previousCompetitions: values.previousCompetitions?.trim() || null,
                 notableProject: values.featuredProject,
@@ -279,7 +282,143 @@ class DBStore {
       afterData: { status, rejectionReason: row.rejectionReason },
     });
 
+    await this.syncPublicProfile(id);
+
     return toRegistrationRecord(row);
+  }
+
+  public async deleteRegistration(id: string, actorUserId: string): Promise<boolean> {
+    const before = await prisma.registration.findUnique({
+      where: { id },
+      include: { publicProfile: true },
+    });
+    if (!before) return false;
+
+    await prisma.registration.delete({ where: { id } });
+
+    await this.addAuditLog('DELETE_REGISTRATION', 'Registration', id, {
+      actorUserId,
+      beforeData: { teamName: before.teamName, code: before.registrationCode },
+    });
+
+    return true;
+  }
+
+  public async syncPublicProfile(registrationId: string): Promise<void> {
+    const reg = await prisma.registration.findUnique({
+      where: { id: registrationId },
+      include: { members: true, consents: true, publicProfile: true },
+    });
+    if (!reg) return;
+
+    const isVerified = reg.status === 'VERIFIED';
+
+    if (!isVerified) {
+      if (reg.publicProfile) {
+        await prisma.publicTeamProfile.update({
+          where: { id: reg.publicProfile.id },
+          data: {
+            publicationStatus: 'HIDDEN',
+            showTeamProfile: false,
+          },
+        });
+      }
+      return;
+    }
+
+    const consentOf = (type: ConsentType) =>
+      reg.consents.find((c) => c.consentType === type)?.accepted ?? true;
+
+    const baseSlug =
+      reg.teamName
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/đ/g, 'd')
+        .replace(/[^a-z0-9\s-]/g, '')
+        .trim()
+        .replace(/\s+/g, '-') || 'team';
+
+    let slug = baseSlug;
+    const existingSlugOwner = await prisma.publicTeamProfile.findFirst({
+      where: { slug, registrationId: { not: reg.id } },
+    });
+    if (existingSlugOwner) {
+      slug = `${baseSlug}-${reg.registrationCode.toLowerCase()}`;
+    }
+
+    const members = [...reg.members].sort((a, b) => a.memberIndex - b.memberIndex);
+
+    if (reg.publicProfile) {
+      await prisma.publicTeamProfile.update({
+        where: { id: reg.publicProfile.id },
+        data: {
+          teamName: reg.teamName,
+          teamSize: reg.teamSize,
+          challengeCategory: reg.challengeCategory,
+          competitionStatus: 'VERIFIED',
+          publicationStatus: 'PUBLISHED',
+          showTeamProfile: true,
+          showMemberNames: consentOf('PUBLIC_MEMBER_NAMES'),
+          showMemberPhotos: consentOf('PUBLIC_MEMBER_PHOTOS'),
+          showProjectSummary: consentOf('PUBLIC_PROJECT_SUMMARY'),
+          approvedBy: reg.reviewedBy,
+          approvedAt: reg.reviewedAt ?? new Date(),
+          publishedBy: reg.reviewedBy,
+          publishedAt: new Date(),
+        },
+      });
+    } else {
+      await prisma.publicTeamProfile.create({
+        data: {
+          registrationId: reg.id,
+          slug,
+          teamName: reg.teamName,
+          teamSize: reg.teamSize,
+          challengeCategory: reg.challengeCategory,
+          slogan: null,
+          shortDescription: reg.notableProject ? reg.notableProject.slice(0, 200) : null,
+          competitionStatus: 'VERIFIED',
+          publicationStatus: 'PUBLISHED',
+          showTeamProfile: true,
+          showMemberNames: consentOf('PUBLIC_MEMBER_NAMES'),
+          showMemberPhotos: consentOf('PUBLIC_MEMBER_PHOTOS'),
+          showProjectSummary: consentOf('PUBLIC_PROJECT_SUMMARY'),
+          approvedBy: reg.reviewedBy,
+          approvedAt: reg.reviewedAt ?? new Date(),
+          publishedBy: reg.reviewedBy,
+          publishedAt: new Date(),
+          publicMembers: {
+            create: members.map((m) => ({
+              displayName: m.fullName,
+              role: m.isCaptain ? 'Đội trưởng' : 'Thành viên',
+              major: m.major,
+              sortOrder: m.memberIndex,
+              isPublished: true,
+            })),
+          },
+          publicProject: {
+            create: {
+              title: `Dự án đội ${reg.teamName}`,
+              summary: reg.notableProject,
+              problem: reg.notableProject,
+              solution: reg.expectations,
+              isPublished: true,
+            },
+          },
+        },
+      });
+    }
+  }
+
+  public async syncAllVerifiedProfiles(): Promise<void> {
+    const verifiedRegs = await prisma.registration.findMany({
+      where: { status: 'VERIFIED' },
+      select: { id: true },
+    });
+    for (const reg of verifiedRegs) {
+      await this.syncPublicProfile(reg.id);
+    }
   }
 
   public async checkDuplicateStudentOrEmail(studentIds: string[], emails: string[]): Promise<string | null> {

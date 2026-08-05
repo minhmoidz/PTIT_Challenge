@@ -96,6 +96,19 @@ export const FooterSection = () => {
         background: `linear-gradient(180deg, ${piccColors.ptitRed} 0%, ${piccColors.ptitDarkRed} 62%, ${piccColors.red[800]} 100%)`,
       }}
     >
+      {/* Top Accent Gradient Transition Ribbon */}
+      <Box
+        aria-hidden="true"
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 4,
+          background: 'linear-gradient(90deg, #E11414 0%, #E7C34D 50%, #0F2A52 100%)',
+          zIndex: 2,
+        }}
+      />
       {/* Oversized brand mark, barely visible — the same trick the official PTIT
           portals use to stop a large flat red panel from reading as empty. */}
       <Box

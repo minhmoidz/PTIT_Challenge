@@ -46,11 +46,15 @@ export const computeRegistrationStatus = (config?: PublicPiccConfig | null): Reg
   const closeAt = new Date(registration.closeAt);
 
   if (isNaN(openAt.getTime()) || isNaN(closeAt.getTime()) || openAt >= closeAt) return 'not_configured';
-  if (registration.explicitlyDisabled) return 'manually_disabled';
-  if (!registration.allowSubmissions) return 'manually_disabled';
+
+  // Time-based states first: "upcoming" and "closed" must not be reported as
+  // "manually_disabled" just because the server disallows submissions.
   if (now < openAt) return 'not_open';
-  if (now >= openAt && now < closeAt) return 'open';
-  return 'closed';
+  if (now >= closeAt) return 'closed';
+
+  // Inside the window: only a real admin override stops submissions.
+  if (registration.explicitlyDisabled || !registration.allowSubmissions) return 'manually_disabled';
+  return 'open';
 };
 
 export const computeClockOffset = (serverTime: string): number => {

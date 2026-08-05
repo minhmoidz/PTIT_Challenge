@@ -7,6 +7,7 @@ const CATEGORY_TO_DB: Record<string, ChallengeCategory> = {
   technology: 'TECHNOLOGY',
   marketing: 'MARKETING',
   communications: 'COMMUNICATIONS',
+  media: 'COMMUNICATIONS',
   other: 'OTHER',
 };
 
@@ -63,6 +64,7 @@ export const buildConsentRows = (
     { consentType: 'INFORMATION_ACCURACY', accepted: Boolean(c?.truthfulInformation) },
     { consentType: 'MEDIA_USE', accepted: Boolean(c?.mediaConsent) },
     { consentType: 'RULES_ACCEPTANCE', accepted: Boolean(c?.rulesAccepted) },
+    { consentType: 'PRIVACY_ACKNOWLEDGEMENT', accepted: Boolean(c?.privacyAcknowledged) },
     { consentType: 'PUBLIC_TEAM_PROFILE', accepted: Boolean(p?.shareTeamProfile) },
     { consentType: 'PUBLIC_MEMBER_NAMES', accepted: Boolean(p?.shareMemberNames) },
     { consentType: 'PUBLIC_MEMBER_PHOTOS', accepted: Boolean(p?.shareLogoOrPhotos) },
@@ -85,7 +87,10 @@ export const toRegistrationRecord = (row: RegistrationWithRelations): DBRegistra
   const values: RegistrationFormValues = {
     teamName: row.teamName,
     teamSize: row.teamSize,
-    challengeCategories: [CATEGORY_FROM_DB[row.challengeCategory]],
+    challengeCategories:
+      row.challengeCategories && row.challengeCategories.length > 0
+        ? row.challengeCategories
+        : [CATEGORY_FROM_DB[row.challengeCategory]],
     otherChallengeCategory: row.challengeCategoryOther ?? undefined,
     previousCompetitions: row.previousCompetitions ?? undefined,
     featuredProject: row.notableProject,
@@ -103,7 +108,7 @@ export const toRegistrationRecord = (row: RegistrationWithRelations): DBRegistra
       truthfulInformation: consentOf('INFORMATION_ACCURACY'),
       mediaConsent: consentOf('MEDIA_USE'),
       rulesAccepted: consentOf('RULES_ACCEPTANCE'),
-      privacyAcknowledged: consentOf('INFORMATION_ACCURACY'),
+      privacyAcknowledged: consentOf('PRIVACY_ACKNOWLEDGEMENT'),
     },
     publicConsent: {
       shareTeamProfile: consentOf('PUBLIC_TEAM_PROFILE'),

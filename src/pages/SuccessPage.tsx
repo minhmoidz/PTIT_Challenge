@@ -60,7 +60,7 @@ export const SuccessPage = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        bgcolor: getSkyBackground('hero'),
+        background: getSkyBackground('hero'),
         position: 'relative',
         py: 8,
         overflow: 'hidden',

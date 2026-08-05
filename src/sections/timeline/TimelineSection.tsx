@@ -507,6 +507,34 @@ export const TimelineSection = () => {
       {/* Sky World Atmospheric Design System Background */}
       <SkyBackground variant="journey" />
 
+      {/* Top & Bottom Smooth Transition Blend Masks */}
+      <Box
+        aria-hidden="true"
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 80,
+          background: 'linear-gradient(to bottom, rgba(208, 231, 254, 0.95), transparent)',
+          zIndex: 1,
+          pointerEvents: 'none',
+        }}
+      />
+      <Box
+        aria-hidden="true"
+        sx={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 80,
+          background: 'linear-gradient(to top, rgba(208, 231, 254, 0.95), transparent)',
+          zIndex: 1,
+          pointerEvents: 'none',
+        }}
+      />
+
       <Container
         maxWidth="lg"
         sx={{

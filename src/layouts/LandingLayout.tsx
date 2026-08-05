@@ -6,6 +6,7 @@ import { ScrollProgress } from '@/components/ui/ScrollProgress';
 import { SiteHeader } from '@/features/navigation/SiteHeader';
 import { FooterSection } from '@/sections/footer/FooterSection';
 import { MobileStickyCta } from '@/components/ui/MobileStickyCta';
+import { assetPath } from '@/config/paths';
 
 export const LandingLayout = () => {
   const { pathname, hash } = useLocation();
@@ -52,7 +53,15 @@ export const LandingLayout = () => {
   }, [pathname, hash]);
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        background: `#D0E7FE url(${assetPath('maunen2.jpg')}) no-repeat center top / cover fixed`,
+        backgroundAttachment: { xs: 'scroll', md: 'fixed' },
+      }}
+    >
       <SkipLink />
       <ScrollProgress />
       <SiteHeader />

@@ -144,6 +144,8 @@ export const HeroContent = ({ status }: Props) => {
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
               fontSize: { xs: '0.82em', sm: '1em' },
+              lineHeight: 1.15,
+              pb: '0.12em',
             }}
           >
             Catalyst Challenge
